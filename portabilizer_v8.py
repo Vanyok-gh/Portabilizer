@@ -2175,7 +2175,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 # ------------------------------------------------------------------ проверка новой версии
 
 APP_VERSION = "8.9"
-UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/portabilizer-launcher/releases"
+UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
 def _ver_tuple(tag) -> tuple:
