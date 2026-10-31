@@ -1513,6 +1513,26 @@ DX_NAMES = ("xinput1_3", "x3daudio1_7", "xapofx1_5", "xaudio2_7", "xaudio2_6", "
             "xactengine3_7")
 DX_UE_DEFAULT = ("xinput1_3", "x3daudio1_7", "xapofx1_5", "xaudio2_7")   # то, что просят игры на UE4
 
+# Остальные встроенные библиотеки: те же cab-наборы в папке dx (имя cab содержит x86 или x64).
+# Набор собирает tools/collect_redist.py из DLL, которые уже стоят на компьютере разработчика.
+RUNTIME_FAMILIES = (
+    ("DirectX (June 2010)", DX_NAMES),
+    ("Visual C++ 2015-2022", ("vcruntime140", "vcruntime140_1", "msvcp140", "msvcp140_1",
+                              "msvcp140_2", "msvcp140_atomic_wait", "msvcp140_codecvt_ids",
+                              "concrt140", "vcomp140")),
+    ("Visual C++ 2013", ("msvcr120", "msvcp120", "vcomp120")),
+    ("Visual C++ 2012", ("msvcr110", "msvcp110", "vcomp110")),
+    ("Visual C++ 2010", ("msvcr100", "msvcp100", "vcomp100")),
+    ("OpenAL", ("openal32",)),
+)
+RUNTIME_NAMES = tuple(n for _, names in RUNTIME_FAMILIES for n in names)
+
+
+def runtime_family(name: str) -> str:
+    """К какому набору относится библиотека (имя без .dll, в любом регистре)."""
+    low = name.lower()
+    return next((fam for fam, names in RUNTIME_FAMILIES if low in names), "")
+
 
 def dx_dir() -> Path:
     base = getattr(sys, "_MEIPASS", None)
@@ -1620,9 +1640,10 @@ def dx_extract(cab, wanted, dest: Path, log=None) -> list:
 
 
 def scan_dx_names(exe, limit=700 * 1024 * 1024) -> set:
-    """Какие DirectX-библиотеки из DX_NAMES упомянуты в exe (ASCII или UTF-16), по кускам."""
+    """Какие встроенные библиотеки (DirectX, Visual C++, OpenAL: RUNTIME_NAMES) упомянуты в exe
+    (ASCII или UTF-16), по кускам."""
     pats = {}
-    for n in DX_NAMES:
+    for n in RUNTIME_NAMES:
         a = (n + ".dll").encode()
         pats[n] = (a, b"\x00".join(bytes([c]) for c in a))
     found, tail, done = set(), b"", 0
@@ -1643,7 +1664,8 @@ def scan_dx_names(exe, limit=700 * 1024 * 1024) -> set:
 
 
 def dx_plan(launch: Path, system_root=None, index=None) -> dict:
-    """Какие библиотеки DirectX нужны exe, но отсутствуют и в системе, и рядом с ним."""
+    """Какие встроенные библиотеки (DirectX, Visual C++, OpenAL) нужны exe, но отсутствуют
+    и в системе, и рядом с ним."""
     arch = analyze_exe(launch)["arch"]
     arch = "x86" if arch == "x86" else "x64"
     need = scan_dx_names(launch)
@@ -1663,17 +1685,29 @@ def dx_plan(launch: Path, system_root=None, index=None) -> dict:
             "absent": [n for n in missing if (arch, n + ".dll") not in idx], "index": idx}
 
 
+def runtime_groups(names) -> list:
+    """[(набор, [имена.dll])] в порядке RUNTIME_FAMILIES; незнакомые имена идут в конец."""
+    by = {}
+    for n in names:
+        by.setdefault(runtime_family(n) or "Прочее", []).append(n + ".dll")
+    order = [f for f, _ in RUNTIME_FAMILIES] + ["Прочее"]
+    return [(f, by[f]) for f in order if f in by]
+
+
 def dx_question(plan: dict) -> str:
-    names = ", ".join(n + ".dll" for n in plan["missing"])
-    t = (f"Программе нужны библиотеки DirectX, которых нет в системе:\n{names}\n\n"
-         "Установить их в папку программы? Права администратора не нужны, система не "
+    lines = "\n".join(f"  {fam}: {', '.join(files)}" for fam, files in runtime_groups(plan["missing"]))
+    t = (f"Программе нужны библиотеки, которых нет в системе:\n{lines}\n\n"
+         "Положить их в папку программы? Права администратора не нужны, система не "
          "меняется, всё остаётся внутри портативной папки.\n\n"
-         "Да - установить.\nНет - продолжить без них (программа может не запуститься).\n"
+         "Да - положить.\nНет - продолжить без них (программа может не запуститься).\n"
          "Отмена - прервать.")
     if plan["absent"]:
         t += ("\n\nЧасть файлов в Portabilizer не встроена: "
-              + ", ".join(n + ".dll" for n in plan["absent"])
-              + ". Для них будет создан DX_fix.bat (скачает полный пакет DirectX).")
+              + ", ".join(n + ".dll" for n in plan["absent"]))
+        if any(n in DX_NAMES for n in plan["absent"]):
+            t += ". Для DirectX будет создан DX_fix.bat (скачает полный пакет DirectX)."
+        else:
+            t += ". Их придётся поставить вручную."
     return t
 
 
@@ -1771,26 +1805,37 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
         choice = prompt(dx_question(plan)) if prompt else "install"
         names = ", ".join(n + ".dll" for n in plan["missing"])
         if choice == "cancel":
-            log("Отменено: нужны библиотеки DirectX (" + names + ").")
+            log("Отменено: нужны библиотеки (" + names + ").")
             raise JobCancelled()
         put = []
         if choice == "install":
             for cab in sorted({plan["index"][(plan["arch"], n + ".dll")] for n in plan["bundled"]}):
                 put += dx_extract(cab, {n + ".dll" for n in plan["bundled"]}, launch.parent, log)
             if put:
-                log(f"DirectX ({plan['arch']}) положен рядом с {launch.name}: {', '.join(sorted(put))}.")
-                notes.append("DirectX: " + ", ".join(sorted(put)))
-        left = [n for n in plan["missing"] if n + ".dll" not in {x.lower() for x in put}]
-        if left:
+                log(f"Библиотеки ({plan['arch']}) положены рядом с {launch.name}: "
+                    f"{', '.join(sorted(put))}.")
+                notes.append("Библиотеки: " + ", ".join(sorted(put)))
+        put_low = {x.lower() for x in put}
+        left = [n for n in plan["missing"] if n + ".dll" not in put_low]
+        left_dx = [n for n in left if n in DX_NAMES]
+        left_other = [n for n in left if n not in DX_NAMES]
+        if left_dx:
             dest = str(launch.parent.resolve().relative_to(target.resolve())).replace("/", "\\")
             (target / "DX_fix.bat").write_text(
                 DX_FIX.replace("@DEST@", dest).replace("@URL@", DX_URL).replace("@PAGE@", DX_PAGE),
                 encoding="utf-8")
             log(("Без DirectX выбрано продолжить. " if choice != "install" else "")
-                + "Не хватает: " + ", ".join(n + ".dll" for n in left)
+                + "Не хватает: " + ", ".join(n + ".dll" for n in left_dx)
                 + ". Если программа пожалуется на них, запустите DX_fix.bat в папке результата "
                 "(права администратора не нужны).")
             notes.append("нужен DX_fix.bat")
+        if left_other:
+            fams = ", ".join(f for f, _ in runtime_groups(left_other))
+            log(("Выбрано продолжить без них. " if choice != "install" else "")
+                + "Не хватает: " + ", ".join(n + ".dll" for n in left_other)
+                + f" ({fams}). В Portabilizer они не встроены или не подошли по разрядности: "
+                "если программа пожалуется, поставьте соответствующий пакет в систему.")
+            notes.append("не хватает: " + ", ".join(n + ".dll" for n in left_other))
     if needs_admin:
         notes.append("exe требует админа: Launch.bat идёт через RunAsInvoker")
     dotnet_check(main, target, log)
