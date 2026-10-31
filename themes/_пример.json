@@ -1,0 +1,20 @@
+{
+  "name": "Моя тема",
+  "kind": "dark",
+  "r": true,
+  "bg": "#18191c",
+  "surface": "#212226",
+  "surface2": "#2c2d32",
+  "fg": "#ececee",
+  "muted": "#a9aab0",
+  "border": "#3d3e45",
+  "accent": "#c8323d",
+  "accent_fg": "#ffffff",
+  "hover": "#ce444e",
+  "sel_bg": "#5a2329",
+  "sel_fg": "#ffffff",
+  "ok": "#6fd08a",
+  "warn": "#f0b45a",
+  "danger": "#ff7f89",
+  "dis": "#6c6d74"
+}
