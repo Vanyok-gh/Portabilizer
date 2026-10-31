@@ -29,7 +29,7 @@ PACKS = (
     ("vc120", "Visual C++ 2013", ("msvcr120", "msvcp120", "vcomp120")),
     ("vc110", "Visual C++ 2012", ("msvcr110", "msvcp110", "vcomp110")),
     ("vc100", "Visual C++ 2010", ("msvcr100", "msvcp100", "vcomp100")),
-    ("openal", "OpenAL", ("openal32",)),
+    ("openal", "OpenAL", ("openal32", "wrap_oal")),
 )
 MACHINE = {"x86": 0x014C, "x64": 0x8664}
 

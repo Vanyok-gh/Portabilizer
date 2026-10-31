@@ -1528,6 +1528,10 @@ RUNTIME_FAMILIES = (
 RUNTIME_NAMES = tuple(n for _, names in RUNTIME_FAMILIES for n in names)
 
 
+# Библиотеки, которые нужно положить вместе с основной (OpenAL32.dll сам по себе ищет wrap_oal.dll).
+RUNTIME_COMPANIONS = {"openal32": ("wrap_oal",)}
+
+
 def runtime_family(name: str) -> str:
     """К какому набору относится библиотека (имя без .dll, в любом регистре)."""
     low = name.lower()
@@ -1809,8 +1813,10 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
             raise JobCancelled()
         put = []
         if choice == "install":
+            wanted = {n + ".dll" for n in plan["bundled"]}
+            wanted |= {c + ".dll" for n in plan["bundled"] for c in RUNTIME_COMPANIONS.get(n, ())}
             for cab in sorted({plan["index"][(plan["arch"], n + ".dll")] for n in plan["bundled"]}):
-                put += dx_extract(cab, {n + ".dll" for n in plan["bundled"]}, launch.parent, log)
+                put += dx_extract(cab, wanted, launch.parent, log)
             if put:
                 log(f"Библиотеки ({plan['arch']}) положены рядом с {launch.name}: "
                     f"{', '.join(sorted(put))}.")
