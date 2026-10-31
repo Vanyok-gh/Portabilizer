@@ -5,6 +5,13 @@ name: Release Portabilizer
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:            # ручной запуск кнопкой Run workflow: укажите тег, например v8.9
+    inputs:
+      tag:
+        description: "Тег версии (например v8.9)"
+        required: true
+env:
+  TAG: ${{ inputs.tag || github.ref_name }}
 permissions:
   contents: write
 jobs:
@@ -24,7 +31,7 @@ jobs:
       - name: Pack
         shell: pwsh
         run: |
-          $n = "Portabilizer-${{ github.ref_name }}"
+          $n = "Portabilizer-${{ env.TAG }}"
           New-Item -ItemType Directory $n | Out-Null
           Copy-Item dist\Portabilizer.exe $n\
           Copy-Item assets\portabilizer_R.ico $n\
@@ -34,7 +41,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $tag = "${{ github.ref_name }}"
+          $tag = "${{ env.TAG }}"
           $n = "Portabilizer-$tag"
           # описание берём из раздела "## vX.Y" файла CHANGELOG.md
           $ver = $tag -replace '^[vV]',''
