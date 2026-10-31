@@ -49,4 +49,12 @@ jobs:
           $m = [regex]::Match($text, "(?ms)^##\s+[vV]?" + [regex]::Escape($ver) + "\s*\r?\n(.*?)(?=^##\s|\z)")
           $notes = if ($m.Success) { $m.Groups[1].Value.Trim() } else { "Portabilizer $tag" }
           Set-Content notes.md $notes -Encoding UTF8
-          gh release create $tag "$n.zip" "dist\Portabilizer.exe" --title "Portabilizer $tag" --notes-file notes.md
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            # релиз уже создан вручную на сайте: добавляем exe, а пустое описание берём из CHANGELOG
+            gh release upload $tag "$n.zip" "dist\Portabilizer.exe" --clobber
+            $body = gh release view $tag --json body --jq .body
+            if (-not "$body".Trim()) { gh release edit $tag --notes-file notes.md }
+          } else {
+            gh release create $tag "$n.zip" "dist\Portabilizer.exe" --title "Portabilizer $tag" --notes-file notes.md
+          }
