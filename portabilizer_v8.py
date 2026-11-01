@@ -1510,13 +1510,28 @@ def dx_missing(dest: Path, system_root=None) -> bool:
 
 DX_NAMES = ("xinput1_3", "x3daudio1_7", "xapofx1_5", "xaudio2_7", "xaudio2_6", "xapofx1_4",
             "x3daudio1_6", "d3dx9_43", "d3dx10_43", "d3dx11_43", "d3dcompiler_43", "d3dcsx_43",
-            "xactengine3_7")
+            "xactengine3_7",
+            # старые выпуски DirectX (2005-2009) для старых игр, только x86
+            "d3dcompiler_33", "d3dcompiler_34", "d3dcompiler_35", "d3dcompiler_36",
+            "d3dcompiler_37", "d3dcompiler_38", "d3dcompiler_39", "d3dcompiler_40",
+            "d3dcompiler_41", "d3dcompiler_42", "d3dx10", "d3dx10_33", "d3dx10_34", "d3dx10_35",
+            "d3dx10_36", "d3dx10_37", "d3dx10_38", "d3dx10_39", "d3dx10_40", "d3dx10_41",
+            "d3dx10_42", "d3dx11_42", "d3dx9_24", "d3dx9_25", "d3dx9_26", "d3dx9_27", "d3dx9_28",
+            "d3dx9_29", "d3dx9_30", "d3dx9_31", "d3dx9_32", "d3dx9_33", "d3dx9_34", "d3dx9_35",
+            "d3dx9_36", "d3dx9_37", "d3dx9_38", "d3dx9_39", "d3dx9_40", "d3dx9_41", "d3dx9_42",
+            "x3daudio1_0", "x3daudio1_1", "x3daudio1_2", "x3daudio1_3", "x3daudio1_4",
+            "x3daudio1_5", "xactengine2_0", "xactengine2_1", "xactengine2_10", "xactengine2_2",
+            "xactengine2_3", "xactengine2_4", "xactengine2_5", "xactengine2_6", "xactengine2_7",
+            "xactengine2_8", "xactengine2_9", "xactengine3_0", "xactengine3_1", "xactengine3_2",
+            "xactengine3_3", "xactengine3_4", "xactengine3_5", "xactengine3_6", "xapofx1_0",
+            "xapofx1_1", "xapofx1_2", "xapofx1_3", "xaudio2_0", "xaudio2_1", "xaudio2_2",
+            "xaudio2_3", "xaudio2_4", "xaudio2_5", "xinput1_1", "xinput1_2", "xinput9_1_0")
 DX_UE_DEFAULT = ("xinput1_3", "x3daudio1_7", "xapofx1_5", "xaudio2_7")   # то, что просят игры на UE4
 
 # Остальные встроенные библиотеки: те же cab-наборы в папке dx (имя cab содержит x86 или x64).
 # Набор собирает tools/collect_redist.py из DLL, которые уже стоят на компьютере разработчика.
 RUNTIME_FAMILIES = (
-    ("DirectX (June 2010)", DX_NAMES),
+    ("DirectX", DX_NAMES),
     ("Visual C++ 2015-2022", ("vcruntime140", "vcruntime140_1", "msvcp140", "msvcp140_1",
                               "msvcp140_2", "msvcp140_atomic_wait", "msvcp140_codecvt_ids",
                               "concrt140", "vcomp140")),
@@ -1573,22 +1588,25 @@ def cab_read(path):
         if comp not in (0, 1):          # 0 - без сжатия, 1 - MSZIP; LZX и прочее: через expand.exe
             datas.append(None)
             continue
-        out, q, prev = [], off, b""
-        for _ in range(nblk):
-            cb, cu = struct.unpack("<HH", d[q + 4:q + 8])
-            q += 8 + cb_data
-            blk = d[q:q + cb]
-            q += cb
-            if comp == 1:
-                if blk[:2] != b"CK":
-                    raise ValueError("битый блок MSZIP")
-                dec = zlib.decompressobj(-15, zdict=prev[-32768:]) if prev else zlib.decompressobj(-15)
-                blk = dec.decompress(blk[2:])
-                if len(blk) != cu:
-                    raise ValueError("битый блок MSZIP")
-                prev = blk
-            out.append(blk)
-        datas.append(b"".join(out))
+        try:
+            out, q, prev = [], off, b""
+            for _ in range(nblk):
+                cb, cu = struct.unpack("<HH", d[q + 4:q + 8])
+                q += 8 + cb_data
+                blk = d[q:q + cb]
+                q += cb
+                if comp == 1:
+                    if blk[:2] != b"CK":
+                        raise ValueError("битый блок MSZIP")
+                    dec = zlib.decompressobj(-15, zdict=prev[-32768:]) if prev else zlib.decompressobj(-15)
+                    blk = dec.decompress(blk[2:])
+                    if len(blk) != cu:
+                        raise ValueError("битый блок MSZIP")
+                    prev = blk
+                out.append(blk)
+            datas.append(b"".join(out))
+        except (ValueError, zlib.error, struct.error):
+            datas.append(None)          # папка не читается нашим кодом: имена файлов остаются, распаковку возьмёт expand.exe
     return files, datas
 
 
