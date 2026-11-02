@@ -1,0 +1,353 @@
+1	Se necesitan {0} {1}, hay {2} libres en el disco {3}.{4}
+2	en curso
+3	en pausa
+4	listo
+5	error
+6	cancelado
+7	cancelado (se cerró la aplicación)
+8	Automático (como en Windows)
+9	Claro
+10	Oscuro
+11	Clásico (del sistema)
+12	Mi color
+13	B
+14	KB
+15	MB
+16	GB
+17	 Si dentro del archivo hay un instalador, se necesitará aproximadamente otro tanto.
+18	según el contenido del archivo
+19	aproximado
+20	Un juego de Unreal Engine puede necesitar las bibliotecas de DirectX (June 2010). Si al iniciar aparece un error sobre xinput1_3.dll, X3DAudio1_7.dll o XAPOFX1_5.dll, ejecute DX_fix.bat en la carpeta del resultado: no se necesitan derechos de administrador.
+21	El modo radical no eliminó el archivo de origen porque no se pudo comprobar todo (el motivo está en el registro). La carpeta portátil se ha creado y el archivo de origen sigue en su sitio: revísela y elimine el origen usted mismo.
+22	El programa necesita .NET, que no está en este equipo. Ejecute Install_dotnet.bat en la carpeta del resultado (descargará el runtime dentro de la copia portátil, sin derechos de administrador).
+23	El archivo pide contraseña. Portabilizer no introduce contraseñas: descomprímalo manualmente con 7-Zip (le pedirá la contraseña) y elija el instalador o la carpeta del resultado.
+24	No se encontró 7z.exe (ni junto al programa ni en el 7-Zip instalado). Instale 7-Zip desde 7-zip.org o coloque 7z.exe y 7z.dll junto a Portabilizer o en la carpeta tools.
+25	No se encontró innoextract.exe. Colóquelo junto a Portabilizer o en la carpeta tools.
+26	No había espacio suficiente en el disco. Libere espacio o elija otro disco en el campo «Destino» y, en la pestaña «Historial», pulse «Repetir».
+27	El instalador requiere derechos de administrador. Si no los tiene, pruebe el modo «Solo extraer» o busque una versión portátil del desarrollador.
+28	No se encontró el exe principal. En el registro de arriba se enumeran los exe encontrados y el motivo del descarte: copie el nombre que necesite en el campo «Exe principal» y ejecute el modo «Solo Launch.bat».
+29	Parece una aplicación UWP: fuera del paquete instalado, probablemente no se iniciará. Busque un instalador exe.
+30	Compruebe que el archivo se haya descargado por completo (verifique el tamaño o descárguelo de nuevo) y que 7z.exe esté junto al programa.
+31	Esta carpeta ya se creó antes. Ábrala en la pestaña «Historial» o elimínela si desea empezar de nuevo.
+32	Los datos están en archivos .bin externos, que instala el propio instalador. Puede que haga falta instalar, y para ello se necesitan derechos de administrador.
+33	Los archivos creados parcialmente siguen en el disco. Puede eliminarlos en la pestaña «Historial».
+34	n/d
+35	Extracción
+36	Extractor: {0}
+37	Instalación
+38	Instalación silenciosa en la carpeta App (puede tardar muchos minutos, no cierre la ventana)...
+39	No funcionó sin administrador: pruebo con solicitud de UAC (pulse «Sí»). No es posible detener desde aquí un instalador ejecutado con derechos de administrador.
+40	nombre de servicio (setup/update/redist, etc.)
+41	utilidad de servicio del repack
+42	carpeta temporal del instalador
+43	programa de consola
+44	Exe encontrados: {0}. Estos son los primeros {1} y por qué no sirvieron:
+45	Copie el nombre que necesite en el campo «Exe principal» y ejecute el modo «Solo Launch.bat».
+46	No se encontró el archivo '{0}' en App.
+47	Se necesita .NET ({0}) para {1}, pero no se encontró en este equipo. Ejecute Install_dotnet.bat en la carpeta del resultado: descargará el runtime en la carpeta dotnet dentro de la copia portátil (no se necesitan derechos de administrador) y Launch.bat lo usará automáticamente.
+48	Inicio: normal, no se requiere elevación de privilegios.
+49	El programa necesita bibliotecas que no están en el sistema:\n{0}\n\n¿Colocarlas en la carpeta del programa? No se necesitan derechos de administrador, el sistema no se modifica y todo queda dentro de la carpeta portátil.\n\nSí: colocarlas.\nNo: continuar sin ellas (puede que el programa no se inicie).\nCancelar: abortar.
+50	Listo: {0}
+51	Exe principal: {0}
+52	Inicie mediante Launch.bat. La carpeta se puede llevar en una unidad USB.
+53	Modo radical: se liberaron {0}.
+54	Modo: {0}
+55	Tipo: {0}
+56	Rojo claro (R)
+57	Carbón con acento rojo
+58	Burdeos
+59	Cereza
+60	Archivo: exe, msi, msix/appx, archivo comprimido (rar, zip, 7z...). El exe principal es opcional: un nombre (App.exe), una ruta dentro de App o un archivo de la carpeta App. El registro se guarda en portabilizer.log.
+61	MODO (R): un exe normal simplemente SE MUEVE a la carpeta App (no hay copia, no se necesita espacio). Los archivos comprimidos e instaladores se extraen primero y solo después se elimina el origen: mientras dura el proceso se necesita espacio para lo extraído. Antes de empezar se pedirá confirmación.
+62	No elimino {0}: la carpeta no parece creada por Portabilizer.
+63	Se necesita 7z.exe: no se encontró ni junto al programa ni en el 7-Zip instalado. Instale 7-Zip (7-zip.org) o coloque 7z.exe y 7z.dll al lado o en tools/.
+64	7-Zip, código 1
+65	El archivo está protegido con contraseña. Portabilizer no introduce contraseñas: descomprímalo manualmente (7-Zip pedirá la contraseña) y luego elija la carpeta extraída o el instalador.
+66	El instalador terminó con un error. Compruebe que los archivos .bin estén junto a setup.exe.
+67	En la carpeta {0} no hay ningún archivo exe. Compruebe que el programa se haya extraído o instalado precisamente aquí.
+68	MSIX: nombres corregidos con codificación %XX: {0}
+69	MSIX: no se encontró AppxManifest.xml; busco el exe de la forma habitual.
+70	MSIX: el manifiesto no contiene runFullTrust; probablemente es una aplicación UWP. Fuera del paquete instalado, probablemente no se iniciará.
+71	, manifiesto: {0}.
+72	Parece un instalador web: contiene un enlace de descarga ({0}). El programa en sí se descargará al ejecutarlo y se instalará en el sistema, por lo que no será una copia portátil. Para lograr una verdadera portabilidad, descargue el instalador completo sin conexión y haga portátil ese.
+73	El archivo está protegido por un empaquetador: no se puede extraer ni analizar, solo ejecutar.
+74	Inicio: con solicitud de UAC (elegido manualmente). Launch.bat no cambia los derechos.
+75	Inicio: sin solicitud de UAC (RunAsInvoker, elegido manualmente).
+76	{0} solicita derechos de administrador. Launch.bat lo inicia sin solicitud de UAC (RunAsInvoker), no se necesita contraseña. Si el programa realmente escribe en Program Files o HKLM, o instala servicios o controladores, sin esos derechos puede que no funcione. En ese caso use Launch_admin.bat (inicio normal con solicitud de UAC).
+77	no es cab
+78	cab de varios volúmenes
+79	Otros
+80	Juego de Unreal Engine: Launch.bat inicia {0} directamente. El {1} raíz, en el primer inicio, pide instalar DirectX y Visual C++ en el sistema y se cierra si se rechaza. Para iniciar a través de él: Launch_stub.bat.
+81	Unreal: inicio de {0}
+82	el exe requiere administrador: Launch.bat usa RunAsInvoker
+83	Modo radical: el archivo de origen se movió, no se copió: no se ocupan gigabytes de más.
+84	el trabajo se interrumpió
+85	no se creó Launch.bat
+86	la carpeta App está vacía
+87	Los archivos están en: {0}
+88	Las carpetas de archivos están vacías.
+89	Modo desconocido: {0}
+90	No se indicó ningún archivo.
+91	Archivo no encontrado.
+92	La carpeta ya existe: {0}
+93	Elimínela o elija el modo 'Solo Launch.bat'.
+94	No se encontró el exe principal.
+95	Indique el exe en el campo 'Exe principal' y ejecute el modo 'Solo Launch.bat'.
+96	el color debe tener el formato #rrggbb
+97	Automático
+98	Solo extraer
+99	Solo instalar (en App)
+100	Solo Launch.bat
+101	Automático (sin UAC, si el exe pide administrador)
+102	Siempre sin UAC
+103	Siempre con UAC (como en el original)
+104	Archivo:
+105	Destino:
+106	Exe principal:
+107	Procesador
+108	Memoria
+109	Tarjeta gráfica
+110	--run acepta: auto, noadmin, admin
+111	El modo radical ELIMINA el archivo de origen tras una compilación correcta (no se puede recuperar).\nSi está seguro, añada --yes. No se ha hecho nada.
+112	--dx acepta: install, skip, cancel
+113	En el disco {0} solo quedan {1}.
+114	Se necesita innoextract.exe (colóquelo al lado o en tools/).
+115	Falló el inicio sin administrador: {0}
+116	No se encontraron programas gráficos; uso uno de consola: {0}. Si no es un juego, indique el exe manualmente.
+117	Elegido: {0} (exe adecuados: {1}). Otras opciones: {2}. Si se inició el programa equivocado, indique el exe manualmente.
+118	adecuado
+119	descartado:
+120	MSIX: no se pudo leer el manifiesto: {0}
+121	No se pudo crear Install_dotnet.bat: {0}
+122	Análisis de {0}: {1}, {2}
+123	\n\nAlgunos archivos no están integrados en Portabilizer:
+124	. Para DirectX se creará DX_fix.bat (descargará el paquete completo de DirectX).
+125	. Tendrá que instalarlos manualmente.
+126	se necesita DX_fix.bat
+127	extraído {0} de {1}
+128	el archivo de origen está dentro de la carpeta del resultado
+129	Archivo de origen eliminado: {0} ({1})
+130	. Si son datos del mismo repack, elimínelos usted mismo.
+131	Guardado en: {0}
+132	No existe la carpeta {0}. Primero realice la extracción o la instalación.
+133	No se encontró el exe principal: indíquelo en el campo 'Exe principal'.
+134	Es un exe normal: lo copio tal cual.
+135	Atención: MSIX se extrajo como una carpeta normal, sin registrar el paquete. Los programas clásicos (full trust) suelen funcionar así, pero las aplicaciones UWP y todo lo que requiera un identificador de paquete pueden no iniciarse.
+136	El modo radical no está confirmado: no hago nada.
+137	Cancelado por el usuario. Los archivos creados parcialmente siguen en el disco: puede eliminarlos en la pestaña «Historial».
+138	Error: {0}
+139	Convertidor
+140	Historial
+141	Diagnóstico
+142	Versiones
+143	Apariencia
+144	Listo para trabajar.
+145	Hacer portátil
+146	Pausa
+147	Continuar
+148	Cancelar
+149	Recomendaciones
+150	Se necesita DirectX
+151	La descarga está en pausa, no se ha perdido nada. Cancelar detendrá el trabajo definitivamente: después solo se podrá empezar de nuevo («Repetir» en la pestaña «Historial»).
+152	Queda poco espacio en el disco
+153	Pausa: el proceso está congelado, el progreso se conserva.
+154	Continúo desde el mismo punto.
+155	Fecha
+156	Origen
+157	Versión
+158	Tipo
+159	Estado
+160	Tamaño
+161	Resultado
+162	Notas
+163	Eliminando {0} ...
+164	\n... y {0} más
+165	Abrir carpeta
+166	Ejecutar
+167	Repetir
+168	Eliminar copia
+169	Eliminar archivo de origen
+170	Quitar de la lista
+171	Actualizar
+172	Recopilando información del sistema...
+173	Disco: n/d
+174	Disco
+175	Capacidad
+176	Libre
+177	Usado
+178	Portabilizer (R) - radical
+179	Activar versión normal
+180	Activar versión (R)
+181	Tema:
+182	Rojo oscuro (R):
+183	Rojo claro (R):
+184	Color propio
+185	¿Tintar también el fondo de la ventana con este color?\n\nSí: el fondo adquirirá un ligero matiz del color elegido.\nNo: el fondo seguirá neutro; el color solo se aplicará a los botones y acentos.
+186	Es probable que no haya espacio suficiente.
+187	no se puede leer
+188	 (prioridad baja)
+189	El exe indicado está fuera de la carpeta App: elija un archivo dentro de App.
+190	{0}: este cab usa compresión LZX y solo se puede extraer en Windows (expand.exe).
+191	expand.exe no pudo extraer {0}: {1}
+192	Las bibliotecas ({0}) se colocaron junto a {1}: {2}.
+193	. Si el programa se queja de ellas, ejecute DX_fix.bat en la carpeta del resultado (no se necesitan derechos de administrador).
+194	 ({0}). No están integradas en Portabilizer o no coinciden en arquitectura: si el programa se queja, instale el paquete correspondiente en el sistema.
+195	faltan:
+196	El archivo de origen NO se ha eliminado:
+197	el extractor informó de advertencias (
+198	No se pudo eliminar {0}: {1}
+199	Copia temporal eliminada: {0} ({1})
+200	Los archivos .bin junto al instalador no se eliminaron (podrían hacer falta a otros programas):
+201	Modo R: el archivo se movió a App sin copia ({0}).
+202	El modo de instalación no es aplicable a MSIX/APPX: el paquete solo se extrae.
+203	No se pudo extraer el paquete.
+204	Es un bundle. Paquete principal: {0}. La extracción del bundle se guardó en {1}.
+205	De momento todo tranquilo. Aquí aparecerán consejos cuando falte espacio o haya errores habituales.
+206	No se puede decir con exactitud cuánto queda por escribir.
+207	¿Qué programa ejecutar?
+208	Elija un archivo.
+209	\n  ... y {0} más
+210	Preparación
+211	Cancelado antes de empezar: poco espacio en el disco.
+212	No se puede poner en pausa ahora (se necesita psutil: pip install psutil).
+213	¿Cancelar?
+214	¿Detener el trabajo? Después no se podrá continuar desde donde se quedó: en la pestaña «Historial» aparecerá «Repetir» (empieza de nuevo).
+215	han pasado {0}
+216	Primero elija un elemento de la lista.
+217	Espere a que termine la tarea actual (o cancélela).
+218	La carpeta del resultado no existe en el disco.
+219	Ábrala manualmente:\n{0}
+220	No se encontró Launch.bat: la conversión no se completó.
+221	Eliminación
+222	Esta carpeta no parece creada por Portabilizer (se necesitan un nombre *_portable y un Launch.bat con carpeta App). Por precaución, no la elimino.
+223	Carpeta eliminada.
+224	No se pudo eliminar todo: algunos archivos están en uso por un programa.
+225	No se encontró el archivo de origen (quizá ya se eliminó).
+226	¿Eliminar el archivo de origen?
+227	Se eliminarán PARA SIEMPRE (sin pasar por la papelera), en total {0}:\n\n{1}\n\nCarpeta: {2}\n\nEs su archivo de origen y no se podrá recuperar. ¿Eliminar?
+228	Archivo eliminado: {0}
+229	¿Quitar el elemento de la lista? Los archivos del disco no se tocan.
+230	detectando...
+231	Sistema: {0}\nProcesador: {1}\nMemoria RAM: {2}\nTarjeta gráfica: {3}
+232	Hay una nueva versión de Portabilizer disponible: {0}. Puede descargarla en Portabilizer Launcher o en la página {1}.
+233	_пример.json
+234	Mi tema
+235	Color principal (botones, progreso)
+236	Portabilizer (R) - modo radical
+237	Activa ahora: Portabilizer (R) - radical
+238	Activa ahora: Portabilizer (versión normal)
+239	Podrá cambiar de versión cuando termine la tarea actual.
+240	Detenido. Libere espacio, elija otro disco o añada --force.
+241	Espacio muy justo: casi no hay margen, la tarea puede ponerse en pausa.
+242	Ha elegido: {0}
+243	no
+244	la dirección de descarga se encontró por indicios indirectos
+245	Cancelado: se necesitan bibliotecas (
+246	Bibliotecas:
+247	No se pudo mover el archivo ({0}); copio de la forma habitual.
+248	No se pudo extraer el paquete anidado.
+249	El modo de instalación no es aplicable a un archivo comprimido: solo se extrae.
+250	No se pudo extraer el archivo.
+251	El modo de instalación solo está disponible para instaladores Inno/NSIS en Windows.
+252	Modo:
+253	   Inicio:
+254	Quedan aproximadamente {0} por escribir y hay {1} libres: debería bastar, se puede terminar.
+255	Quedan aproximadamente {0} por escribir y hay {1} libres: faltarán unos {2}.
+256	Sigo en pausa. Libere espacio y pulse «Continuar».
+257	Continúo bajo su responsabilidad: me detendré solo si el espacio libre baja de {0}.
+258	Pausa. Libere espacio en el disco y pulse «Continuar».
+259	 La tarea está en pausa: elija en la ventana qué hacer.
+260	Estimación del espacio necesario
+261	Cancelado. Los restos se pueden eliminar en la pestaña «Historial».
+262	En el disco sigue habiendo poco espacio: {0}.
+263	Trabajo
+264	quedan ~{0}
+265	PAUSA
+266	Ejecute manualmente:\n{0}\n\n{1}
+267	, por lo que no se puede repetir. Descárguelo o instálelo de nuevo.
+268	No se pudo eliminar la carpeta por completo. Cierre los programas que la usan y vuelva a intentarlo.
+269	¿Eliminar la copia portátil?
+270	{0}\n\nTamaño: {1}\n\nLa carpeta se eliminará de forma irreversible. El archivo de origen (instalador o archivo comprimido) no se ve afectado.
+271	{0} núcleos / {1} hilos
+272	{0:.0f}%  ({1} de {2})
+273	, memoria {0} de {1}, {2:.0f} °C
+274	 (estimación según 3D)
+275	Elija cómo crea Portabilizer las copias portátiles. Puede cambiar en cualquier momento (solo cambia el modo de trabajo). En cada inicio el programa arranca en la versión normal.
+276	Versión segura.\n\nEl archivo de origen (instalador, paquete o archivo comprimido) queda intacto y la carpeta portátil se crea al lado.\n\nInconveniente: en el disco quedan ambas copias: el origen y la carpeta portátil.\n\nSirve para casi todo, sobre todo si no está seguro de que el programa vaya a funcionar.
+277	Versión radical (riesgo).\n\nTras una compilación correcta ELIMINA el archivo de origen (todos los volúmenes del archivo) y las copias temporales, por lo que el resultado ocupa menos espacio. La carpeta portátil se crea junto al origen.\n\nImportante: mientras dura el trabajo se necesita el mismo espacio que en la versión normal: el origen se elimina solo al final, tras la comprobación. El archivo eliminado no se puede recuperar: si algo sale mal más tarde, habrá que descargarlo o instalarlo de nuevo desde la plataforma.\n\nAntes de cada ejecución el programa pide confirmación.
+278	Hay una nueva versión disponible: {0}.
+279	Tiene la última versión ({0}) o no hay conexión con GitHub.
+280	Versión del programa: {0}
+281	Buscar nuevas versiones al iniciar (consulta a GitHub, no se envía ningún dato)
+282	Comprobar ahora
+283	Aspecto de la ventana. Los cambios se aplican al instante y se recuerdan. Los temas rojos se activan automáticamente en las versiones (R) y se adaptan al tema claro u oscuro.
+284	 (propio)
+285	Aspecto clásico: los colores los define Windows.
+286	. Colores: fondo, campos, botones, texto, secundario, acento, éxito, advertencia, error.
+287	No se pudo abrir la carpeta: {0}
+288	No se pudo guardar el tema: {0}
+289	Elegir color propio...
+290	Abrir carpeta themes
+291	Actualizar lista de temas
+292	Temas propios: coloque un archivo .json en la carpeta themes junto al programa (el botón de arriba crea el ejemplo _пример.json). Contiene colores en formato #rrggbb, el nombre, "kind": "light" o "dark" y "r": true para los temas rojos del modo R. Los colores que falten se toman del tema integrado. Los cuadros de confirmación (mensajes de Windows) siguen siendo los del sistema.
+293	Hacer portátil (R)
+294	Trabajo en curso
+295	La tarea aún se está ejecutando. ¿Cancelarla y salir?
+296	ATENCIÓN:
+297	PELIGRO:
+298	 El trabajo se detuvo para no llenar el disco.
+299	bloque MSZIP dañado
+300	Faltan:
+301	No se pudo mover el bundle: {0}
+302	En el archivo no hay un programa listo, pero sí un instalador: {0}. Continúo con él. El contenido del archivo se guardó en {1}.
+303	Archivos .bin encontrados junto al instalador: {0} ({1}):
+304	No se pudo extraer. Quizá el instalador no es estándar (entonces se necesita un virtualizador como Cameyo / Turbo Studio).
+305	Pruebo la instalación silenciosa. Los archivos extraídos se guardarán en {0}.
+306	La descarga se cancela por su elección.
+307	Detener: limpiaré el disco
+308	Cancelar la descarga
+309	Portabilizer (R): el archivo se moverá
+310	{0} ({1}) se MOVERÁ a la carpeta App junto a sí mismo: no se crea copia ni se necesita espacio adicional.\n\nEl archivo ya no estará en su ubicación anterior. Puede recuperarlo sacándolo de la carpeta App.\n\n¿Continuar?
+311	Portabilizer (R): se eliminará el archivo de origen
+312	¿Realmente desea hacer portátil este archivo en modo radical?\n\nTras una compilación correcta se ELIMINARÁN PARA SIEMPRE (sin pasar por la papelera):\n{0}\nen total {1}, así como las copias temporales.\n\nDespués no se podrá recuperar el archivo de origen. Si algo sale mal (por ejemplo, el juego no se inicia), habrá que descargarlo o instalarlo de nuevo desde la plataforma.\n\nLa eliminación solo se producirá si la compilación fue correcta y todo está verificado; en caso de error o cancelación, el archivo permanecerá. El resultado se creará junto al archivo de origen.\n\n¿Continuar?
+313	Listo. El archivo se movió sin copia: no se ocupó espacio adicional.
+314	libre en el disco {0}
+315	 (no está en el disco)
+316	El archivo de origen ya no existe
+317	¿Empezar de nuevo?
+318	La carpeta ya existe (resto del intento anterior):\n{0}\nTamaño: {1}\n\n¿Eliminarla y empezar de nuevo?
+319	La carga de CPU/RAM no está disponible: instale psutil (pip install psutil). En el Portabilizer.exe compilado ya está incluido.
+320	Casi no queda memoria RAM. Cierre el navegador y los programas innecesarios; de lo contrario, la extracción puede ir mucho más lenta.
+321	Disco: lectura {0}/s, escritura {1}/s
+322	carga no disponible
+323	Ahora:
+324	Se eligió continuar sin DirectX.
+325	Se eligió continuar sin ellas.
+326	La carpeta {0} se puede eliminar tras la comprobación: solo se necesita como origen del instalador.
+327	Tras la extracción no se encontró el exe principal.
+328	No habrá espacio suficiente
+329	Según la estimación, el espacio no bastará. Si se agota, la extracción se detendrá con un error.\n\n¿Continuar de todos modos?
+330	Se encontraron varios programas adecuados y no estoy seguro de cuál es el principal. Elija el que inicia la aplicación deseada (podrá cambiarlo más tarde en el modo «Solo Launch.bat»).
+331	Elegir automáticamente
+332	¿Habrá espacio suficiente?
+333	Listo. Archivo de origen eliminado, se liberaron {0}.
+334	 (lo eliminó el modo radical)
+335	  <- dónde se guarda
+336	En el disco {0}, donde guarda, hay poco espacio ({1}). Elija otro disco en el campo «Destino».
+337	No se pudo mover el archivo extraído: {0}
+338	Se extrajeron {0}, y en .bin hay {1}: parece un repack cuyos datos instala el propio instalador.
+339	No se pudo mover lo extraído: {0}
+340	La instalación falló: los archivos extraídos se devolvieron a App.
+341	No se pudo devolver lo extraído a App: {0}
+342	\n\n¿Empezar de todos modos?
+343	Advertencia: junto al instalador hay archivos .bin. Si el programa no se inicia o le faltan datos, repita en el modo 'Solo instalar (en App)'.
+344	Instaladores, paquetes, archivos comprimidos
+345	Todos
+346	Programas
+347	Listo. El resultado está en la pestaña «Historial».
+348	No se pudo. Los detalles están en el registro y en las recomendaciones.
+349	Listo, pero el archivo de origen no se eliminó:
+350	Idioma
+351	Idioma de la interfaz:
+352	El idioma cambia al instante: la ventana se reinicia sola y se conservan los ajustes.
+353	Espera a que termine la tarea o cancélala: la ventana se reinicia al cambiar el idioma.

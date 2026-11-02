@@ -1,0 +1,353 @@
+1	Benötigt werden {0} {1}, frei sind {2} auf Laufwerk {3}.{4}
+2	läuft
+3	Pause
+4	fertig
+5	Fehler
+6	abgebrochen
+7	abgebrochen (Anwendung wurde geschlossen)
+8	Automatisch (wie Windows)
+9	Hell
+10	Dunkel
+11	Klassisch (System)
+12	Eigene Farbe
+13	B
+14	KB
+15	MB
+16	GB
+17	 Enthält das Archiv einen Installer, wird etwa nochmal so viel Platz benötigt.
+18	nach Archivinhalt
+19	ungefähr
+20	Ein Unreal-Engine-Spiel benötigt möglicherweise die DirectX-Bibliotheken (June 2010). Wenn beim Start ein Fehler zu xinput1_3.dll, X3DAudio1_7.dll oder XAPOFX1_5.dll erscheint, führen Sie DX_fix.bat im Ergebnisordner aus: Administratorrechte sind nicht nötig.
+21	Der radikale Modus hat die Quelldatei nicht gelöscht, weil nicht alles geprüft werden konnte (Grund im Journal). Der portable Ordner wurde erstellt, die Quelldatei ist noch vorhanden: Prüfen Sie ihn und löschen Sie die Quelle selbst.
+22	Das Programm benötigt .NET, das auf diesem Computer fehlt. Führen Sie Install_dotnet.bat im Ergebnisordner aus (es lädt die Laufzeit in die portable Kopie herunter, ohne Administratorrechte).
+23	Die Datei verlangt ein Passwort. Portabilizer gibt keine Passwörter ein: Entpacken Sie sie manuell mit 7-Zip (es fragt nach dem Passwort) und wählen Sie den Installer oder Ordner aus dem Ergebnis.
+24	7z.exe nicht gefunden (weder neben dem Programm noch im installierten 7-Zip). Installieren Sie 7-Zip von 7-zip.org oder legen Sie 7z.exe und 7z.dll neben Portabilizer oder in den Ordner tools.
+25	innoextract.exe nicht gefunden. Legen Sie die Datei neben Portabilizer oder in den Ordner tools.
+26	Auf dem Laufwerk war nicht genug Platz. Schaffen Sie Platz oder wählen Sie im Feld „Ziel“ ein anderes Laufwerk und klicken Sie dann auf der Registerkarte „Verlauf“ auf „Wiederholen“.
+27	Der Installer benötigt Administratorrechte. Falls Sie keine haben, versuchen Sie den Modus „Nur entpacken“ oder suchen Sie beim Entwickler nach einer portablen Version.
+28	Haupt-exe nicht gefunden. Im Journal oben sind die gefundenen exe-Dateien und die Gründe für das Aussortieren aufgeführt: Kopieren Sie den gewünschten Namen in das Feld „Haupt-exe“ und starten Sie den Modus „Nur Launch.bat“.
+29	Sieht nach einer UWP-App aus: Außerhalb des installierten Pakets startet sie wahrscheinlich nicht. Suchen Sie einen exe-Installer.
+30	Prüfen Sie, ob die Datei vollständig heruntergeladen wurde (Größe vergleichen oder erneut herunterladen) und ob 7z.exe neben dem Programm liegt.
+31	Dieser Ordner wurde bereits früher erstellt. Öffnen Sie ihn auf der Registerkarte „Verlauf“ oder löschen Sie ihn, wenn Sie neu beginnen möchten.
+32	Die Daten liegen in externen .bin-Dateien, die der Installer selbst installiert. Dafür ist möglicherweise eine Installation nötig, und dafür braucht man Administratorrechte.
+33	Teilweise erstellte Dateien sind noch auf dem Laufwerk. Sie können auf der Registerkarte „Verlauf“ gelöscht werden.
+34	k. A.
+35	Entpacken
+36	Entpacker: {0}
+37	Installation
+38	Stille Installation in den Ordner App (kann viele Minuten dauern, schließen Sie das Fenster nicht)...
+39	Ohne Administrator hat es nicht geklappt - versuche es mit UAC-Abfrage (klicken Sie auf „Ja“). Ein mit Administratorrechten gestarteter Installer kann von hier aus nicht gestoppt werden.
+40	Dienstname (setup/update/redist usw.)
+41	Hilfsprogramm des Repacks
+42	temporärer Ordner des Installers
+43	Konsolenprogramm
+44	Gefundene exe-Dateien: {0}. Hier die ersten {1} und warum sie nicht passten:
+45	Kopieren Sie den gewünschten Namen in das Feld „Haupt-exe“ und starten Sie den Modus „Nur Launch.bat“.
+46	Datei '{0}' nicht in App gefunden.
+47	.NET ({0}) wird für {1} benötigt, wurde auf diesem Computer aber nicht gefunden. Führen Sie Install_dotnet.bat im Ergebnisordner aus: Es lädt die Laufzeit in den Ordner dotnet innerhalb der portablen Kopie herunter (keine Administratorrechte nötig), Launch.bat findet sie selbst.
+48	Start: normal, keine Rechteerhöhung erforderlich.
+49	Das Programm benötigt Bibliotheken, die im System fehlen:\n{0}\n\nIn den Programmordner legen? Administratorrechte sind nicht nötig, das System wird nicht verändert, alles bleibt im portablen Ordner.\n\nJa - ablegen.\nNein - ohne sie fortfahren (das Programm startet eventuell nicht).\nAbbrechen - abbrechen.
+50	Fertig: {0}
+51	Haupt-exe: {0}
+52	Starten Sie über Launch.bat. Der Ordner kann auf einen USB-Stick kopiert werden.
+53	Radikaler Modus: {0} freigegeben.
+54	Modus: {0}
+55	Typ: {0}
+56	Hellrot (R)
+57	Anthrazit mit rotem Akzent
+58	Bordeaux
+59	Kirschrot
+60	Datei: exe, msi, msix/appx, Archiv (rar, zip, 7z...). Haupt-exe ist optional: ein Name (App.exe), ein Pfad innerhalb von App oder eine Datei aus dem Ordner App. Das Journal wird in portabilizer.log gespeichert.
+61	MODUS (R): Eine normale exe wird einfach in den Ordner App VERSCHOBEN (keine Kopie, kein Speicherplatz nötig). Archive und Installer werden zuerst entpackt und erst danach wird die Quelle gelöscht: Während der Arbeit wird Platz für das Entpackte benötigt. Vor dem Start erfolgt eine Bestätigung.
+62	Ich lösche {0} nicht: Der Ordner sieht nicht wie von Portabilizer erstellt aus.
+63	7z.exe wird benötigt: Weder neben dem Programm noch im installierten 7-Zip gefunden. Installieren Sie 7-Zip (7-zip.org) oder legen Sie 7z.exe und 7z.dll daneben oder in tools/.
+64	7-Zip, Code 1
+65	Die Datei ist passwortgeschützt. Portabilizer gibt keine Passwörter ein: Entpacken Sie sie manuell (7-Zip fragt selbst nach dem Passwort) und wählen Sie dann den entpackten Ordner oder Installer.
+66	Der Installer wurde mit einem Fehler beendet. Prüfen Sie, ob die .bin-Dateien neben setup.exe liegen.
+67	Im Ordner {0} gibt es überhaupt keine exe-Dateien. Prüfen Sie, ob das Programm genau hierher entpackt oder installiert wurde.
+68	MSIX: Namen mit %XX-Kodierung korrigiert: {0}
+69	MSIX: AppxManifest.xml nicht gefunden - suche die exe auf normalem Weg.
+70	MSIX: Im Manifest fehlt runFullTrust - das ist wahrscheinlich eine UWP-App. Außerhalb des installierten Pakets startet sie vermutlich nicht.
+71	, Manifest: {0}.
+72	Das sieht nach einem Online-Stub aus: Er enthält einen Download-Link ({0}). Das eigentliche Programm wird beim Start heruntergeladen und ins System installiert, es wird also keine portable Kopie. Laden Sie für echte Portabilität den vollständigen Offline-Installer herunter und machen Sie diesen portabel.
+73	Die Datei ist durch einen Packer geschützt: Sie kann nicht entpackt und analysiert werden, nur gestartet.
+74	Start: mit UAC-Abfrage (manuell gewählt). Launch.bat ändert die Rechte nicht.
+75	Start: ohne UAC-Abfrage (RunAsInvoker, manuell gewählt).
+76	{0} verlangt Administratorrechte. Launch.bat startet es ohne UAC-Abfrage (RunAsInvoker), ein Passwort ist nicht nötig. Wenn das Programm tatsächlich in Program Files oder HKLM schreibt, Dienste oder Treiber installiert, funktioniert es ohne Rechte eventuell nicht. Verwenden Sie dann Launch_admin.bat (normaler Start mit UAC-Abfrage).
+77	kein cab
+78	cab mit mehreren Teilen
+79	Sonstiges
+80	Unreal-Engine-Spiel: Launch.bat startet {0} direkt. Die {1} im Stammordner verlangt beim ersten Start die Installation von DirectX und Visual C++ ins System und schließt sich, wenn man ablehnt. Start darüber: Launch_stub.bat.
+81	Unreal: Start von {0}
+82	Die exe verlangt Administrator: Launch.bat läuft über RunAsInvoker
+83	Radikaler Modus: Die Quelldatei wurde verschoben, nicht kopiert - keine überflüssigen Gigabyte belegt.
+84	Die Arbeit wurde unterbrochen
+85	Launch.bat wurde nicht erstellt
+86	Ordner App ist leer
+87	Die Dateien liegen in: {0}
+88	Die Dateiordner sind leer.
+89	Unbekannter Modus: {0}
+90	Keine Datei angegeben.
+91	Datei nicht gefunden.
+92	Der Ordner existiert bereits: {0}
+93	Löschen Sie ihn oder wählen Sie den Modus 'Nur Launch.bat'.
+94	Haupt-exe nicht gefunden.
+95	Geben Sie die exe im Feld 'Haupt-exe' an und starten Sie den Modus 'Nur Launch.bat'.
+96	Die Farbe muss das Format #rrggbb haben
+97	Auto
+98	Nur entpacken
+99	Nur installieren (in App)
+100	Nur Launch.bat
+101	Automatisch (ohne UAC, wenn die exe Administrator verlangt)
+102	Immer ohne UAC
+103	Immer mit UAC (wie im Original)
+104	Datei:
+105	Ziel:
+106	Haupt-exe:
+107	Prozessor
+108	Arbeitsspeicher
+109	Grafikkarte
+110	--run akzeptiert: auto, noadmin, admin
+111	Der radikale Modus LÖSCHT die Quelldatei nach erfolgreichem Build (sie kann nicht wiederhergestellt werden).\nWenn Sie sicher sind, fügen Sie --yes hinzu. Es wurde nichts getan.
+112	--dx akzeptiert: install, skip, cancel
+113	Auf Laufwerk {0} sind nur noch {1} frei.
+114	innoextract.exe wird benötigt (daneben oder in tools/ ablegen).
+115	Start ohne Administrator fehlgeschlagen: {0}
+116	Keine Programme mit Oberfläche gefunden, nehme ein Konsolenprogramm: {0}. Wenn es kein Spiel ist, geben Sie die exe manuell an.
+117	Gewählt: {0} (passende exe: {1}). Andere Möglichkeiten: {2}. Falls das Falsche gestartet wurde, geben Sie die exe manuell an.
+118	passt
+119	aussortiert:
+120	MSIX: Manifest konnte nicht gelesen werden: {0}
+121	Install_dotnet.bat konnte nicht erstellt werden: {0}
+122	Analyse von {0}: {1}, {2}
+123	\n\nEinige Dateien sind nicht in Portabilizer eingebettet:
+124	. Für DirectX wird DX_fix.bat erstellt (lädt das vollständige DirectX-Paket herunter).
+125	. Sie müssen manuell installiert werden.
+126	DX_fix.bat wird benötigt
+127	entpackt: {0} von {1}
+128	Die Quelldatei liegt im Ergebnisordner
+129	Quelldatei gelöscht: {0} ({1})
+130	. Wenn es sich um Daten desselben Repacks handelt, löschen Sie sie selbst.
+131	Gespeichert in: {0}
+132	Ordner {0} existiert nicht. Entpacken oder installieren Sie zuerst.
+133	Haupt-exe nicht gefunden - geben Sie sie im Feld 'Haupt-exe' an.
+134	Das ist eine normale exe - ich kopiere sie unverändert.
+135	Achtung: MSIX wurde als normaler Ordner entpackt, ohne Registrierung des Pakets. Klassische (Full-Trust-)Programme funktionieren so meist, UWP-Apps und alles, was eine Paketkennung benötigt, starten eventuell nicht.
+136	Radikaler Modus nicht bestätigt: Ich tue nichts.
+137	Vom Benutzer abgebrochen. Teilweise erstellte Dateien sind noch auf dem Laufwerk: Sie können auf der Registerkarte „Verlauf“ gelöscht werden.
+138	Fehler: {0}
+139	Konverter
+140	Verlauf
+141	Diagnose
+142	Versionen
+143	Darstellung
+144	Bereit.
+145	Portabel machen
+146	Pause
+147	Fortsetzen
+148	Abbrechen
+149	Empfehlungen
+150	DirectX erforderlich
+151	Der Download ist pausiert, nichts ist verloren. „Abbrechen“ beendet die Arbeit endgültig: Danach kann man nur neu beginnen („Wiederholen“ auf der Registerkarte „Verlauf“).
+152	Der Speicherplatz wird knapp
+153	Pause: Der Prozess ist eingefroren, der Fortschritt bleibt erhalten.
+154	Setze an derselben Stelle fort.
+155	Datum
+156	Quelle
+157	Version
+158	Typ
+159	Status
+160	Größe
+161	Ergebnis
+162	Notizen
+163	Lösche {0} ...
+164	\n... und {0} weitere
+165	Ordner öffnen
+166	Starten
+167	Wiederholen
+168	Kopie löschen
+169	Quelldatei löschen
+170	Aus Liste entfernen
+171	Aktualisieren
+172	Sammle Systeminformationen...
+173	Laufwerk: k. A.
+174	Laufwerk
+175	Kapazität
+176	Frei
+177	Belegt
+178	Portabilizer (R) - radikal
+179	Normale Version aktivieren
+180	Version (R) aktivieren
+181	Design:
+182	Dunkelrot (R):
+183	Hellrot (R):
+184	Eigene Farbe
+185	Auch den Fensterhintergrund in dieser Farbe einfärben?\n\nJa - der Hintergrund erhält einen leichten Farbton der gewählten Farbe.\nNein - der Hintergrund bleibt neutral, die Farbe gilt nur für Schaltflächen und Akzente.
+186	Der Platz reicht wahrscheinlich nicht.
+187	nicht lesbar
+188	 (niedrige Priorität)
+189	Die angegebene exe liegt außerhalb des Ordners App - wählen Sie eine Datei innerhalb von App.
+190	{0}: Dieses cab nutzt LZX-Kompression und kann nur unter Windows entpackt werden (expand.exe).
+191	expand.exe konnte {0} nicht extrahieren: {1}
+192	Die Bibliotheken ({0}) wurden neben {1} abgelegt: {2}.
+193	. Wenn sich das Programm darüber beschwert, führen Sie DX_fix.bat im Ergebnisordner aus (Administratorrechte nicht nötig).
+194	 ({0}). Sie sind nicht in Portabilizer eingebettet oder passen nicht zur Bitness: Wenn sich das Programm beschwert, installieren Sie das entsprechende Paket im System.
+195	fehlt:
+196	Die Quelldatei wurde NICHT gelöscht:
+197	Der Entpacker meldete Warnungen (
+198	{0} konnte nicht gelöscht werden: {1}
+199	Temporäre Kopie gelöscht: {0} ({1})
+200	Die .bin-Dateien neben dem Installer wurden nicht gelöscht (sie könnten für andere Programme nötig sein):
+201	Modus R: Datei ohne Kopie nach App verschoben ({0}).
+202	Der Installationsmodus ist für MSIX/APPX nicht anwendbar: Das Paket wird nur entpackt.
+203	Das Paket konnte nicht entpackt werden.
+204	Das ist ein Bundle. Hauptpaket: {0}. Das entpackte Bundle wurde in {1} gespeichert.
+205	Bisher ist alles ruhig. Hier erscheinen Hinweise bei Platzmangel und typischen Fehlern.
+206	Wie viel noch zu schreiben ist, lässt sich nicht genau sagen.
+207	Welches Programm soll gestartet werden?
+208	Wählen Sie eine Datei.
+209	\n  ... und {0} weitere
+210	Vorbereitung
+211	Vor dem Start abgebrochen: zu wenig Platz auf dem Laufwerk.
+212	Pausieren ist gerade nicht möglich (psutil erforderlich: pip install psutil).
+213	Abbrechen?
+214	Die Arbeit stoppen? Danach kann nicht an der Stelle fortgesetzt werden: Auf der Registerkarte „Verlauf“ erscheint „Wiederholen“ (beginnt von vorn).
+215	vergangen: {0}
+216	Wählen Sie zuerst einen Eintrag in der Liste.
+217	Warten Sie, bis die aktuelle Aufgabe beendet ist (oder brechen Sie sie ab).
+218	Der Ergebnisordner existiert nicht auf dem Laufwerk.
+219	Öffnen Sie ihn manuell:\n{0}
+220	Launch.bat nicht gefunden: Die Konvertierung wurde nicht abgeschlossen.
+221	Löschen
+222	Dieser Ordner sieht nicht wie von Portabilizer erstellt aus (erforderlich: Name *_portable und Launch.bat mit Ordner App). Vorsichtshalber wird er nicht gelöscht.
+223	Ordner gelöscht.
+224	Es konnte nicht alles gelöscht werden: Einige Dateien werden von einem Programm verwendet.
+225	Quelldatei nicht gefunden (möglicherweise bereits gelöscht).
+226	Quelldatei löschen?
+227	Folgendes wird UNWIDERRUFLICH gelöscht (am Papierkorb vorbei), insgesamt {0}:\n\n{1}\n\nOrdner: {2}\n\nDas ist Ihre Quelldatei, sie kann nicht wiederhergestellt werden. Löschen?
+228	Datei gelöscht: {0}
+229	Eintrag aus der Liste entfernen? Dateien auf dem Laufwerk bleiben unberührt.
+230	wird ermittelt...
+231	System: {0}\nProzessor: {1}\nArbeitsspeicher: {2}\nGrafikkarte: {3}
+232	Eine neue Version von Portabilizer ist verfügbar: {0}. Sie können sie im Portabilizer Launcher oder auf der Seite {1} herunterladen.
+233	_пример.json
+234	Mein Design
+235	Hauptfarbe (Schaltflächen, Fortschritt)
+236	Portabilizer (R) - radikaler Modus
+237	Derzeit aktiv: Portabilizer (R) - radikal
+238	Derzeit aktiv: Portabilizer (normale Version)
+239	Die Version kann nach Abschluss der aktuellen Aufgabe gewechselt werden.
+240	Angehalten. Schaffen Sie Platz, wählen Sie ein anderes Laufwerk oder fügen Sie --force hinzu.
+241	Platz sehr knapp: kaum Reserve, die Aufgabe kann pausieren.
+242	Sie haben gewählt: {0}
+243	nein
+244	Download-Adresse anhand indirekter Hinweise gefunden
+245	Abgebrochen: Bibliotheken erforderlich (
+246	Bibliotheken:
+247	Die Datei konnte nicht verschoben werden ({0}), kopiere wie üblich.
+248	Das verschachtelte Paket konnte nicht entpackt werden.
+249	Der Installationsmodus ist für Archive nicht anwendbar: Es wird nur entpackt.
+250	Das Archiv konnte nicht entpackt werden.
+251	Der Installationsmodus ist nur für Inno/NSIS-Installer unter Windows verfügbar.
+252	Modus:
+253	   Start:
+254	Noch zu schreiben: ca. {0}, frei: {1}. Das sollte reichen, die Arbeit kann zu Ende geführt werden.
+255	Noch zu schreiben: ca. {0}, frei nur {1}: Es fehlen ca. {2}.
+256	Bleibe pausiert. Schaffen Sie Platz und klicken Sie auf „Fortsetzen“.
+257	Ich mache auf eigenes Risiko weiter: Ich halte nur an, wenn weniger als {0} frei sind.
+258	Pause. Schaffen Sie Platz auf dem Laufwerk und klicken Sie auf „Fortsetzen“.
+259	 Die Aufgabe ist pausiert: Wählen Sie im Fenster, wie es weitergehen soll.
+260	Schätzung des benötigten Platzes
+261	Abgebrochen. Reste können auf der Registerkarte „Verlauf“ gelöscht werden.
+262	Auf dem Laufwerk ist weiterhin wenig Platz: {0}.
+263	Arbeit
+264	noch ~{0}
+265	PAUSE
+266	Manuell starten:\n{0}\n\n{1}
+267	, daher kann nicht wiederholt werden. Laden Sie es erneut herunter oder installieren Sie es neu.
+268	Der Ordner konnte nicht vollständig gelöscht werden. Schließen Sie Programme, die ihn verwenden, und versuchen Sie es erneut.
+269	Portable Kopie löschen?
+270	{0}\n\nGröße: {1}\n\nDer Ordner wird unwiderruflich gelöscht. Die Quelldatei (Installer oder Archiv) bleibt unberührt.
+271	{0} Kerne / {1} Threads
+272	{0:.0f}%  ({1} von {2})
+273	, Speicher {0} von {1}, {2:.0f} °C
+274	 (Schätzung nach 3D)
+275	Wählen Sie, wie Portabilizer portable Kopien erstellt. Sie können jederzeit wechseln (das ändert nur den Arbeitsmodus). Bei jedem Start beginnt das Programm in der normalen Version.
+276	Sichere Version.\n\nDie Quelldatei (Installer, Paket oder Archiv) bleibt unangetastet, daneben wird ein portabler Ordner erstellt.\n\nNachteil: Auf dem Laufwerk bleiben beide Kopien: die Quelle und der portable Ordner.\n\nGeeignet für fast alles, besonders wenn Sie nicht sicher sind, ob das Programm funktioniert.
+277	Radikale Version (Risiko).\n\nNach erfolgreichem Build LÖSCHT sie die Quelldatei (alle Teile des Archivs) und temporäre Kopien, daher belegt das Ergebnis weniger Platz. Der portable Ordner wird neben der Quelle erstellt.\n\nWichtig: Während der Arbeit wird genauso viel Platz benötigt wie in der normalen Version: Die Quelle wird erst ganz am Ende nach der Prüfung gelöscht. Eine gelöschte Datei kann nicht wiederhergestellt werden: Wenn später etwas schiefgeht, muss sie von der Plattform neu heruntergeladen oder installiert werden.\n\nVor jedem Start verlangt das Programm eine Bestätigung.
+278	Neue Version verfügbar: {0}.
+279	Sie haben die neueste Version ({0}) oder es besteht keine Verbindung zu GitHub.
+280	Programmversion: {0}
+281	Beim Start nach neuen Versionen suchen (Anfrage an GitHub, es werden keine Daten gesendet)
+282	Jetzt prüfen
+283	Aussehen des Fensters. Änderungen werden sofort angewendet und gespeichert. Rote Designs werden in den Versionen (R) automatisch aktiviert und an das helle oder dunkle Design angepasst.
+284	 (eigenes)
+285	Klassische Darstellung: Die Farben bestimmt Windows.
+286	. Farben: Hintergrund, Felder, Schaltflächen, Text, Sekundär, Akzent, Erfolg, Warnung, Fehler.
+287	Ordner konnte nicht geöffnet werden: {0}
+288	Design konnte nicht gespeichert werden: {0}
+289	Eigene Farbe wählen...
+290	Ordner themes öffnen
+291	Designliste aktualisieren
+292	Eigene Designs: Legen Sie eine .json-Datei in den Ordner themes neben dem Programm (das Beispiel _пример.json erstellt die Schaltfläche oben). Sie enthält Farben als #rrggbb, einen Namen, "kind": "light" oder "dark" und "r": true für rote Designs des Modus R. Fehlende Farben werden aus dem eingebauten Design übernommen. Bestätigungsfenster (Windows-Meldungen) bleiben im Systemstil.
+293	Portabel machen (R)
+294	Arbeit läuft
+295	Die Aufgabe läuft noch. Abbrechen und beenden?
+296	ACHTUNG:
+297	GEFAHR:
+298	 Die Arbeit wurde gestoppt, damit das Laufwerk nicht vollläuft.
+299	beschädigter MSZIP-Block
+300	Es fehlt:
+301	Bundle konnte nicht verschoben werden: {0}
+302	Im Archiv gibt es kein fertiges Programm, aber einen Installer: {0}. Ich fahre damit fort. Der Archivinhalt wurde in {1} gespeichert.
+303	Neben dem Installer gefundene .bin-Dateien: {0} ({1}):
+304	Entpacken fehlgeschlagen. Möglicherweise ist der Installer nicht standardmäßig (dann wird ein Virtualisierer wie Cameyo / Turbo Studio benötigt).
+305	Versuche stille Installation. Die entpackten Dateien werden in {0} gespeichert.
+306	Der Download wird auf Ihre Wahl hin abgebrochen.
+307	Anhalten: Ich räume das Laufwerk auf
+308	Download abbrechen
+309	Portabilizer (R): Die Datei wird verschoben
+310	{0} ({1}) wird in den Ordner App neben sich selbst VERSCHOBEN: Es wird keine Kopie erstellt, zusätzlicher Platz ist nicht nötig.\n\nAm bisherigen Ort ist die Datei dann nicht mehr vorhanden. Sie können sie aus dem Ordner App zurückholen.\n\nFortfahren?
+311	Portabilizer (R): Die Quelldatei wird gelöscht
+312	Möchten Sie diese Datei wirklich im radikalen Modus portabel machen?\n\nNach erfolgreichem Build werden UNWIDERRUFLICH GELÖSCHT (am Papierkorb vorbei):\n{0}\ninsgesamt {1}, sowie temporäre Kopien.\n\nDie Quelldatei kann danach nicht wiederhergestellt werden. Wenn etwas schiefgeht (z. B. das Spiel nicht startet), muss sie von der Plattform neu heruntergeladen oder installiert werden.\n\nGelöscht wird nur, wenn der Build erfolgreich war und alles geprüft ist; bei Fehler oder Abbruch bleibt die Datei erhalten. Das Ergebnis wird neben der Quelldatei erstellt.\n\nFortfahren?
+313	Fertig. Die Datei wurde ohne Kopie verschoben: kein zusätzlicher Platz belegt.
+314	frei auf Laufwerk {0}
+315	 (nicht auf dem Laufwerk)
+316	Die Quelldatei existiert nicht mehr
+317	Neu beginnen?
+318	Der Ordner existiert bereits (Rest eines früheren Versuchs):\n{0}\nGröße: {1}\n\nLöschen und neu beginnen?
+319	CPU-/RAM-Auslastung nicht verfügbar: Installieren Sie psutil (pip install psutil). Im gebauten Portabilizer.exe ist es bereits enthalten.
+320	Der Arbeitsspeicher ist fast aufgebraucht. Schließen Sie den Browser und unnötige Programme, sonst kann das Entpacken stark verlangsamt werden.
+321	Laufwerk: Lesen {0}/s, Schreiben {1}/s
+322	Auslastung nicht verfügbar
+323	Jetzt:
+324	Fortfahren ohne DirectX gewählt.
+325	Fortfahren ohne sie gewählt.
+326	Der Ordner {0} kann nach der Prüfung gelöscht werden: Er wird nur als Quelle des Installers benötigt.
+327	Nach dem Entpacken wurde die Haupt-exe nicht gefunden.
+328	Der Platz reicht nicht
+329	Laut Schätzung reicht der Platz nicht. Wenn er ausgeht, bricht das Entpacken mit einem Fehler ab.\n\nTrotzdem fortfahren?
+330	Es wurden mehrere passende Programme gefunden und ich bin nicht sicher, welches das Hauptprogramm ist. Wählen Sie das, das die gewünschte Anwendung startet (es kann später im Modus „Nur Launch.bat“ geändert werden).
+331	Automatisch wählen
+332	Reicht der Platz?
+333	Fertig. Quelldatei gelöscht, {0} freigegeben.
+334	 (vom radikalen Modus gelöscht)
+335	  <- hierhin wird gespeichert
+336	Auf Laufwerk {0}, auf dem Sie speichern, ist wenig Platz ({1}). Wählen Sie im Feld „Ziel“ ein anderes Laufwerk.
+337	Das entpackte Archiv konnte nicht verschoben werden: {0}
+338	Entpackt: {0}, in .bin liegen {1}: Das sieht nach einem Repack aus, dessen Daten der Installer selbst installiert.
+339	Das Entpackte konnte nicht verschoben werden: {0}
+340	Installation fehlgeschlagen - die entpackten Dateien wurden nach App zurückgelegt.
+341	Das Entpackte konnte nicht nach App zurückgelegt werden: {0}
+342	\n\nTrotzdem beginnen?
+343	Warnung: Neben dem Installer liegen .bin-Dateien. Wenn das Programm nicht startet oder Daten fehlen, wiederholen Sie im Modus 'Nur installieren (in App)'.
+344	Installer, Pakete, Archive
+345	Alle
+346	Programme
+347	Fertig. Das Ergebnis finden Sie auf der Registerkarte „Verlauf“.
+348	Es hat nicht geklappt. Details stehen im Journal und in den Empfehlungen.
+349	Fertig, aber die Quelldatei wurde nicht gelöscht:
+350	Sprache
+351	Sprache der Oberfläche:
+352	Die Sprache ändert sich sofort: Das Fenster startet selbst neu, die Einstellungen bleiben erhalten.
+353	Warten Sie zuerst, bis die Aufgabe beendet ist, oder brechen Sie sie ab: Nach dem Sprachwechsel startet das Fenster neu.

@@ -120,6 +120,8 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.parse import unquote
 
+from pzp_i18n import LANGS, detect_lang, get_lang, lang_name, set_lang, tr, trx
+
 try:
     import psutil
 except ImportError:           # без psutil работают конвертация и диски, но нет паузы через psutil и нагрузки
@@ -142,6 +144,7 @@ HISTORY_FILE = "portabilizer_history.json"
 # иконки (PNG в base64) для окна и панели задач: перо; у версии (R) красное
 ICONS = {'blue32': 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFAklEQVR42sWXaWxVRRTH/zNz73u3fd1b6AJIASHhFYqhARVSWlFaSYgV4bYkRDE1AYLRxN3gcntZ9AMmGhESFzSGiPY9QIEYlkJLIQVUEGpooQs0qEVa2bqQt92Z44f2c1u6eZL5Npn5nf9Z5gwwvMZ61+ibZVkc/5f5fD4BACbgWm1Oju8VYVSUYETEAOCZxTnzzTVv1S55/rXTBPARV8SywMF6nFzxXKm9ZVelLFz7CRW8W0UrVpqlAJCXZ2kjdTsHYxgPJK15/f1DX9e006cHr6ipC1dHFm/tVEvWfXTVmggDPer0GQo+KNnLyiiRKH7pe1sq5pW8XRiXNiZyrnIvk+4UjXGukPbIpEsPL10GxigvzxLDCcAsyxKMMSx/5Z3yuU+/NFtKRAKdjn7uxCFEp0wGhTohPRMplDhrJQCMfTGLhg3Asixh27az4tlVm+YUrSuUxCKaS+gtdWfRWFcLjXNIJ8gkCSaNVK8FuPzFJbKvMAwYwDRNYdsbnMIncgsferJ0fXRihhO616W5DReO+bZD6QmIH+/t3U1gAyzDgQJwr9dH09IpJXvRqm8mzFhAga673PDEsustLThzZDfSsxbCHZcK5TjEGSMW7mi1gTBIMQA0JACfz8dsm6lHi17elJVfkh4KBSURcSPahao9nyMUDCB1+mPgQgMYJ011Ma27pQoA8srKhpaElmXx4uISOSd70rRJOQWlwh2jZDgoNJeBuzfvoPqnHYgaOx1xE2ZCRYIELZqj7degcb1yBwDkA2qoIeAAwTt/ydrMmQv0SDigCGBRniicrfwRHbdvYvzsIrg8CZDg0qBOrt84uW3Xsaarps8nbNvuE6C/TsU2bNjoADBSH8xZrkXFItjdyTkXiIQjOFr+GZgwMMb7OEg5iutRnP195FZMwxcfgoj5GVNDSkLTNDmRwuJFufPSJs+aIB1HESluRHvQeOE0Wi6dR/LUXMSkToEjiYxIG9fbjn+w8zfc6o099QfQpwJer5cBwNipOQVJ6VOgpKOIiGs6xy9H/ACAtJmF4LpbQSrOWioaY0+Vb7cs4rbN5JDLMCurjAAgLil9hm54IGWECd2F7o5uXDhxAFyPRkJmDiQJct+7wowbVeu/vcaC9fXFbCDeDyAEPYcIlxEbURxKKriNKPzZ9Af+vX4NCZlzYCQ/IDU4grdW1vj3HtxjmuXC7/fLgTa4PgH8/p5uJiOhzow4QHCC0Dkafj8JAEieMhciOgXi5lkY7RVvEhgA/309Ln0C1NWVMQAIdrQ1j48Jk0vXSUmgubYG4DrSc5ZLl+wQWuvR78r3nT51v973C1BfX08A8FdjbcXPpxqYZC4eDgTQ2lQLT9p0ih03g6Fl/21Pyw9vwLK431tHwMiMXO5XN29r/v4iqa0VrdKlCxo3f7Wz7OMGWlpUuKYnX3xiMBf01wmprKeeQ83nD2++d+sfFg4GVTgiZXJmtmCtx2uz9x3+0jR9wu8vViMBANu2pWUR3797/86GMwdqw8FuDYCKd0cQF6jbaIOp9vZtAy67wbwFVF9fzMCY095U/cLlmr1dwojTxZ2L9TtSavcBxKqrq53RGME5AMzLza2IiU+hgqeWfdUz+eZpQz70PuZBHgoE2gSLSJ2FLw2bVwMFsG1bBQKBLiE04XJpl0cVwDRNAoD4xLgT6RkZFbFJsRcAID8/X2G0jbHh+/aJQao2bP++/wA0SxpJxkrsDQAAAABJRU5ErkJggg==', 'blue64': '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', 'red32': 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFA0lEQVR42sWXW2xUVRSG/733mZkzvbdDWzqpXGps7ACi0nqh4KBGKhpEgTOQImqQECM8+CKJjcmZA3iJiYkhglEg1RAMnQEJGE1paWpruAkEqlBoLUW52sqltA1zO3svH4rxrS3tgCvZz/tb/7/2WmsDyQ12+9z7ME2T4/+KUCgkAACG4SxasSKT/afGkDFaakZELBAIyGmB+eWruXbk5a7uWiLipmmyu605//eGNyorrYZP18vPZs+lxop5ZCxdsgwATL9fu2t+MwAozMh5/+1VtV3V2+ns+k1qxQMlid45hvpk3vxOmK/rNIyiHIkFLBgMEhVlZ368YHl91eP+irz0zMR3x35hYyRpnHE1XWkTX2qPLGAA+f1+kUwAZpqmYIzhvecW17xTWv4okzJhRyOO2mOHUZSShl6lMN5W9EhMLQGAlXl5lDQA0zSFZVn20lcr160qLa/gtkxwTXMc7exAS/sZcI0jqmwmpGT5NvlgGs5F4bAczIZhAxiGIdZYlj3zxYqK5VPKqrx6it0bj2lOl46NDXuRpQi+zBwADAMpE8MkX9KeIff5fETTise8Nrm0+qnCCdQTjfB0XWfnLl/EjkP78UxBIfJdbthKEuOCbgp2CQErrgayp1EBhEIhZlmWWjm1fN1i39SCaCwmiYg7dR1fNtYjEovi6XwvNM4hCNTnEKzTIRoBIDjaIjRNky8KBOTEGWXFz08oXpbGNRWVUuiahhs9PdjS1IASdyqmZGQjohS5GeOHmR3dm6ptYQAwa5YarQWcALxQPOUt/7giRzQRVyBibncKdh09hKs3ezCvcDyynDqEVLLX7eLNLr7hfPW3nTWGISzLGhRgqE7F1q5ZYwPQS/O8C9M1J3qjES44RyIRx+f7aqEzhmdzC2ATKTdnvI7La5vz3B8RwFg4rEZVhIZhcEWEJ+fOmf5wvvc+W9pKkeKpuhsH28/g+LmzmOnJxf1pGSA7QX+5XfwnnX2IDVuv3faehgIYVAGfz8cAoCzPO7so2wNbKkUEzjUN4cMHAAAVYwvh4kIpMF4vZHvNg6kbyTQ5syw56mkYnDSJAMCbmjE5zeFEQknmFAL9/X34/sQxpHCOaVkeCCmpQ9dYg86rmPVNNNDayoaT/dBFaBgEALoQ6TxhQykFt8uFX8//gT//7kJZlgfj9BRpa0I0CLm/bntoZ41hiPBA98PoAcJhBgBRkr3kzQcJDq5p+LntNADgMU8uxggNRxxAQ6a2mhEQvsPhMrgFp04xAOiO3epIFI4lh9NJkBL7O9rgALCwYJy86XSIfQ7advDrmgN3mv2QAK2trQQAxy9frG/7sY45bcUj8ThaLl1ASWoGTU7LZLt54nq1R3+XAB7whQnJVCAcDisiYo27f2ho7rpw1qHr7EZ/v7p0/RqeyMpRF1OcfI9LVd36atuVsGEwWFBJBQBAwWBQAIjVnWv/4MqtPhaNxZSMx+VDnlzRKGRLfcmuTSHDEIFhNJ0RtWLLsiSZJt+zY9fWPb+faum34xoAFc/KxG/ZqWuZBbWhu3vYz24ks4ACra2MAXbz1e43d7ad7MsQmuOkA60nv6jcTQBramqy78X6zwFgxswZ9Z60NHplTsVmAPCPcvPld7gP8kgk0mULIeOa83TSshougGVZKhKJ9glNE05dO3NPAYzbbTkzO6O5wOutT89JPzGwb8xSuNfBWPJ+XWKEqiXtJ/wPeBodhVa1D64AAAAASUVORK5CYII=', 'red64': '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'}
 ICONS_PX = {'blue32': 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADzklEQVR42tWWS2yUZRSGn/PfKkWmF2jSmnaKZRQkIdp4w8SYuhCnFZpgYvBu2GhIdOGSpS50Y4qJMcZFXbgzLhpAnGmigbowUQQLAYIp4NCmFDo4TGfo3P7/+44LNC6nl6GJZ/1957x5z3vec4QGx969e9V1XVpaWhgdHZV6751GA7i5aJiamqJYLLJmsWf3bu3r69N4T4+O/Gy0paVF+/v7dSl/vdUWHxoa1Pc+PcypObAIh3/K0trWxoYNG5b0f1UteGnfq/ryx99xIqNMnCty/MwCCKgq2ew8w8PDetcYePfgB7o+1kbVCIlNwi+TOQq5WdbHHmDdll00N1micLZuHllJ8cHBpB44dIyyES7cVHb1CS8++wSIy7b9Y4gIWrhC8+8fkkqPS8MZSKXS8s4Imi8rlUh4bluMRz+aIQwtizOXsCbEr95gnWrjNTCYTCpAviYUqxBZxaoliiy+64KNcFwPVYvruo0F8Mprr2sqnZavz1rNl8FzhRs5i40MagyCIo7L/Ng+Ns6Ocuz7VGONaEsiwcyC1UINZm8rV/8q8e1b9/L4J1magiYA8tlLdHRsIhaL0XAf6H1yD2MXFCMCCJXSAiYyOI5DJXsNG9Voam6lvb3BPpBMJvX45Ujvue8RKqFQi8AVpRqWEREES3Q7jynmCJrbCfwA3w8ax4DjCCIQBELPRpjOK4eGmmnq3MrTX5Sx+QUcwGjIrSNvcjqTWfJ412XghaEhff+zY2SKDrFAeaZHMRZUwWvtQkQpzWWoVStEBrZu27qsqarLgPJfwZkCTOXAcRRjLWoNCJgoRFDAoqqNBVAoFBCBioWFijBfUr4ZGcEYi83NYCKLrZUQHHDdxgMIfJ/LC2ANiCpqlevjBxn4vEC1FlH64zzieNw8+gaeK0z+mVmWvdfVgO8HGAMHHoPnE4Ir/EM2+L5gKkVEDQ9uf5h4PL5sW6/LgDgOZy9m+bWrg2tFxeidDaYoooAaqleO8mP6yIoWm7eUddndvYnTc7AYCo4oquALhNaA61O6OLbim6JuC1LptHy1v4/AtSyWqpw6eR0R5db5ScpT53GwbN/+0IoBLMmI7t+8mcwtJX9bCWvRHRGgmLBELvU2v129KneNAYATExMy/cOXzE+Ogzgg4LgBYiO6ujpXdVMueRu6cyfJnkmhqogINiyDE9De3s6axlM7d6rnedrd3a07duzQ1eZb9kUUGYOq0tvbSyKRYM0B/Gu1nuchImsPwBiDiBCFIQ2ov0LUjqNdnZ0aj8dXrYEVneUDAwNEUUQQ+ExPT/O/jr8BBce86ZfAzB8AAAAASUVORK5CYII=', 'blue64': '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', 'red32': 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADyUlEQVR42tWWz2tcVRTHP+e+NzOdpLTJjNGmNW3QSIeg0JW0hBbpwsTWxKKloDtBLQHtSgzULotI0VXBIGK76T9QSzEpRhRLbE1ialJoGmKQBDq0dZpp2sy8N++9e1xM0eVMJpOAB97m3R/ny/ec7/ceoc7R39+v8XiciYkJrl69KpX2u/UGkJ25zcLDJaLIsmFx/PgHumfPHt21s03Ds9/qM+m0Njc1aTVn18xAT3e3fvX+R+grc0g2i//9RZqbtvLYL7GUz1c8b2pNPDAwoL29r+vl01/A6HXC66MUR4bACDFVHMfwRl+frhsDT29KsrkjA7kcGOGR73PT93g5meTVLVsIjWHG99enBD093Xri8Js4QYD+Pok4MQbzec7PzXKj8yU+27kLVDgSrBOAbwZOYSan0CAEY0idPMGnHS8wlXmRydzfuAasKjQ3178HDh06rDsat4IqiAUFYxxsECACMcOTf1LeU08G3jl2TC98fAodmyxnQdBb0xjXIa6CiJAwhqOLi4jr8ufor/U1opatTSAgKBr4RNbSdG6QuwcO4rgOijKTe0BLSwuRCMzP15eBt/Z2oeOTEAaItRhjsGoxCZcl32fZ99mcTNLY2IC61V1dVQ+81tOj4diUdj3bjvgeRBEqQBghCDiGh4Ui9z2PVCJOQ7KB5KYkdXNCEQGr4LqoBW1IkvrkQ2Kuy3LvEcJCAS+KeOAVOLG0xMK1a1ItqxUZ6Ovr00snTyN/3ISZOUgkkNCiCDYMscUiN/J57ntFVoKIzO7dq1JVRQCeV0RiBiILUu50NUIYhqgqoPiBz0poicvqlV2xBCW/BEGExBysXwKvyLmznxOWSoQoIobcSgEVkCdfXQFYtXB7FiKLOA4aM/QvLPKo9wjG8xjP5XBQLhSKjNuQv4aHpa4lSMTjaKTw3tvI4YOICmIMoiDxBPeW86gRnmvdRiaTWbWtm6oU4BfQ65Po9K2y/P5bRIDvfI8dXV0MDQ3LagFULIFxHLRQwIxNlK3dRv8mt0GAAX4KAs6fOSO1PGwVGRgaGpbnB78kNA66/Bjv5yuA8sP8LFcW5gmBzs7Omieqqoyoo6MDufEbVgxGFVWIGwdXhXfzORYuT0utAKoS7cjIj/L13SwX72XLDSjlx1CJaG3dtqaZsmrXuBT4/BKWUKuICJGABVKpFBsae/ftU9d1ta2tTdvb23Wt9616IgqDAFXlqXSadDrNhgMoh2Icp+wRGw1ARBAxqNq6AKhNu66j6XRKt29vXXMP1DSW799/AGstsViMO3ey/K/jHw34m6H8JdI1AAAAAElFTkSuQmCC', 'red64': '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'}   # пиксельные иконки для «Классической (системной)» темы
+GLOBE = {'smooth': 'iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAFMklEQVR42kVVWWxUZRg9/39n60w7M+0wLZQOKSAUKJRCQtiXGBKBomxOEQj6gBENwfDQhAgxpagPSgyKlbiFhCCIHWMgLIaIARqqEShhEUqF0n1fZp97/3v/xYcCnuTky/dycr7k5HwEz6AUyAFUkxpSI3fX1wfh668sdnVUFPpS5VyRoJBSHWhY1GcwenvJ2P5fQ56lkcOLJuh1KqxVkoh4rkOei5HRTe3/57td2Xa+Vzntoa/vz8N7U+rxZkkzsmCgqmEBjjfORY4nCiG0B5O90f33t2w8i+pqipoaCQB01BnI8qtXtOupPSdXvNRX+yDuDc11dwqH25LDplflKIqvGmfjbodXlQdbZHLEkiyll25d+PeZo93vHiIHP5LhurAGBUIjCNMaQuUn83/+qUcr2Pr+5cXWeA9Tp3tmaa3JIG1KBciB22U4eGsFmvQgSTNJQRRVyZTUknFuwF51tHfzkUhlRNQhTAkAXIzv2jPJSw7X9xaYtQ+XO04vuwhD2rH1xlo8GioAzBQ0pUOkGRDn8NsGUVHcgkddmpo1oZcvernXrgke3uGN/ELOp6rG2rWhB1R6/JppJ4EsG/HZgesdftxOFKK2bRGkqYPrDERnIAaDgyUxO7sd6xa2YfbMLjkiOYkmzdaSgCizMT70lsdD88yEFPe6cumqqQlceDoWRx6WY4BnQ8o0uCkBS0BxAUgOg9kwSHOQl2Og4eYY6g8Oyj4zOOnPRv9qm6msdUzYlM3GyerSbnzfOBOH7y4BPARQALg1SnN0EsEBXWJxeQ/6h5w4ca4QOc4CNbl8RE0vfbKVtgx4y4TQCZRJr7bk4dvGUmgaAzXSIHoaMAzAMAGTjYpaFhQXuNfqwcRQHJ/uu4nCCSna3BQgI3HnAtu/fbkey1KoPbcc4wp1ZDIaIDLP0g5ASkCIUXeWBWUIBNwJ7F7fjEB+Bv0pgcrKe2TYNDAw7Mqj9Y8mYzBhh9fPkIxTTPW1I0ekoDEDlOnPHBqAwUAtBpUQWDq9E5OKouiPA0xyxDNAxhJI6cRGu2LjUlduTkbF9JuAMjHcR6DSaYiogExaIMx4RgZiMoAxuB1pZJQFoTFYlMGQpuI2Dkvj3Zrr1c0VvQPB0N2mHOV3Jcj6xU+wfXkzQrlxdPe5kIwTQFig3IQyOWBxxIYkpk3rRZJxxHUO4dCl4TCJEOY1Leu1LVmcqAorZqlYXCNvrLqD0Ng4SsYPY2V5Ozp7nejpdEHqEhAmwDniQ3Y0NHhx7VwRUkyheG4bRjKU6tH8D+i0YtsJAqOLOJ2gTMmOQSChdHQlBTLIYOfrN3Co6nfML22FisrR06EjmXAgHfMgw4kw3Trpflp498eyS+fpjTVrEj6/bR8NeqiQDnHs+Bzca3bAsicRtQwkoCM7OIiBHgWYDIoxKGaBKgGabanQnMcyYWQTGZuxHyCcoq5Oi+7ccCLHlT5GJ+bZE+kx1hefLZOPOzRkaApppHDhtwK0PvCBUB2KSxAqIXW3LJrbLkLzo/a2v8q+vLT28wvhurCmIVIHFS7VrMObz/g3bhovfO551nAWUegTJQubcOt6Ec5+M58Qt4BSUABVIA5FAz46a3ULjbUXf3z5lVN7w3WbtEhlRJL/i1aBgqjcH05vSw1q1TZzeMqq9Sfxx4mViPWMAbGbUJodxO0C9TrhCsg7+X72YeuOd85XK9AaAvmisV+gWlHUELlt6KL37Cmyxafd2mCYzrLYSH6QEA7i0PqcHscdX8AeeXv7jNM1ZKYZVtAiBC9ewH+Vo8weXYyR8AAAAABJRU5ErkJggg==', 'pixel': 'iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAE3UlEQVR42nWUWWxUdRSHvzv3znQ6M7TTobRDOwXaspTWUlCKYauiBksiW7REo6YkkopEo4mJ8QGj1Rif9VUTgyEmKiQEkKAs1aAstmBlaSltoXajM21nvXPnrvP3gZC44O/lnPPw+3KePokHpKOjwy3LocClwcHn3Ep2d4EiyANZXUGWCo401Fd9TjKoHzjQqf+7K/39aGtrk2OGsSoXrn539Rr/syP+BozaMvav/IZJJ8NHp3Yy1r8I/80rBLPDP5eo/a+1NjcPdHZ25u8zXPeX9vZ277gn9F5kx/LuPZ/Mf/ZG1Vp2bOhnMhnGFja/3CrHGPMjBYqZrnicpa/PeWzeM07fr6O/dXZ0dPj+AxxOGh+u3df6/q4Xi/iieyPlwSkuDEeYypTyR7KI7wb3kfBWY2UEGAbZjEK6oopIu2t/X2yi8z5HBnhkU+vm59/Z+9kT60/IcVXm6O21vLzqOAsW9fPHTBOHrmxDhMOo0xLexF22P9nFxYvNSHcGeXhLjqLFdrM0Vts7eWfolvxUW1vxvMeWfb1yl1wxyQBZrZgNtb/id6e5crUBS3IYlRoxJ1S4m8RHAiNhUlN9jZYXRtAKNKYKbNmIi6YG39qDSno2+1zTJl+TXzqHbPk4OriYjXXd/HBjLt0DDzFkrgGRhoQGqkbKDqDPLKS+qo+LXWFs4eDyZ/GFlfpoanS7korU7xblM4wLDZ9is37FOU50reDHa9ugPATChqQKOQMsC0wTlxrH47WZvFRHQSBDbkahced5CvvEHsW2xIaY7sGeDtB7cRWlxbOcufQkVBSBZkBKBU0H0wTbBsMkNCfHqsUqjS2n6Omdx8hQkNhdP8KVblGEJTNwox6XphJPVxIdCxJwxUj9KUAAeefetG2wbRRT5c23zhGoiZJ28pTW3yZYB5fPhMnrAhcuF9f611BbP0Jr60nGR8P43HG8RvTeVwIwDXAssGwioRjhpdNkhcNETse0IZoCT0jFcWTkkuXrPpgpbeF6TyOpaQ9zixNUB1V2ru/FK00xE/Vg5hQwHTAtshlBcOFtMv4ksRk3CcPBcgTZlCB9shh5fmRJU7po2XIbhdlkmPiEn7df/Z4ldVFqV4xSVjnCjQvl2IYMpkHezHP17Hyu/7iUW6crKW2cQDNskqMulJ7CQ645VvSYosaEZJmgaWA7TLpmGbSyzAqL4ppJtu49TENjF5KaQZgmjnCjqV5M3Y0uLHKaIDU2R/ic1BF5YmSoN1y5aEvaWxMh7yCsPB4pTsWyKDOaie44SH6dTFwwdrUWHAPJyoFtgmlQtGyCtGnh/sl/uf/ksTdkgIaq0GXLcnZkxbwAlsXw72VkplV8S6IMR/MMdZfQf3gFtgqSkQPdBMOi5pVLJDxpxLGl05FY/KXxO4MTMsD4nYGpuqpQ1LLtnRolSHmdbFKn6NEREre9XP90E5bhRZgGkm0jBCArFGy4idw1l/LR5Js9Z48d/4dtuk99ezBiXF63IHV6ULYSaNNFaCqM/1CLEAIMHRznnkS9PqSSUjxflQ2HB/SW7RtXfvlAwQKs3ri5atYJfZykeiu1WjBXmsP4pQZkDwgJr6zhqSxMBfTJ3jK1r/33rhN//q+x/57mTU83ZA3vE6LQeF7KyuCSEHlBocd9wGVlz/dcOHX9Qb2/AGv7bxYMy7gxAAAAAElFTkSuQmCC'}   # вкладка «Язык»: гладкий и пиксельный глобус, 20x20
 PROGRESS_RE = re.compile(r"(?<!\d)(\d{1,3})%")
 
 
@@ -175,7 +178,7 @@ def fmt_size(n) -> str:
     n = float(n)
     for unit in ("Б", "КБ", "МБ", "ГБ"):
         if n < 1024 or unit == "ГБ":
-            return f"{int(n)} {unit}" if unit == "Б" else f"{n:.1f} {unit}"
+            return f"{int(n)} {tr(unit)}" if unit == "Б" else f"{n:.1f} {tr(unit)}"
         n /= 1024
     return str(n)
 
@@ -1718,18 +1721,14 @@ def runtime_groups(names) -> list:
 
 def dx_question(plan: dict) -> str:
     lines = "\n".join(f"  {fam}: {', '.join(files)}" for fam, files in runtime_groups(plan["missing"]))
-    t = (f"Программе нужны библиотеки, которых нет в системе:\n{lines}\n\n"
-         "Положить их в папку программы? Права администратора не нужны, система не "
-         "меняется, всё остаётся внутри портативной папки.\n\n"
-         "Да - положить.\nНет - продолжить без них (программа может не запуститься).\n"
-         "Отмена - прервать.")
+    t = (tr("Программе нужны библиотеки, которых нет в системе:\n{0}\n\nПоложить их в папку программы? Права администратора не нужны, система не меняется, всё остаётся внутри портативной папки.\n\nДа - положить.\nНет - продолжить без них (программа может не запуститься).\nОтмена - прервать.", lines))
     if plan["absent"]:
-        t += ("\n\nЧасть файлов в Portabilizer не встроена: "
+        t += (tr("\n\nЧасть файлов в Portabilizer не встроена: ")
               + ", ".join(n + ".dll" for n in plan["absent"]))
         if any(n in DX_NAMES for n in plan["absent"]):
-            t += ". Для DirectX будет создан DX_fix.bat (скачает полный пакет DirectX)."
+            t += tr(". Для DirectX будет создан DX_fix.bat (скачает полный пакет DirectX).")
         else:
-            t += ". Их придётся поставить вручную."
+            t += tr(". Их придётся поставить вручную.")
     return t
 
 
@@ -2243,7 +2242,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "9.0"
+APP_VERSION = "9.1"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
@@ -2421,6 +2420,17 @@ def load_settings(path=None) -> dict:
         return d if isinstance(d, dict) else {}
     except (OSError, ValueError):
         return {}
+
+
+RESTART = {"flag": False, "geometry": "", "radical": False}   # смена языка перезапускает окно (см. run_gui)
+
+
+def init_language(settings: dict) -> str:
+    """Язык из настроек; при первом запуске собранного exe - язык системы, иначе русский."""
+    lang = settings.get("language")
+    if not lang:
+        lang = detect_lang() if getattr(sys, "frozen", False) else "ru"
+    return set_lang(lang)
 
 
 def save_settings(d: dict, path=None):
@@ -2686,39 +2696,41 @@ def gui(_hook=None, start_radical=False):
         except Exception:
             pass
 
-    root.geometry("880x720")
+    root.geometry(RESTART["geometry"] or "880x720")
     root.minsize(800, 620)
 
     history = History()
     settings = load_settings()
+    init_language(settings)
     state = {"job": None}
     advisor = Advisor()
     mode_names = {
-        "Авто": "auto",
-        "Только распаковка": "extract",
-        "Только установка (в App)": "install",
-        "Только Launch.bat": "launcher",
+        tr("Авто"): "auto",
+        tr("Только распаковка"): "extract",
+        tr("Только установка (в App)"): "install",
+        tr("Только Launch.bat"): "launcher",
     }
     mode_by_value = {v: k for k, v in mode_names.items()}
 
     nb = ttk.Notebook(root)
     nb.pack(fill="both", expand=True)
-    main_tab, hist_tab, diag_tab, ver_tab, look_tab = (ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb),
-                                                       ttk.Frame(nb), ttk.Frame(nb))
-    nb.add(main_tab, text="Конвертер")
-    nb.add(hist_tab, text="История")
-    nb.add(diag_tab, text="Диагностика")
-    nb.add(ver_tab, text="Версии")
-    nb.add(look_tab, text="Оформление")
+    main_tab, hist_tab, diag_tab, ver_tab, look_tab, lang_tab = (
+        ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb))
+    nb.add(main_tab, text=tr("Конвертер"))
+    nb.add(hist_tab, text=tr("История"))
+    nb.add(diag_tab, text=tr("Диагностика"))
+    nb.add(ver_tab, text=tr("Версии"))
+    nb.add(look_tab, text=tr("Оформление"))
+    nb.add(lang_tab, text=tr("Язык"))
 
     # ---------------------------------------------------------- вкладка «Конвертер»
     src, dst = tk.StringVar(), tk.StringVar(value=str(Path.cwd()))
     mexe = tk.StringVar()
-    mode_var = tk.StringVar(value="Авто")
-    run_names = {"Авто (без UAC, если exe просит админа)": "auto",
-                 "Всегда без UAC": "noadmin", "Всегда с UAC (как в оригинале)": "admin"}
+    mode_var = tk.StringVar(value=tr("Авто"))
+    run_names = {tr("Авто (без UAC, если exe просит админа)"): "auto",
+                 tr("Всегда без UAC"): "noadmin", tr("Всегда с UAC (как в оригинале)"): "admin"}
     run_var = tk.StringVar(value=next(iter(run_names)))
-    status_var = tk.StringVar(value="Готов к работе.")
+    status_var = tk.StringVar(value=tr("Готов к работе."))
     main_tab.grid_columnconfigure(1, weight=1)
     main_tab.grid_rowconfigure(9, weight=1)
 
@@ -2729,36 +2741,36 @@ def gui(_hook=None, start_radical=False):
 
     patterns = ("*.exe *.msi *.msix *.appx *.msixbundle *.appxbundle "
                 "*.rar *.zip *.7z *.tar *.gz *.tgz *.xz *.bz2 *.cab *.iso")
-    row(0, "Файл:", src, lambda: src.set(filedialog.askopenfilename(
-        filetypes=[("Установщики, пакеты, архивы", patterns), ("Все", "*.*")]) or src.get()))
-    row(1, "Куда:", dst, lambda: dst.set(filedialog.askdirectory() or dst.get()))
-    row(2, "Главный exe:", mexe, lambda: mexe.set(filedialog.askopenfilename(
-        filetypes=[("Программы", "*.exe"), ("Все", "*.*")]) or mexe.get()))
+    row(0, tr("Файл:"), src, lambda: src.set(filedialog.askopenfilename(
+        filetypes=[(tr("Установщики, пакеты, архивы"), patterns), (tr("Все"), "*.*")]) or src.get()))
+    row(1, tr("Куда:"), dst, lambda: dst.set(filedialog.askdirectory() or dst.get()))
+    row(2, tr("Главный exe:"), mexe, lambda: mexe.set(filedialog.askopenfilename(
+        filetypes=[(tr("Программы"), "*.exe"), (tr("Все"), "*.*")]) or mexe.get()))
 
-    ttk.Label(main_tab, text="Режим:").grid(row=3, column=0, sticky="w", padx=8, pady=6)
+    ttk.Label(main_tab, text=tr("Режим:")).grid(row=3, column=0, sticky="w", padx=8, pady=6)
     mrow = ttk.Frame(main_tab)
     mrow.grid(row=3, column=1, sticky="w", padx=4)
     combos = []
     combos.append(ttk.Combobox(mrow, textvariable=mode_var, values=list(mode_names),
                                state="readonly", width=30))
     combos[-1].pack(side="left")
-    ttk.Label(mrow, text="   Запуск:").pack(side="left")
+    ttk.Label(mrow, text=tr("   Запуск:")).pack(side="left")
     combos.append(ttk.Combobox(mrow, textvariable=run_var, values=list(run_names),
                                state="readonly", width=40))
     combos[-1].pack(side="left", padx=4)
 
-    hint = ("Файл: exe, msi, msix/appx, архив (rar, zip, 7z...). Главный exe - необязательно: "
+    hint = (tr("Файл: exe, msi, msix/appx, архив (rar, zip, 7z...). Главный exe - необязательно: "
             "имя (App.exe), путь внутри App или файл из папки App. "
-            "Лог сохраняется в portabilizer.log.")
+            "Лог сохраняется в portabilizer.log."))
     hint_lbl = ttk.Label(main_tab, text=hint, wraplength=820, style="Muted.TLabel")
     hint_lbl.grid(row=4, column=0, columnspan=3, sticky="w", padx=8)
 
     bf = ttk.Frame(main_tab)
     bf.grid(row=5, column=0, columnspan=3, pady=6)
-    btn_start = ttk.Button(bf, text="Сделать портативным", style="Accent.TButton")
-    btn_pause = ttk.Button(bf, text="Пауза")
-    btn_resume = ttk.Button(bf, text="Продолжить")
-    btn_cancel = ttk.Button(bf, text="Прервать")
+    btn_start = ttk.Button(bf, text=tr("Сделать портативным"), style="Accent.TButton")
+    btn_pause = ttk.Button(bf, text=tr("Пауза"))
+    btn_resume = ttk.Button(bf, text=tr("Продолжить"))
+    btn_cancel = ttk.Button(bf, text=tr("Прервать"))
     for b in (btn_start, btn_pause, btn_resume, btn_cancel):
         b.pack(side="left", padx=4)
 
@@ -2767,7 +2779,7 @@ def gui(_hook=None, start_radical=False):
     ttk.Label(main_tab, textvariable=status_var, style="Muted.TLabel").grid(
         row=7, column=0, columnspan=3, sticky="w", padx=8, pady=2)
 
-    tipf = ttk.LabelFrame(main_tab, text="Рекомендации")
+    tipf = ttk.LabelFrame(main_tab, text=tr("Рекомендации"))
     tipf.grid(row=8, column=0, columnspan=3, sticky="ew", padx=8, pady=4)
     tips = tk.Text(tipf, height=5, wrap="word", state="disabled", relief="flat")
     tips.pack(fill="x", padx=4, pady=2)
@@ -2787,11 +2799,11 @@ def gui(_hook=None, start_radical=False):
         tips.config(state="normal")
         tips.delete("1.0", "end")
         if not advisor.items:
-            tips.insert("end", "Пока всё спокойно. Здесь появятся подсказки при нехватке места "
-                               "и типовых ошибках.", "info")
+            tips.insert("end", tr("Пока всё спокойно. Здесь появятся подсказки при нехватке места "
+                               "и типовых ошибках."), "info")
         marks = {"info": "• ", "warn": "! ", "danger": "!! "}
         for _ts, level, text in advisor.items:
-            tips.insert("end", marks.get(level, "• ") + text + "\n", level)
+            tips.insert("end", marks.get(level, "• ") + trx(text) + "\n", level)
         tips.config(state="disabled")
         tips.see("end")
 
@@ -2803,7 +2815,7 @@ def gui(_hook=None, start_radical=False):
 
         def _w():
             box.config(state="normal")
-            box.insert("end", msg + "\n")
+            box.insert("end", trx(msg) + "\n")
             box.see("end")
             box.config(state="disabled")
         root.after(0, _w)
@@ -2822,7 +2834,7 @@ def gui(_hook=None, start_radical=False):
         return res.get("v")
 
     def dx_ui(text):
-        v = ask_ui("askyesnocancel", "Нужен DirectX", text, icon="question")
+        v = ask_ui("askyesnocancel", tr("Нужен DirectX"), text, icon="question")
         return "install" if v is True else "skip" if v is False else "cancel"
 
     def set_buttons(st):
@@ -2846,15 +2858,13 @@ def gui(_hook=None, start_radical=False):
         if free is not None and rem is not None:
             fits = rem + HARD_FLOOR <= free
             if fits:
-                lines.append(f"Осталось записать примерно {fmt_size(rem)}, свободно {fmt_size(free)}: "
-                             "этого должно хватить, можно дотянуть до конца.")
+                lines.append(tr("Осталось записать примерно {0}, свободно {1}: этого должно хватить, можно дотянуть до конца.", fmt_size(rem), fmt_size(free)))
             else:
-                lines.append(f"Осталось записать примерно {fmt_size(rem)}, а свободно {fmt_size(free)}: "
-                             f"не хватит примерно на {fmt_size(rem + HARD_FLOOR - free)}.")
+                lines.append(tr("Осталось записать примерно {0}, а свободно {1}: не хватит примерно на {2}.", fmt_size(rem), fmt_size(free), fmt_size(rem + HARD_FLOOR - free)))
         else:
-            lines.append("Сколько ещё осталось записать, точно сказать нельзя.")
-        lines.append("Загрузка стоит на паузе, ничего не потеряно. Отмена остановит работу насовсем: "
-                     "потом можно только начать заново («Повторить» во вкладке «История»).")
+            lines.append(tr("Сколько ещё осталось записать, точно сказать нельзя."))
+        lines.append(tr("Загрузка стоит на паузе, ничего не потеряно. Отмена остановит работу насовсем: "
+                     "потом можно только начать заново («Повторить» во вкладке «История»)."))
         return "\n\n".join(lines), fits
 
     def show_low_space(base_text):
@@ -2864,7 +2874,7 @@ def gui(_hook=None, start_radical=False):
             return
         text, fits = low_space_text(job, base_text)
         win = tk.Toplevel(root)
-        win.title("Заканчивается место на диске")
+        win.title(tr("Заканчивается место на диске"))
         win.transient(root)
         win.resizable(False, False)
         try:
@@ -2887,9 +2897,9 @@ def gui(_hook=None, start_radical=False):
                 return
             if what == "continue":
                 if fits is False and not messagebox.askyesno(
-                        "Не хватит места",
-                        "По оценке места не хватит. Если место кончится, распаковка остановится с "
-                        "ошибкой.\n\nВсё равно продолжить?", icon="warning", default="no",
+                        tr("Не хватит места"),
+                        tr("По оценке места не хватит. Если место кончится, распаковка остановится с "
+                        "ошибкой.\n\nВсё равно продолжить?"), icon="warning", default="no",
                         parent=root):
                     log("Остаюсь на паузе. Освободите место и нажмите «Продолжить».")
                     return
@@ -2902,17 +2912,17 @@ def gui(_hook=None, start_radical=False):
             elif what == "cancel":
                 log("Загрузка отменяется по вашему выбору.")
                 j.cancel()
-        ttk.Button(row_, text="Продолжить", command=lambda: choose("continue")).pack(side="left", padx=5)
-        ttk.Button(row_, text="Остановить: почищу диск",
+        ttk.Button(row_, text=tr("Продолжить"), command=lambda: choose("continue")).pack(side="left", padx=5)
+        ttk.Button(row_, text=tr("Остановить: почищу диск"),
                    command=lambda: choose("stop")).pack(side="left", padx=5)
-        ttk.Button(row_, text="Отменить загрузку",
+        ttk.Button(row_, text=tr("Отменить загрузку"),
                    command=lambda: choose("cancel")).pack(side="left", padx=5)
         win.protocol("WM_DELETE_WINDOW", lambda: choose("stop"))
         low_dlg.update(win=win, text=text, fits=fits, choose=choose)
 
     def on_job_event(kind, text):
         if kind == "low_space":
-            advisor.add("danger", text + " Задача на паузе: выберите в окне, что делать.",
+            advisor.add("danger", text + tr(" Задача на паузе: выберите в окне, что делать."),
                         key="low_space", cooldown=5)
             root.after(0, lambda: show_low_space(text))
 
@@ -2935,7 +2945,7 @@ def gui(_hook=None, start_radical=False):
         def show():
             win = tk.Toplevel(root)
             chooser_dlg["win"] = win
-            win.title("Какую программу запускать?")
+            win.title(tr("Какую программу запускать?"))
             win.transient(root)
             try:
                 win.attributes("-topmost", True)
@@ -2943,13 +2953,13 @@ def gui(_hook=None, start_radical=False):
             except Exception:
                 pass
             ttk.Label(win, wraplength=520, justify="left", text=(
-                "Нашлось несколько подходящих программ, и я не уверен, какая главная. "
+                tr("Нашлось несколько подходящих программ, и я не уверен, какая главная. "
                 "Выберите ту, что запускает нужное приложение (её можно будет сменить позже "
-                "в режиме «Только Launch.bat»).")).pack(padx=16, pady=(16, 8))
+                "в режиме «Только Launch.bat»)."))).pack(padx=16, pady=(16, 8))
             for label, path in options:
                 ttk.Button(win, text=label,
                            command=lambda p=path: pick(p)).pack(fill="x", padx=16, pady=2)
-            ttk.Button(win, text="Выбрать автоматически",
+            ttk.Button(win, text=tr("Выбрать автоматически"),
                        command=lambda: pick(None)).pack(padx=16, pady=(8, 16))
             win.protocol("WM_DELETE_WINDOW", lambda: pick(None))
         root.after(0, show)
@@ -2964,7 +2974,7 @@ def gui(_hook=None, start_radical=False):
             return
         src_p, dst_p = src.get().strip(), dst.get().strip() or "."
         if not src_p:
-            messagebox.showwarning("Portabilizer", "Выберите файл.", parent=root)
+            messagebox.showwarning("Portabilizer", tr("Выберите файл."), parent=root)
             return
         mode = mode_names.get(mode_var.get(), "auto")
         RUN_POLICY["value"] = run_names.get(run_var.get(), "auto")
@@ -2972,36 +2982,25 @@ def gui(_hook=None, start_radical=False):
         if radical:
             sp = Path(src_p)
             if not sp.is_file():
-                messagebox.showwarning("Portabilizer (R)", "Файл не найден.", parent=root)
+                messagebox.showwarning("Portabilizer (R)", tr("Файл не найден."), parent=root)
                 return
             files = [f for f in source_group(sp) if f.exists()]
             total = sum(f.stat().st_size for f in files)
             listing = "\n".join(f"  {f.name}  ({fmt_size(f.stat().st_size)})" for f in files[:8])
             if len(files) > 8:
-                listing += f"\n  ... и ещё {len(files) - 8}"
+                listing += tr("\n  ... и ещё {0}", len(files) - 8)
             try:
                 is_plain = detect_type(sp) == "plain"
             except OSError:
                 is_plain = False
             if is_plain:
                 if not messagebox.askyesno(
-                        "Portabilizer (R): файл будет перенесён",
-                        f"{sp.name} ({fmt_size(total)}) будет ПЕРЕНЕСЁН в папку App рядом с собой: "
-                        "копии не создаётся, дополнительное место не нужно.\n\nНа прежнем месте "
-                        "файла больше не будет. Вернуть его можно, достав из папки App.\n\n"
-                        "Продолжить?", icon="warning", default="no", parent=root):
+                        tr("Portabilizer (R): файл будет перенесён"),
+                        tr("{0} ({1}) будет ПЕРЕНЕСЁН в папку App рядом с собой: копии не создаётся, дополнительное место не нужно.\n\nНа прежнем месте файла больше не будет. Вернуть его можно, достав из папки App.\n\nПродолжить?", sp.name, fmt_size(total)), icon="warning", default="no", parent=root):
                     return
             elif not messagebox.askyesno(
-                    "Portabilizer (R): исходный файл будет удалён",
-                    "Вы правда хотите сделать этот файл портативным в радикальном режиме?\n\n"
-                    "После успешной сборки будут УДАЛЕНЫ НАВСЕГДА (мимо корзины):\n"
-                    f"{listing}\nвсего {fmt_size(total)}, а также временные копии.\n\n"
-                    "Вернуть исходный файл потом будет нельзя. Если что-то пойдёт не так "
-                    "(например, игра не запустится), его придётся скачивать или ставить с "
-                    "платформы заново.\n\n"
-                    "Удаление произойдёт только если сборка удалась и всё проверено; при "
-                    "ошибке или отмене файл останется. Результат будет создан рядом с исходным "
-                    "файлом.\n\nПродолжить?",
+                    tr("Portabilizer (R): исходный файл будет удалён"),
+                    tr("Вы правда хотите сделать этот файл портативным в радикальном режиме?\n\nПосле успешной сборки будут УДАЛЕНЫ НАВСЕГДА (мимо корзины):\n{0}\nвсего {1}, а также временные копии.\n\nВернуть исходный файл потом будет нельзя. Если что-то пойдёт не так (например, игра не запустится), его придётся скачивать или ставить с платформы заново.\n\nУдаление произойдёт только если сборка удалась и всё проверено; при ошибке или отмене файл останется. Результат будет создан рядом с исходным файлом.\n\nПродолжить?", listing, fmt_size(total)),
                     icon="warning", default="no", parent=root):
                 return
             dst_p = str(sp.parent)
@@ -3017,22 +3016,22 @@ def gui(_hook=None, start_radical=False):
             ok = False
             try:
                 if mode != "launcher" and Path(src_p).is_file():
-                    job.stage = "Оценка нужного места"
+                    job.stage = tr("Оценка нужного места")
                     pre = preflight(Path(src_p), Path(dst_p), mode, radical)
                     if pre.get("exact"):
                         job.expected_total = pre["total"]
                     if pre["level"] != "ok":
                         advisor.add("danger" if pre["level"] == "danger" else "warn", pre["text"],
                                     key="preflight", cooldown=0)
-                        go_on = ask_ui("askyesno", "Хватит ли места?",
-                                       pre["text"] + "\n\nНачать всё равно?", icon="warning",
+                        go_on = ask_ui("askyesno", tr("Хватит ли места?"),
+                                       pre["text"] + tr("\n\nНачать всё равно?"), icon="warning",
                                        default="no" if pre["level"] == "danger" else "yes")
                         if not go_on:
                             log("Отменено перед стартом: мало места на диске.")
                             job.declined = True
                             job.finished = True
                             return
-                job.stage = "Подготовка"
+                job.stage = tr("Подготовка")
                 ok = portabilize(src_p, dst_p, log, mode, mexe.get(), job=job, history=history,
                                  chooser=choose_exe_ui, radical=radical, confirmed=radical,
                                  dx_prompt=dx_ui)
@@ -3049,20 +3048,20 @@ def gui(_hook=None, start_radical=False):
         pb.config(mode="determinate", value=100 if ok else 0)
         pb_state["mode"] = "determinate"
         if getattr(job, "declined", False):
-            status_var.set("Отменено перед стартом: мало места на диске.")
+            status_var.set(tr("Отменено перед стартом: мало места на диске."))
         elif job.cancelled:
-            status_var.set("Прервано. Остатки можно удалить во вкладке «История».")
+            status_var.set(tr("Прервано. Остатки можно удалить во вкладке «История»."))
         else:
             res = getattr(job, "radical_result", None)
             if ok and res and res.get("moved"):
-                status_var.set("Готово. Файл перенесён без копии: дополнительного места не занято.")
+                status_var.set(tr("Готово. Файл перенесён без копии: дополнительного места не занято."))
             elif ok and res and res["deleted"]:
-                status_var.set(f"Готово. Исходный файл удалён, освобождено {fmt_size(res['freed'])}.")
+                status_var.set(tr("Готово. Исходный файл удалён, освобождено {0}.", fmt_size(res['freed'])))
             elif ok and res:
-                status_var.set("Готово, но исходный файл не удалён: " + res["kept_reason"] + ".")
+                status_var.set(tr("Готово, но исходный файл не удалён: ") + trx(res["kept_reason"]) + ".")
             else:
-                status_var.set("Готово. Результат - во вкладке «История»." if ok
-                               else "Не получилось. Подробности - в логе и в рекомендациях.")
+                status_var.set(tr("Готово. Результат - во вкладке «История».") if ok
+                               else tr("Не получилось. Подробности - в логе и в рекомендациях."))
         refresh_history()
 
     def do_pause():
@@ -3080,7 +3079,7 @@ def gui(_hook=None, start_radical=False):
         if job.pause_reason == "low_space":
             free = job.free_bytes()
             if free is not None and free < LOW_SPACE * 1.5:       # место так и не освободили
-                show_low_space(f"На диске по-прежнему мало места: {fmt_size(free)}.")
+                show_low_space(tr("На диске по-прежнему мало места: {0}.", fmt_size(free)))
                 return
         if job.resume():
             log("Продолжаю с того же места.")
@@ -3089,8 +3088,8 @@ def gui(_hook=None, start_radical=False):
     def do_cancel():
         job = state["job"]
         if job and messagebox.askyesno(
-                "Прервать?", "Остановить работу? Продолжить с места остановки потом нельзя: "
-                             "во вкладке «История» будет «Повторить» (начнёт заново).",
+                tr("Прервать?"), tr("Остановить работу? Продолжить с места остановки потом нельзя: "
+                             "во вкладке «История» будет «Повторить» (начнёт заново)."),
                 icon="warning", parent=root):
             job.cancel()
 
@@ -3121,18 +3120,18 @@ def gui(_hook=None, start_radical=False):
                     pb.config(mode="determinate")
                     pb_state["mode"] = "determinate"
                 pb["value"] = p
-            parts = [job.stage or "Работа"]
+            parts = [job.stage or tr("Работа")]
             if p is not None:
                 parts.append(f"{p}%")
-            parts.append(f"прошло {fmt_time(job.active_elapsed)}")
+            parts.append(tr("прошло {0}", fmt_time(job.active_elapsed)))
             if p and p >= 3 and not job.paused:
-                parts.append(f"осталось ~{fmt_time(job.active_elapsed * (100 - p) / p)}")
+                parts.append(tr("осталось ~{0}", fmt_time(job.active_elapsed * (100 - p) / p)))
             if job.paused:
-                parts.insert(0, "ПАУЗА")
+                parts.insert(0, tr("ПАУЗА"))
             if job.watch_path:
                 try:
                     free = shutil.disk_usage(existing_parent(job.watch_path)).free
-                    parts.append(f"свободно на диске {fmt_size(free)}")
+                    parts.append(tr("свободно на диске {0}", fmt_size(free)))
                 except OSError:
                     pass
             status_var.set(" · ".join(parts))
@@ -3143,9 +3142,9 @@ def gui(_hook=None, start_radical=False):
     hist_tab.grid_rowconfigure(0, weight=1)
     cols = ("date", "name", "ver", "kind", "status", "size", "result", "note")
     tv = ttk.Treeview(hist_tab, columns=cols, show="headings", selectmode="browse")
-    for c, title, w in (("date", "Дата", 110), ("name", "Источник", 190), ("ver", "Версия", 55),
-                        ("kind", "Тип", 80), ("status", "Статус", 120), ("size", "Размер", 75),
-                        ("result", "Результат", 170), ("note", "Заметки", 190)):
+    for c, title, w in (("date", tr("Дата"), 110), ("name", tr("Источник"), 190), ("ver", tr("Версия"), 55),
+                        ("kind", tr("Тип"), 80), ("status", tr("Статус"), 120), ("size", tr("Размер"), 75),
+                        ("result", tr("Результат"), 170), ("note", tr("Заметки"), 190)):
         tv.heading(c, text=title)
         tv.column(c, width=w, anchor="w")
     tv.grid(row=0, column=0, sticky="nsew", padx=(8, 0), pady=8)
@@ -3162,27 +3161,28 @@ def gui(_hook=None, start_radical=False):
         for rec in reversed(history.all()):
             t = rec.get("target") or ""
             if t:
-                result = Path(t).name + ("" if Path(t).exists() else " (нет на диске)")
+                result = Path(t).name + ("" if Path(t).exists() else tr(" (нет на диске)"))
             else:
                 result = "-"
             tv.insert("", "end", iid=rec["id"], tags=(rec.get("status", ""),), values=(
                 (rec.get("started") or "").replace("T", " ")[:16],
                 Path(rec.get("source", "")).name, "R" if rec.get("radical") else "",
                 rec.get("kind", ""),
-                STATUS_RU.get(rec.get("status", ""), rec.get("status", "")),
-                fmt_size(rec.get("source_size", 0)), result, rec.get("note", "")))
+                trx(STATUS_RU.get(rec.get("status", ""), rec.get("status", ""))),
+                fmt_size(rec.get("source_size", 0)), result,
+                "; ".join(trx(x) for x in rec.get("note", "").split("; "))))
 
     def selected_rec():
         sel = tv.selection()
         if not sel:
-            messagebox.showinfo("История", "Сначала выберите запись в списке.", parent=root)
+            messagebox.showinfo(tr("История"), tr("Сначала выберите запись в списке."), parent=root)
             return None
         return history.get(sel[0])
 
     def busy():
         if state["job"]:
-            messagebox.showwarning("Portabilizer", "Дождитесь окончания текущей задачи "
-                                   "(или прервите её).", parent=root)
+            messagebox.showwarning("Portabilizer", tr("Дождитесь окончания текущей задачи "
+                                   "(или прервите её)."), parent=root)
             return True
         return False
 
@@ -3192,11 +3192,11 @@ def gui(_hook=None, start_radical=False):
             return
         t = Path(rec.get("target") or "")
         if not rec.get("target") or not t.exists():
-            messagebox.showinfo("История", "Папки результата нет на диске.", parent=root)
+            messagebox.showinfo(tr("История"), tr("Папки результата нет на диске."), parent=root)
             return
         bat = t / "Launch.bat"
         if not reveal(bat if bat.is_file() else t):
-            messagebox.showinfo("История", f"Откройте вручную:\n{t}", parent=root)
+            messagebox.showinfo(tr("История"), tr("Откройте вручную:\n{0}", t), parent=root)
 
     def launch_result():
         rec = selected_rec()
@@ -3204,26 +3204,26 @@ def gui(_hook=None, start_radical=False):
             return
         bat = Path(rec.get("target") or "") / "Launch.bat"
         if not bat.is_file():
-            messagebox.showinfo("История", "Launch.bat не найден: конвертация не завершена.",
+            messagebox.showinfo(tr("История"), tr("Launch.bat не найден: конвертация не завершена."),
                                 parent=root)
             return
         try:
             os.startfile(str(bat))
         except Exception as e:  # noqa
-            messagebox.showinfo("История", f"Запустите вручную:\n{bat}\n\n{e}", parent=root)
+            messagebox.showinfo(tr("История"), tr("Запустите вручную:\n{0}\n\n{1}", bat, e), parent=root)
 
     def retry():
         rec = selected_rec()
         if not rec or busy():
             return
         if not Path(rec.get("source", "")).exists():
-            messagebox.showinfo("История", "Исходного файла уже нет"
-                                + (" (его удалил радикальный режим)" if rec.get("source_deleted")
-                                   else "") + ", поэтому повторить нельзя. Скачайте или "
-                                "установите его заново.", parent=root)
+            messagebox.showinfo(tr("История"), tr("Исходного файла уже нет")
+                                + (tr(" (его удалил радикальный режим)") if rec.get("source_deleted")
+                                   else "") + tr(", поэтому повторить нельзя. Скачайте или "
+                                "установите его заново."), parent=root)
             return
         src.set(rec.get("source", ""))
-        mode_var.set(mode_by_value.get(rec.get("mode", "auto"), "Авто"))
+        mode_var.set(mode_by_value.get(rec.get("mode", "auto"), tr("Авто")))
         t = Path(rec.get("target") or "")
         if rec.get("target"):
             dst.set(str(t.parent))
@@ -3231,9 +3231,8 @@ def gui(_hook=None, start_radical=False):
         if rec.get("target") and t.exists():
             def work():
                 size = dir_size(t)
-                if not ask_ui("askyesno", "Начать заново?",
-                              f"Папка уже существует (остаток прошлой попытки):\n{t}\n"
-                              f"Размер: {fmt_size(size)}\n\nУдалить её и начать заново?",
+                if not ask_ui("askyesno", tr("Начать заново?"),
+                              tr("Папка уже существует (остаток прошлой попытки):\n{0}\nРазмер: {1}\n\nУдалить её и начать заново?", t, fmt_size(size)),
                               icon="warning", default="no"):
                     return
                 log(f"Удаляю {t} ...")
@@ -3252,19 +3251,18 @@ def gui(_hook=None, start_radical=False):
             return
         t = Path(rec.get("target") or "")
         if not rec.get("target") or not t.exists():
-            messagebox.showinfo("История", "Папки результата нет на диске.", parent=root)
+            messagebox.showinfo(tr("История"), tr("Папки результата нет на диске."), parent=root)
             return
         if not is_deletable_target(t):
-            messagebox.showerror("Удаление", "Эта папка не похожа на созданную Portabilizer "
+            messagebox.showerror(tr("Удаление"), tr("Эта папка не похожа на созданную Portabilizer "
                                  "(нужны имя *_portable и Launch.bat с папкой App). "
-                                 "Из осторожности не удаляю.", parent=root)
+                                 "Из осторожности не удаляю."), parent=root)
             return
 
         def work():
             size = dir_size(t)
-            if not ask_ui("askyesno", "Удалить портативную копию?",
-                          f"{t}\n\nРазмер: {fmt_size(size)}\n\nПапка будет удалена безвозвратно. "
-                          "Исходный файл (установщик или архив) не затрагивается.",
+            if not ask_ui("askyesno", tr("Удалить портативную копию?"),
+                          tr("{0}\n\nРазмер: {1}\n\nПапка будет удалена безвозвратно. Исходный файл (установщик или архив) не затрагивается.", t, fmt_size(size)),
                           icon="warning", default="no"):
                 return
             log(f"Удаляю {t} ...")
@@ -3279,18 +3277,16 @@ def gui(_hook=None, start_radical=False):
             return
         files = [f for f in source_group(Path(rec.get("source", ""))) if f.exists()]
         if not files:
-            messagebox.showinfo("История", "Исходный файл не найден (возможно, уже удалён).",
+            messagebox.showinfo(tr("История"), tr("Исходный файл не найден (возможно, уже удалён)."),
                                 parent=root)
             return
         total = sum(f.stat().st_size for f in files)
         listing = "\n".join(f"{f.name}  ({fmt_size(f.stat().st_size)})" for f in files[:12])
         if len(files) > 12:
-            listing += f"\n... и ещё {len(files) - 12}"
+            listing += tr("\n... и ещё {0}", len(files) - 12)
         if not messagebox.askyesno(
-                "Удалить исходный файл?",
-                f"Будут удалены НАВСЕГДА (мимо корзины), всего {fmt_size(total)}:\n\n{listing}\n\n"
-                f"Папка: {files[0].parent}\n\nЭто ваш исходный файл, восстановить его будет нельзя. "
-                "Удалять?", icon="warning", default="no", parent=root):
+                tr("Удалить исходный файл?"),
+                tr("Будут удалены НАВСЕГДА (мимо корзины), всего {0}:\n\n{1}\n\nПапка: {2}\n\nЭто ваш исходный файл, восстановить его будет нельзя. Удалять?", fmt_size(total), listing, files[0].parent), icon="warning", default="no", parent=root):
             return
         for f in files:
             try:
@@ -3302,18 +3298,18 @@ def gui(_hook=None, start_radical=False):
 
     def forget():
         rec = selected_rec()
-        if rec and messagebox.askyesno("История", "Убрать запись из списка? Файлы на диске не "
-                                       "затрагиваются.", parent=root):
+        if rec and messagebox.askyesno(tr("История"), tr("Убрать запись из списка? Файлы на диске не "
+                                       "затрагиваются."), parent=root):
             history.remove(rec["id"])
             refresh_history()
 
     tv.bind("<Double-1>", open_result)
     hb = ttk.Frame(hist_tab)
     hb.grid(row=1, column=0, columnspan=2, sticky="ew", padx=8, pady=(0, 8))
-    for text, cmd in (("Открыть папку", open_result), ("Запустить", launch_result),
-                      ("Повторить", retry), ("Удалить копию", delete_portable),
-                      ("Удалить исходный файл", delete_source), ("Убрать из списка", forget),
-                      ("Обновить", refresh_history)):
+    for text, cmd in ((tr("Открыть папку"), open_result), (tr("Запустить"), launch_result),
+                      (tr("Повторить"), retry), (tr("Удалить копию"), delete_portable),
+                      (tr("Удалить исходный файл"), delete_source), (tr("Убрать из списка"), forget),
+                      (tr("Обновить"), refresh_history)):
         ttk.Button(hb, text=text, command=cmd).pack(side="left", padx=3)
     refresh_history()
 
@@ -3321,7 +3317,7 @@ def gui(_hook=None, start_radical=False):
     diag = ttk.Frame(diag_tab, padding=10)
     diag.pack(fill="both", expand=True)
     diag.grid_columnconfigure(1, weight=1)
-    sysinfo = tk.StringVar(value="Собираю сведения о системе...")
+    sysinfo = tk.StringVar(value=tr("Собираю сведения о системе..."))
     ttk.Label(diag, textvariable=sysinfo, justify="left", wraplength=800).grid(
         row=0, column=0, columnspan=3, sticky="w", pady=(0, 8))
 
@@ -3329,19 +3325,19 @@ def gui(_hook=None, start_radical=False):
         ttk.Label(diag, text=title, width=14).grid(row=r, column=0, sticky="w", pady=3)
         bar = ttk.Progressbar(diag, mode="determinate", maximum=100)
         bar.grid(row=r, column=1, sticky="ew", padx=6)
-        var = tk.StringVar(value="н/д")
+        var = tk.StringVar(value=tr("н/д"))
         ttk.Label(diag, textvariable=var, width=42).grid(row=r, column=2, sticky="w")
         return bar, var
 
-    cpu_bar, cpu_var = bar_row(1, "Процессор")
-    ram_bar, ram_var = bar_row(2, "Память")
-    gpu_bar, gpu_var = bar_row(3, "Видеокарта")
-    io_var = tk.StringVar(value="Диск: н/д")
+    cpu_bar, cpu_var = bar_row(1, tr("Процессор"))
+    ram_bar, ram_var = bar_row(2, tr("Память"))
+    gpu_bar, gpu_var = bar_row(3, tr("Видеокарта"))
+    io_var = tk.StringVar(value=tr("Диск: н/д"))
     ttk.Label(diag, textvariable=io_var).grid(row=4, column=0, columnspan=3, sticky="w", pady=4)
     dcols = ("drive", "total", "free", "used")
     disks = ttk.Treeview(diag, columns=dcols, show="headings", height=7)
-    for c, title, w in (("drive", "Диск", 160), ("total", "Объём", 110), ("free", "Свободно", 110),
-                        ("used", "Занято", 90)):
+    for c, title, w in (("drive", tr("Диск"), 160), ("total", tr("Объём"), 110), ("free", tr("Свободно"), 110),
+                        ("used", tr("Занято"), 90)):
         disks.heading(c, text=title)
         disks.column(c, width=w, anchor="w")
     disks.grid(row=5, column=0, columnspan=3, sticky="ew", pady=6)
@@ -3349,8 +3345,8 @@ def gui(_hook=None, start_radical=False):
     disks.tag_configure("target", font=("TkDefaultFont", 9, "bold"))
     if not psutil:
         ttk.Label(diag, style="Warn.TLabel", wraplength=800,
-                  text=("Нагрузка CPU/RAM недоступна: установите psutil (pip install psutil). "
-                        "В собранном Portabilizer.exe он уже внутри.")
+                  text=(tr("Нагрузка CPU/RAM недоступна: установите psutil (pip install psutil). "
+                        "В собранном Portabilizer.exe он уже внутри."))
                   ).grid(row=6, column=0, columnspan=3, sticky="w")
 
     gpu_state = {"names": None, "data": None, "active": False}
@@ -3372,42 +3368,39 @@ def gui(_hook=None, start_radical=False):
             gpu_state["active"] = nb.index(nb.select()) == 2
             if not sys_static:
                 ram_total = psutil.virtual_memory().total if psutil else 0
-                cores = (f"{psutil.cpu_count(logical=False)} ядер / {psutil.cpu_count()} потоков"
+                cores = (tr("{0} ядер / {1} потоков", psutil.cpu_count(logical=False), psutil.cpu_count())
                          if psutil else "")
                 sys_static["cpu"] = f"{cpu_name()} {('- ' + cores) if cores else ''}".strip()
-                sys_static["ram"] = fmt_size(ram_total) if ram_total else "н/д"
+                sys_static["ram"] = fmt_size(ram_total) if ram_total else tr("н/д")
                 sys_static["os"] = f"{platform.system()} {platform.release()} ({platform.machine()})"
             names = gpu_state["names"]
-            gpu_txt = "определяю..." if names is None else (", ".join(names) or "н/д")
-            sysinfo.set(f"Система: {sys_static['os']}\nПроцессор: {sys_static['cpu']}\n"
-                        f"Оперативная память: {sys_static['ram']}\nВидеокарта: {gpu_txt}")
+            gpu_txt = tr("определяю...") if names is None else (", ".join(names) or tr("н/д"))
+            sysinfo.set(tr("Система: {0}\nПроцессор: {1}\nОперативная память: {2}\nВидеокарта: {3}", sys_static['os'], sys_static['cpu'], sys_static['ram'], gpu_txt))
             if psutil:
                 cpu = psutil.cpu_percent(interval=None)
                 vm = psutil.virtual_memory()
                 cpu_bar["value"] = cpu
                 cpu_var.set(f"{cpu:.0f}%")
                 ram_bar["value"] = vm.percent
-                ram_var.set(f"{vm.percent:.0f}%  ({fmt_size(vm.used)} из {fmt_size(vm.total)})")
+                ram_var.set(tr("{0:.0f}%  ({1} из {2})", vm.percent, fmt_size(vm.used), fmt_size(vm.total)))
                 if vm.percent > 92:
-                    advisor.add("warn", "Оперативной памяти почти не осталось. Закройте браузер и "
-                                        "лишние программы, иначе распаковка может сильно замедлиться.",
+                    advisor.add("warn", tr("Оперативной памяти почти не осталось. Закройте браузер и "
+                                        "лишние программы, иначе распаковка может сильно замедлиться."),
                                 key="ram", cooldown=180)
                 io = psutil.disk_io_counters()
                 now = time.time()
                 if io and prev_io["t"]:
                     dt = max(0.001, now - prev_io["t"])
-                    io_var.set(f"Диск: чтение {fmt_size((io.read_bytes - prev_io['r']) / dt)}/с, "
-                               f"запись {fmt_size((io.write_bytes - prev_io['w']) / dt)}/с")
+                    io_var.set(tr("Диск: чтение {0}/с, запись {1}/с", fmt_size((io.read_bytes - prev_io['r']) / dt), fmt_size((io.write_bytes - prev_io['w']) / dt)))
                 if io:
                     prev_io.update(t=now, r=io.read_bytes, w=io.write_bytes)
             data = gpu_state["data"]
             if data:
                 gpu_bar["value"] = data["util"]
-                extra = (f", память {fmt_size(data['mem_used'])} из {fmt_size(data['mem_total'])}, "
-                         f"{data['temp']:.0f} °C") if "mem_used" in data else " (оценка по 3D)"
+                extra = (tr(", память {0} из {1}, {2:.0f} °C", fmt_size(data['mem_used']), fmt_size(data['mem_total']), data['temp'])) if "mem_used" in data else tr(" (оценка по 3D)")
                 gpu_var.set(f"{data['util']:.0f}%{extra}")
             elif gpu_state["names"] is not None:
-                gpu_var.set("нагрузка недоступна")
+                gpu_var.set(tr("нагрузка недоступна"))
             counter["n"] += 1
             if counter["n"] % 4 == 1:
                 tgt = Path(dst.get() or ".").resolve().anchor
@@ -3418,13 +3411,12 @@ def gui(_hook=None, start_radical=False):
                         tags.append("low")
                     if tgt and drive.upper().startswith(tgt.upper()):
                         tags.append("target")
-                    label = drive + ("  <- куда сохраняем" if "target" in tags else "")
+                    label = drive + (tr("  <- куда сохраняем") if "target" in tags else "")
                     disks.insert("", "end", values=(label, fmt_size(total), fmt_size(free),
                                                     f"{used * 100 // max(1, total)}%"),
                                  tags=tuple(tags))
                     if "low" in tags and "target" in tags:
-                        advisor.add("warn", f"На диске {drive}, куда вы сохраняете, мало места "
-                                            f"({fmt_size(free)}). Выберите другой диск в поле «Куда».",
+                        advisor.add("warn", tr("На диске {0}, куда вы сохраняете, мало места ({1}). Выберите другой диск в поле «Куда».", drive, fmt_size(free)),
                                     key="lowdisk", cooldown=300)
         except Exception:
             pass
@@ -3434,32 +3426,32 @@ def gui(_hook=None, start_radical=False):
     ver_tab.grid_columnconfigure(0, weight=1)
     ver_tab.grid_columnconfigure(1, weight=1)
     ttk.Label(ver_tab, wraplength=820, text=(
-        "Выберите, как Portabilizer делает портативные копии. Переключаться можно в любой момент "
-        "(это лишь меняет режим работы). При каждом запуске программа стартует в обычной версии.")
+        tr("Выберите, как Portabilizer делает портативные копии. Переключаться можно в любой момент "
+        "(это лишь меняет режим работы). При каждом запуске программа стартует в обычной версии."))
               ).grid(row=0, column=0, columnspan=2, sticky="w", padx=12, pady=(12, 8))
     ver_state = tk.StringVar()
     ttk.Label(ver_tab, textvariable=ver_state, font=("TkDefaultFont", 10, "bold")).grid(
         row=1, column=0, columnspan=2, sticky="w", padx=12, pady=(0, 8))
     card_n = ttk.LabelFrame(ver_tab, text="Portabilizer")
-    card_r = ttk.LabelFrame(ver_tab, text="Portabilizer (R) - радикальный")
+    card_r = ttk.LabelFrame(ver_tab, text=tr("Portabilizer (R) - радикальный"))
     card_n.grid(row=2, column=0, sticky="nsew", padx=(12, 6), pady=4)
     card_r.grid(row=2, column=1, sticky="nsew", padx=(6, 12), pady=4)
     ver_tab.grid_rowconfigure(2, weight=1)
     ttk.Label(card_n, wraplength=380, justify="left", text=(
-        "Безопасная версия.\n\n"
+        tr("Безопасная версия.\n\n"
         "Исходный файл (установщик, пакет или архив) остаётся нетронутым, рядом создаётся "
         "портативная папка.\n\n"
         "Минус: на диске остаются обе копии: и исходник, и портативная папка.\n\n"
-        "Подходит почти для всего, особенно если вы не уверены, что программа заработает.")
+        "Подходит почти для всего, особенно если вы не уверены, что программа заработает."))
               ).pack(anchor="w", padx=10, pady=10)
     ttk.Label(card_r, wraplength=380, justify="left", style="Danger.TLabel", text=(
-        "Радикальная версия (риск).\n\n"
+        tr("Радикальная версия (риск).\n\n"
         "После успешной сборки УДАЛЯЕТ исходный файл (все тома архива) и временные копии, "
         "поэтому итог занимает меньше места. Портативная папка создаётся рядом с исходником.\n\n"
         "Важно: пока идёт работа, места нужно столько же, как в обычной версии: исходник "
         "удаляется только в самом конце, после проверки. Вернуть удалённый файл нельзя: если "
         "что-то пойдёт не так позже, его придётся скачивать или ставить с платформы заново.\n\n"
-        "Перед каждым запуском программа просит подтверждение.")
+        "Перед каждым запуском программа просит подтверждение."))
               ).pack(anchor="w", padx=10, pady=10)
     upd_var = tk.BooleanVar(value=bool(settings.get("check_updates", True)))
     upd_state = {"res": None, "done": True, "manual": False}
@@ -3481,33 +3473,32 @@ def gui(_hook=None, start_radical=False):
             return
         r = upd_state["res"]
         if r:
-            advisor.add("info", f"Доступна новая версия Portabilizer: {r['tag']}. Скачать её можно в "
-                                f"Portabilizer Launcher или на странице {r['page'] or UPDATE_URL}.",
+            advisor.add("info", tr("Доступна новая версия Portabilizer: {0}. Скачать её можно в Portabilizer Launcher или на странице {1}.", r['tag'], r['page'] or UPDATE_URL),
                         key="update", cooldown=0)
             if upd_state["manual"]:
-                status_var.set(f"Доступна новая версия: {r['tag']}.")
+                status_var.set(tr("Доступна новая версия: {0}.", r['tag']))
         elif upd_state["manual"]:
-            status_var.set(f"У вас последняя версия ({APP_VERSION}) или нет связи с GitHub.")
+            status_var.set(tr("У вас последняя версия ({0}) или нет связи с GitHub.", APP_VERSION))
 
     def upd_changed(*_a):
         settings["check_updates"] = bool(upd_var.get())
         save_settings(settings)
 
     upd_var.trace_add("write", upd_changed)
-    ttk.Label(ver_tab, text=f"Версия программы: {APP_VERSION}", style="Muted.TLabel").grid(
+    ttk.Label(ver_tab, text=tr("Версия программы: {0}", APP_VERSION), style="Muted.TLabel").grid(
         row=3, column=0, sticky="w", padx=12, pady=(10, 0))
-    ttk.Checkbutton(ver_tab, text="Проверять наличие новых версий при запуске (запрос к GitHub, "
-                                  "никакие данные не отправляются)", variable=upd_var).grid(
+    ttk.Checkbutton(ver_tab, text=tr("Проверять наличие новых версий при запуске (запрос к GitHub, "
+                                  "никакие данные не отправляются)"), variable=upd_var).grid(
         row=4, column=0, columnspan=2, sticky="w", padx=12, pady=(4, 0))
-    ttk.Button(ver_tab, text="Проверить сейчас", command=lambda: start_update_check(True)).grid(
+    ttk.Button(ver_tab, text=tr("Проверить сейчас"), command=lambda: start_update_check(True)).grid(
         row=5, column=0, sticky="w", padx=12, pady=8)
-    btn_ver_n = ttk.Button(card_n, text="Включить обычную версию")
-    btn_ver_r = ttk.Button(card_r, text="Включить версию (R)")
+    btn_ver_n = ttk.Button(card_n, text=tr("Включить обычную версию"))
+    btn_ver_r = ttk.Button(card_r, text=tr("Включить версию (R)"))
     btn_ver_n.pack(padx=10, pady=(0, 10))
     btn_ver_r.pack(padx=10, pady=(0, 10))
-    R_HINT = ("РЕЖИМ (R): обычный exe просто ПЕРЕНОСИТСЯ в папку App (копии нет, место не нужно). "
+    R_HINT = (tr("РЕЖИМ (R): обычный exe просто ПЕРЕНОСИТСЯ в папку App (копии нет, место не нужно). "
               "Архивы и установщики сначала распаковываются, и только потом исходник удаляется: "
-              "на время работы нужно место под распакованное. Перед стартом будет подтверждение.")
+              "на время работы нужно место под распакованное. Перед стартом будет подтверждение."))
 
     # --------------------------------------------------------- вкладка «Оформление»
     themes = load_themes()
@@ -3568,38 +3559,40 @@ def gui(_hook=None, start_radical=False):
         disks.tag_configure("low", foreground=c["danger"])
         set_dark_titlebar(root, bool(t) and t["kind"] == "dark")
         set_icon(ver["radical"], t is None)
+        set_lang_icon(t is None)
+        lang_canvas.configure(bg=(t["bg"] if t else default_bg))
         draw_swatches(t)
 
     look_tab.grid_columnconfigure(1, weight=1)
     ttk.Label(look_tab, wraplength=820, text=(
-        "Внешний вид окна. Изменения применяются сразу и запоминаются. Красные темы автоматически "
-        "включаются в версии (R) и подбираются под светлую или тёмную тему.")
+        tr("Внешний вид окна. Изменения применяются сразу и запоминаются. Красные темы автоматически "
+        "включаются в версии (R) и подбираются под светлую или тёмную тему."))
               ).grid(row=0, column=0, columnspan=3, sticky="w", padx=12, pady=(12, 10))
     ap_var, dr_var, lr_var = tk.StringVar(), tk.StringVar(), tk.StringVar()
 
     def ap_choices():
-        d = dict((v, k) for k, v in APPEARANCES.items())
+        d = dict((trx(v), k) for k, v in APPEARANCES.items())
         for tid, t in themes.items():
             if not t.get("r") and t.get("user"):
-                d[t["name"] + " (своя)"] = tid
+                d[trx(t["name"]) + tr(" (своя)")] = tid
         return d
 
     def r_choices(kind):
-        return {t["name"] + (" (своя)" if t.get("user") else ""): tid for tid, t in themes.items()
+        return {trx(t["name"]) + (tr(" (своя)") if t.get("user") else ""): tid for tid, t in themes.items()
                 if t.get("r") and t["kind"] == kind}
 
     def sync_look_vars():
         ac = ap_choices()
         ap_var.set(next((n for n, k in ac.items() if k == settings.get("appearance", "auto")),
-                        APPEARANCES["auto"]))
+                        trx(APPEARANCES["auto"])))
         for var, kind, key, dflt in ((dr_var, "dark", "dark_r", "dark_r_charcoal"),
                                      (lr_var, "light", "light_r", "light_r")):
             ch = r_choices(kind)
             var.set(next((n for n, k in ch.items() if k == settings.get(key, dflt)),
                          next(iter(ch), "")))
 
-    rows = [("Тема:", ap_var, ap_choices), ("Тёмная красная (R):", dr_var, lambda: r_choices("dark")),
-            ("Светлая красная (R):", lr_var, lambda: r_choices("light"))]
+    rows = [(tr("Тема:"), ap_var, ap_choices), (tr("Тёмная красная (R):"), dr_var, lambda: r_choices("dark")),
+            (tr("Светлая красная (R):"), lr_var, lambda: r_choices("light"))]
     look_combos = []
     for i, (lab, var, getter) in enumerate(rows, start=1):
         ttk.Label(look_tab, text=lab).grid(row=i, column=0, sticky="w", padx=12, pady=6)
@@ -3628,27 +3621,27 @@ def gui(_hook=None, start_radical=False):
         for w in sw_frame.winfo_children():
             w.destroy()
         if t is None:
-            sw_cap.config(text="Классический вид: цвета задаёт Windows.")
+            sw_cap.config(text=tr("Классический вид: цвета задаёт Windows."))
             return
         for role in ("bg", "surface", "surface2", "fg", "muted", "accent", "ok", "warn", "danger"):
             tk.Frame(sw_frame, width=34, height=22, bg=t[role], highlightthickness=1,
                      highlightbackground=t["border"]).pack(side="left", padx=2)
-        sw_cap.config(text="Сейчас: " + t["name"] + ". Цвета: фон, поля, кнопки, текст, "
-                      "второстепенный, акцент, успех, предупреждение, ошибка.")
+        sw_cap.config(text=tr("Сейчас: ") + trx(t["name"]) + tr(". Цвета: фон, поля, кнопки, текст, "
+                      "второстепенный, акцент, успех, предупреждение, ошибка."))
 
     def open_themes_folder():
         d = app_dir() / "themes"
         try:
             d.mkdir(exist_ok=True)
-            ex = d / "_пример.json"
+            ex = d / tr("_пример.json")
             if not ex.exists():
                 t = {k: v for k, v in themes["dark_r_charcoal"].items() if k not in ("id", "user")}
-                t["name"] = "Моя тема"
+                t["name"] = tr("Моя тема")
                 ex.write_text(json.dumps(t, ensure_ascii=False, indent=2), encoding="utf-8")
             if os.name == "nt":
                 os.startfile(str(d))        # noqa
         except OSError as e:
-            messagebox.showwarning("Portabilizer", f"Не удалось открыть папку: {e}", parent=root)
+            messagebox.showwarning("Portabilizer", tr("Не удалось открыть папку: {0}", e), parent=root)
 
     def reload_themes():
         themes.clear()
@@ -3661,23 +3654,23 @@ def gui(_hook=None, start_radical=False):
     def pick_my_color():
         from tkinter import colorchooser
         base = cur["theme"] or themes["light"]
-        res = colorchooser.askcolor(color=base["accent"], title="Главный цвет (кнопки, прогресс)",
+        res = colorchooser.askcolor(color=base["accent"], title=tr("Главный цвет (кнопки, прогресс)"),
                                     parent=root)
         if not res or not res[1]:
             return
         accent = res[1]
         tint = None
-        if messagebox.askyesno("Свой цвет", "Подкрасить в этот цвет и фон окна?\n\nДа - фон "
+        if messagebox.askyesno(tr("Свой цвет"), tr("Подкрасить в этот цвет и фон окна?\n\nДа - фон "
                                "получит лёгкий оттенок выбранного цвета.\nНет - фон останется "
-                               "нейтральным, цвет будет только у кнопок и акцентов.", parent=root):
+                               "нейтральным, цвет будет только у кнопок и акцентов."), parent=root):
             tint = accent
         else:
             tint = "#808080"
         kind = base["kind"]
         try:
-            t = make_theme_from_color(accent, kind, bg_tint=tint, name="Мой цвет")
+            t = make_theme_from_color(accent, kind, bg_tint=tint, name=tr("Мой цвет"))
         except ValueError as e:
-            messagebox.showwarning("Свой цвет", str(e), parent=root)
+            messagebox.showwarning(tr("Свой цвет"), str(e), parent=root)
             return
         d = app_dir() / "themes"
         try:
@@ -3685,7 +3678,7 @@ def gui(_hook=None, start_radical=False):
             (d / "my_color.json").write_text(json.dumps(t, ensure_ascii=False, indent=2),
                                              encoding="utf-8")
         except OSError as e:
-            messagebox.showwarning("Свой цвет", f"Не удалось сохранить тему: {e}", parent=root)
+            messagebox.showwarning(tr("Свой цвет"), tr("Не удалось сохранить тему: {0}", e), parent=root)
             return
         themes.clear()
         themes.update(load_themes())
@@ -3698,16 +3691,16 @@ def gui(_hook=None, start_radical=False):
 
     bt = ttk.Frame(look_tab)
     bt.grid(row=6, column=0, columnspan=3, sticky="w", padx=12, pady=(14, 4))
-    ttk.Button(bt, text="Выбрать свой цвет...", style="Accent.TButton",
+    ttk.Button(bt, text=tr("Выбрать свой цвет..."), style="Accent.TButton",
                command=pick_my_color).pack(side="left", padx=(0, 8))
-    ttk.Button(bt, text="Открыть папку themes", command=open_themes_folder).pack(side="left")
-    ttk.Button(bt, text="Обновить список тем", command=reload_themes).pack(side="left", padx=8)
+    ttk.Button(bt, text=tr("Открыть папку themes"), command=open_themes_folder).pack(side="left")
+    ttk.Button(bt, text=tr("Обновить список тем"), command=reload_themes).pack(side="left", padx=8)
     ttk.Label(look_tab, wraplength=820, style="Muted.TLabel", text=(
-        "Свои темы: положите файл .json в папку themes рядом с программой (образец "
+        tr("Свои темы: положите файл .json в папку themes рядом с программой (образец "
         "_пример.json создаётся кнопкой выше). В нём цвета в виде #rrggbb, название, "
         "\"kind\": \"light\" или \"dark\" и \"r\": true для красных тем режима R. Недостающие "
         "цвета берутся из встроенной темы. Окна-подтверждения (сообщения Windows) остаются "
-        "системными.")).grid(row=7, column=0, columnspan=3, sticky="w", padx=12, pady=(6, 0))
+        "системными."))).grid(row=7, column=0, columnspan=3, sticky="w", padx=12, pady=(6, 0))
     sync_look_vars()
 
     def poll_system_theme():
@@ -3717,19 +3710,19 @@ def gui(_hook=None, start_radical=False):
 
     def apply_version():
         r = ver["radical"]
-        root.title("Portabilizer (R) - радикальный режим" if r else "Portabilizer")
-        btn_start.config(text="Сделать портативным (R)" if r else "Сделать портативным")
+        root.title(tr("Portabilizer (R) - радикальный режим") if r else "Portabilizer")
+        btn_start.config(text=tr("Сделать портативным (R)") if r else tr("Сделать портативным"))
         hint_lbl.config(text=R_HINT if r else hint, style="Danger.TLabel" if r else "Muted.TLabel")
-        ver_state.set("Сейчас включена: Portabilizer (R) - радикальный" if r
-                      else "Сейчас включена: Portabilizer (обычная версия)")
+        ver_state.set(tr("Сейчас включена: Portabilizer (R) - радикальный") if r
+                      else tr("Сейчас включена: Portabilizer (обычная версия)"))
         btn_ver_n.state(["!disabled"] if r else ["disabled"])
         btn_ver_r.state(["disabled"] if r else ["!disabled"])
         apply_theme()
 
     def set_version(radical):
         if state["job"]:
-            messagebox.showinfo("Portabilizer", "Переключить версию можно после окончания "
-                                "текущей задачи.", parent=root)
+            messagebox.showinfo("Portabilizer", tr("Переключить версию можно после окончания "
+                                "текущей задачи."), parent=root)
             return
         ver["radical"] = bool(radical)
         apply_version()
@@ -3738,10 +3731,73 @@ def gui(_hook=None, start_radical=False):
     btn_ver_r.config(command=lambda: set_version(True))
 
     # --------------------------------------------------------------- завершение
+    # --- Язык: как в Windows - сверху название на самом языке, под ним оно же на языке интерфейса
+    lang_var = tk.StringVar(value=get_lang())
+    ttk.Label(lang_tab, text=tr("Язык интерфейса:")).pack(anchor="w", padx=12, pady=(12, 2))
+    ttk.Label(lang_tab, style="Muted.TLabel", wraplength=820, text=tr(
+        "Язык меняется сразу: окно перезапустится само, настройки сохранятся.")).pack(
+        anchor="w", padx=12, pady=(0, 6))
+    lang_box = ttk.Frame(lang_tab)
+    lang_box.pack(fill="both", expand=True, padx=(12, 0), pady=(0, 10))
+    lang_canvas = tk.Canvas(lang_box, highlightthickness=0, bd=0)
+    lang_sb = ttk.Scrollbar(lang_box, orient="vertical", command=lang_canvas.yview)
+    lang_canvas.configure(yscrollcommand=lang_sb.set)
+    lang_sb.pack(side="right", fill="y")
+    lang_canvas.pack(side="left", fill="both", expand=True)
+    lang_inner = ttk.Frame(lang_canvas)
+    lang_win = lang_canvas.create_window((0, 0), window=lang_inner, anchor="nw")
+    lang_inner.bind("<Configure>", lambda _e: lang_canvas.configure(scrollregion=lang_canvas.bbox("all")))
+    lang_canvas.bind("<Configure>", lambda e: lang_canvas.itemconfigure(lang_win, width=e.width))
+    lang_canvas.bind("<Enter>", lambda _e: lang_canvas.bind_all(
+        "<MouseWheel>", lambda ev: lang_canvas.yview_scroll(-1 if ev.delta > 0 else 1, "units")))
+    lang_canvas.bind("<Leave>", lambda _e: lang_canvas.unbind_all("<MouseWheel>"))
+    for code, native in LANGS:
+        picked = code == get_lang()
+        row_f = ttk.Frame(lang_inner, padding=(4, 5))
+        row_f.pack(fill="x")
+        top = ttk.Label(row_f, text=native, style="Accent.TLabel" if picked else "TLabel")
+        top.pack(anchor="w")
+        here = lang_name(get_lang(), code)
+        labels = [row_f, top]
+        if here != native:
+            sub = ttk.Label(row_f, text=here, style="Muted.TLabel")
+            sub.pack(anchor="w")
+            labels.append(sub)
+        if picked:
+            ttk.Label(row_f, text="✓", style="Accent.TLabel").place(relx=1.0, x=-14, rely=0.5, anchor="e")
+        for w in labels:
+            w.bind("<Button-1>", lambda _e, c=code: lang_var.set(c))
+            w.configure(cursor="hand2")
+        ttk.Separator(lang_inner).pack(fill="x")
+
+    def change_language(*_a):
+        code = lang_var.get()
+        if code == get_lang():
+            return
+        if state["job"]:
+            messagebox.showinfo(tr("Язык"), tr("Сначала дождитесь конца задачи или прервите её: "
+                                              "после смены языка окно перезапускается."), parent=root)
+            lang_var.set(get_lang())
+            return
+        settings["language"] = code
+        save_settings(settings)
+        RESTART.update(flag=True, geometry=root.geometry(), radical=ver["radical"])
+        root.destroy()
+
+    lang_var.trace_add("write", change_language)
+
+    def set_lang_icon(classic):
+        try:
+            img = tk.PhotoImage(data=GLOBE["pixel" if classic else "smooth"])
+            icon_refs["globe"] = img
+            nb.tab(lang_tab, image=img, compound="left")
+        except Exception:
+            pass
+
     def on_close():
         job = state["job"]
         if job:
-            if not messagebox.askyesno("Идёт работа", "Задача ещё выполняется. Прервать её и выйти?",
+            if not messagebox.askyesno(tr("Идёт работа"), tr("Задача ещё выполняется. Прервать её и выйти?"),
                                        icon="warning", parent=root):
                 return
             job.cancel()
@@ -3758,7 +3814,7 @@ def gui(_hook=None, start_radical=False):
         set_version(True)
 
     if _hook:       # для автотестов: передаём управление, окно не запускаем
-        _hook({"root": root, "go": go, "src": src, "dst": dst, "mode_var": mode_var,
+        _hook({"lang_var": lang_var, "settings": settings, "ver": ver, "root": root, "go": go, "src": src, "dst": dst, "mode_var": mode_var,
                "history": history, "advisor": advisor, "state": state, "log": log,
                "refresh_history": refresh_history, "tv": tv, "update_diag": update_diag,
                "tick": tick, "set_buttons": set_buttons, "do_pause": do_pause,
@@ -3850,12 +3906,22 @@ def attach_console():
         pass
 
 
+def run_gui(start_radical=False):
+    """Открывает окно; смена языка закрывает его и открывает заново (версия R сохраняется)."""
+    RESTART["radical"] = start_radical
+    while True:
+        RESTART["flag"] = False
+        gui(start_radical=RESTART["radical"])
+        if not RESTART["flag"]:
+            break
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
     if [a.lower() for a in args] == ["--r"]:      # ярлык «Portabilizer (R)»: окно сразу в версии R
-        gui(start_radical=True)
+        run_gui(start_radical=True)
     elif args:
         attach_console()
         sys.exit(cli(args))
     else:
-        gui()
+        run_gui()

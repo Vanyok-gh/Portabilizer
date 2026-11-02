@@ -1,0 +1,353 @@
+1	Nodig: {0} {1}, vrij: {2} op schijf {3}.{4}
+2	bezig
+3	gepauzeerd
+4	klaar
+5	fout
+6	afgebroken
+7	afgebroken (de toepassing is gesloten)
+8	Automatisch (zoals Windows)
+9	Licht
+10	Donker
+11	Klassiek (systeem)
+12	Mijn kleur
+13	B
+14	KB
+15	MB
+16	GB
+17	 Als het archief een installatieprogramma bevat, is ongeveer evenveel extra ruimte nodig.
+18	op basis van de inhoud van het archief
+19	schatting
+20	Games op basis van Unreal Engine hebben mogelijk DirectX-bibliotheken (June 2010) nodig. Als bij het starten een fout over xinput1_3.dll, X3DAudio1_7.dll of XAPOFX1_5.dll verschijnt, voer dan DX_fix.bat uit in de resultaatmap: beheerdersrechten zijn niet nodig.
+21	De radicale modus heeft het bronbestand niet verwijderd, omdat niet alles kon worden gecontroleerd (de reden staat in het logboek). De portable map is gemaakt en het bronbestand staat er nog: controleer de map en verwijder het bronbestand zelf.
+22	Het programma heeft .NET nodig, dat op deze computer ontbreekt. Voer Install_dotnet.bat uit in de resultaatmap (het downloadt de runtime in de portable kopie, zonder beheerdersrechten).
+23	Het bestand vraagt om een wachtwoord. Portabilizer voert geen wachtwoorden in: pak het handmatig uit met 7-Zip (dat vraagt om het wachtwoord) en kies het installatieprogramma of de map uit het resultaat.
+24	7z.exe niet gevonden (niet naast het programma en niet in het geïnstalleerde 7-Zip). Installeer 7-Zip van 7-zip.org of plaats 7z.exe en 7z.dll naast Portabilizer of in de map tools.
+25	innoextract.exe niet gevonden. Plaats het naast Portabilizer of in de map tools.
+26	Er was onvoldoende schijfruimte. Maak ruimte vrij of kies een andere schijf in het veld «Naar» en klik daarna op het tabblad «Geschiedenis» op «Opnieuw».
+27	Het installatieprogramma vereist beheerdersrechten. Als u die niet hebt, probeer dan de modus «Alleen uitpakken» of zoek bij de ontwikkelaar naar een portable versie.
+28	Hoofd-exe niet gevonden. In het logboek hierboven staan de gevonden exe-bestanden en de reden van uitsluiting: kopieer de gewenste naam naar het veld «Hoofd-exe» en start de modus «Alleen Launch.bat».
+29	Lijkt op een UWP-app: buiten het geïnstalleerde pakket start die waarschijnlijk niet. Zoek een exe-installatieprogramma.
+30	Controleer of het bestand volledig is gedownload (vergelijk de grootte of download opnieuw) en of 7z.exe naast het programma staat.
+31	Deze map is al eerder gemaakt. Open hem op het tabblad «Geschiedenis» of verwijder hem om opnieuw te beginnen.
+32	De gegevens staan in externe .bin-bestanden, die het installatieprogramma zelf installeert. Daarvoor kan installatie nodig zijn, en daarvoor zijn beheerdersrechten nodig.
+33	Gedeeltelijk gemaakte bestanden staan nog op de schijf. U kunt ze verwijderen op het tabblad «Geschiedenis».
+34	n.v.t.
+35	Uitpakken
+36	Uitpakprogramma: {0}
+37	Installatie
+38	Stille installatie in de map App (kan vele minuten duren, sluit het venster niet)...
+39	Zonder beheerder lukte het niet - ik probeer het met een UAC-verzoek (klik op 'Ja'). Een installatieprogramma dat met beheerdersrechten draait, kan vanaf hier niet worden gestopt.
+40	systeemnaam (setup/update/redist enz.)
+41	hulpprogramma van de repack
+42	tijdelijke map van het installatieprogramma
+43	consoleprogramma
+44	Exe-bestanden gevonden: {0}. Hier zijn de eerste {1} en waarom ze niet geschikt waren:
+45	Kopieer de gewenste naam naar het veld «Hoofd-exe» en start de modus «Alleen Launch.bat».
+46	Bestand '{0}' niet gevonden in App.
+47	.NET ({0}) is nodig voor {1}, maar is op deze computer niet gevonden. Voer Install_dotnet.bat uit in de resultaatmap: het downloadt de runtime naar de map dotnet in de portable kopie (geen beheerdersrechten nodig), Launch.bat gebruikt die automatisch.
+48	Starten: normaal, verhoogde rechten zijn niet nodig.
+49	Het programma heeft bibliotheken nodig die op het systeem ontbreken:\n{0}\n\nIn de programmamap plaatsen? Beheerdersrechten zijn niet nodig, het systeem wordt niet gewijzigd, alles blijft in de portable map.\n\nJa - plaatsen.\nNee - doorgaan zonder (het programma start mogelijk niet).\nAnnuleren - afbreken.
+50	Klaar: {0}
+51	Hoofd-exe: {0}
+52	Start via Launch.bat. De map kan op een USB-stick worden meegenomen.
+53	Radicale modus: {0} vrijgemaakt.
+54	Modus: {0}
+55	Type: {0}
+56	Lichtrood (R)
+57	Antraciet met rood accent
+58	Bordeaux
+59	Kersenrood
+60	Bestand: exe, msi, msix/appx, archief (rar, zip, 7z...). Hoofd-exe is optioneel: naam (App.exe), pad binnen App of bestand uit de map App. Het logboek wordt opgeslagen in portabilizer.log.
+61	MODUS (R): een gewone exe wordt alleen VERPLAATST naar de map App (geen kopie, geen ruimte nodig). Archieven en installatieprogramma's worden eerst uitgepakt en pas daarna wordt het bronbestand verwijderd: tijdens het werk is ruimte nodig voor het uitgepakte. Voor de start volgt een bevestiging.
+62	Ik verwijder {0} niet: de map lijkt niet door Portabilizer te zijn gemaakt.
+63	7z.exe is nodig: niet gevonden naast het programma en niet in het geïnstalleerde 7-Zip. Installeer 7-Zip (7-zip.org) of plaats 7z.exe en 7z.dll ernaast of in tools/.
+64	7-Zip, code 1
+65	Het bestand is met een wachtwoord beveiligd. Portabilizer voert geen wachtwoorden in: pak het handmatig uit (7-Zip vraagt zelf om het wachtwoord) en kies daarna de uitgepakte map of het installatieprogramma.
+66	Het installatieprogramma is met een fout beëindigd. Controleer of de .bin-bestanden naast setup.exe staan.
+67	In de map {0} staan helemaal geen exe-bestanden. Controleer of het programma echt hier is uitgepakt of geïnstalleerd.
+68	MSIX: namen met %XX-codering hersteld: {0}
+69	MSIX: AppxManifest.xml niet gevonden - ik zoek de exe op de gewone manier.
+70	MSIX: het manifest bevat geen runFullTrust - dit is waarschijnlijk een UWP-app. Buiten het geïnstalleerde pakket start die waarschijnlijk niet.
+71	, manifest: {0}.
+72	Dit lijkt een online-stub: er zit een downloadlink in ({0}). Het programma zelf wordt bij het starten gedownload en in het systeem geïnstalleerd, dus dit wordt geen portable kopie. Download voor echte draagbaarheid het volledige offline installatieprogramma en maak dat portable.
+73	Het bestand is beveiligd met een packer: uitpakken en analyseren is niet mogelijk, alleen starten.
+74	Starten: met UAC-verzoek (handmatig gekozen). Launch.bat wijzigt de rechten niet.
+75	Starten: zonder UAC-verzoek (RunAsInvoker, handmatig gekozen).
+76	{0} vraagt om beheerdersrechten. Launch.bat start het zonder UAC-verzoek (RunAsInvoker), een wachtwoord is niet nodig. Als het programma echt naar Program Files of HKLM schrijft, services of stuurprogramma's installeert, werkt het zonder rechten mogelijk niet. Gebruik dan Launch_admin.bat (normaal starten met UAC-verzoek).
+77	geen cab
+78	cab met meerdere delen
+79	Overig
+80	Game op basis van Unreal Engine: Launch.bat start {0} rechtstreeks. De {1} in de hoofdmap vraagt bij de eerste start om DirectX en Visual C++ in het systeem te installeren en sluit als u weigert. Starten via dat bestand: Launch_stub.bat.
+81	Unreal: start van {0}
+82	de exe vereist beheerder: Launch.bat gebruikt RunAsInvoker
+83	Radicale modus: het bronbestand is verplaatst, niet gekopieerd - er is geen extra gigabyte gebruikt.
+84	het werk is afgebroken
+85	Launch.bat is niet gemaakt
+86	de map App is leeg
+87	De bestanden staan in: {0}
+88	De bestandsmappen zijn leeg.
+89	Onbekende modus: {0}
+90	Geen bestand opgegeven.
+91	Bestand niet gevonden.
+92	De map bestaat al: {0}
+93	Verwijder hem of kies de modus 'Alleen Launch.bat'.
+94	Hoofd-exe niet gevonden.
+95	Geef de exe op in het veld 'Hoofd-exe' en start de modus 'Alleen Launch.bat'.
+96	de kleur moet de vorm #rrggbb hebben
+97	Automatisch
+98	Alleen uitpakken
+99	Alleen installeren (in App)
+100	Alleen Launch.bat
+101	Automatisch (zonder UAC als de exe om beheerder vraagt)
+102	Altijd zonder UAC
+103	Altijd met UAC (zoals het origineel)
+104	Bestand:
+105	Naar:
+106	Hoofd-exe:
+107	Processor
+108	Geheugen
+109	Videokaart
+110	--run accepteert: auto, noadmin, admin
+111	De radicale modus VERWIJDERT het bronbestand na een geslaagde build (herstellen kan niet).\nAls u zeker bent, voeg --yes toe. Er is niets gedaan.
+112	--dx accepteert: install, skip, cancel
+113	Op schijf {0} is nog maar {1} over.
+114	innoextract.exe is nodig (plaats het ernaast of in tools/).
+115	Starten zonder beheerder is mislukt: {0}
+116	Geen grafische programma's gevonden, ik neem het consoleprogramma: {0}. Als dit geen game is, geef de exe handmatig op.
+117	Gekozen: {0} (geschikte exe-bestanden: {1}). Andere opties: {2}. Als het verkeerde programma start, geef de exe handmatig op.
+118	geschikt
+119	uitgesloten:
+120	MSIX: manifest kon niet worden gelezen: {0}
+121	Install_dotnet.bat kon niet worden gemaakt: {0}
+122	Analyse van {0}: {1}, {2}
+123	\n\nSommige bestanden zijn niet in Portabilizer ingebouwd:
+124	. Voor DirectX wordt DX_fix.bat gemaakt (het downloadt het volledige DirectX-pakket).
+125	. U moet ze handmatig installeren.
+126	DX_fix.bat is nodig
+127	uitgepakt {0} van {1}
+128	het bronbestand staat in de resultaatmap
+129	Bronbestand verwijderd: {0} ({1})
+130	. Als dit gegevens van dezelfde repack zijn, verwijder ze dan zelf.
+131	Opgeslagen in: {0}
+132	Map {0} bestaat niet. Pak eerst uit of installeer.
+133	Hoofd-exe niet gevonden - geef hem op in het veld 'Hoofd-exe'.
+134	Dit is een gewone exe - ik kopieer hem zoals hij is.
+135	Let op: MSIX is als gewone map uitgepakt, zonder registratie van het pakket. Klassieke (full trust) programma's werken zo meestal wel, maar UWP-apps en alles wat een pakket-ID nodig heeft, starten mogelijk niet.
+136	Radicale modus niet bevestigd: ik doe niets.
+137	Afgebroken door de gebruiker. Gedeeltelijk gemaakte bestanden staan nog op de schijf: u kunt ze verwijderen op het tabblad «Geschiedenis».
+138	Fout: {0}
+139	Converter
+140	Geschiedenis
+141	Diagnose
+142	Versies
+143	Uiterlijk
+144	Klaar voor gebruik.
+145	Portable maken
+146	Pauze
+147	Hervatten
+148	Afbreken
+149	Aanbevelingen
+150	DirectX is nodig
+151	De download staat op pauze, er is niets verloren. Annuleren stopt het werk definitief: daarna kunt u alleen opnieuw beginnen («Opnieuw» op het tabblad «Geschiedenis»).
+152	De schijfruimte raakt op
+153	Pauze: het proces is bevroren, de voortgang is bewaard.
+154	Ik ga verder waar ik was gebleven.
+155	Datum
+156	Bron
+157	Versie
+158	Type
+159	Status
+160	Grootte
+161	Resultaat
+162	Notities
+163	{0} wordt verwijderd ...
+164	\n... en nog {0}
+165	Map openen
+166	Starten
+167	Opnieuw
+168	Kopie verwijderen
+169	Bronbestand verwijderen
+170	Uit lijst verwijderen
+171	Vernieuwen
+172	Systeemgegevens verzamelen...
+173	Schijf: n.v.t.
+174	Schijf
+175	Capaciteit
+176	Vrij
+177	Gebruikt
+178	Portabilizer (R) - radicaal
+179	Normale versie inschakelen
+180	Versie (R) inschakelen
+181	Thema:
+182	Donkerrood (R):
+183	Lichtrood (R):
+184	Eigen kleur
+185	Ook de vensterachtergrond in deze kleur tinten?\n\nJa - de achtergrond krijgt een lichte tint van de gekozen kleur.\nNee - de achtergrond blijft neutraal, de kleur geldt alleen voor knoppen en accenten.
+186	De ruimte is waarschijnlijk niet voldoende.
+187	niet leesbaar
+188	 (lage prioriteit)
+189	De opgegeven exe staat buiten de map App - kies een bestand in App.
+190	{0}: deze cab gebruikt LZX-compressie en kan alleen onder Windows worden uitgepakt (expand.exe).
+191	expand.exe kon {0} niet uitpakken: {1}
+192	De bibliotheken ({0}) zijn naast {1} geplaatst: {2}.
+193	. Als het programma erover klaagt, voer dan DX_fix.bat uit in de resultaatmap (geen beheerdersrechten nodig).
+194	 ({0}). Ze zijn niet in Portabilizer ingebouwd of passen niet bij de bitversie: als het programma klaagt, installeer dan het betreffende pakket in het systeem.
+195	ontbreekt:
+196	Bronbestand NIET verwijderd:
+197	het uitpakprogramma meldde waarschuwingen (
+198	Kon {0} niet verwijderen: {1}
+199	Tijdelijke kopie verwijderd: {0} ({1})
+200	De .bin-bestanden naast het installatieprogramma zijn niet verwijderd (andere programma's hebben ze mogelijk nodig):
+201	Modus R: het bestand is zonder kopie naar App verplaatst ({0}).
+202	De installatiemodus geldt niet voor MSIX/APPX: het pakket wordt alleen uitgepakt.
+203	Het pakket kon niet worden uitgepakt.
+204	Dit is een bundel. Hoofdpakket: {0}. De uitgepakte bundel is opgeslagen in {1}.
+205	Alles is rustig. Hier verschijnen tips bij ruimtegebrek en veelvoorkomende fouten.
+206	Hoeveel er nog moet worden geschreven, valt niet precies te zeggen.
+207	Welk programma moet worden gestart?
+208	Kies een bestand.
+209	\n  ... en nog {0}
+210	Voorbereiding
+211	Geannuleerd voor de start: te weinig schijfruimte.
+212	Pauzeren is nu niet mogelijk (psutil is nodig: pip install psutil).
+213	Afbreken?
+214	Het werk stoppen? Daarna kunt u niet verdergaan waar u was gebleven: op het tabblad «Geschiedenis» staat «Opnieuw» (begint van voren af aan).
+215	verstreken {0}
+216	Kies eerst een item in de lijst.
+217	Wacht tot de huidige taak klaar is (of breek hem af).
+218	De resultaatmap bestaat niet op de schijf.
+219	Open handmatig:\n{0}
+220	Launch.bat niet gevonden: de conversie is niet voltooid.
+221	Verwijderen
+222	Deze map lijkt niet door Portabilizer te zijn gemaakt (de naam *_portable en een Launch.bat met de map App zijn nodig). Voorzichtigheidshalve verwijder ik hem niet.
+223	Map verwijderd.
+224	Niet alles kon worden verwijderd: een deel van de bestanden is in gebruik door een programma.
+225	Bronbestand niet gevonden (mogelijk al verwijderd).
+226	Bronbestand verwijderen?
+227	Wordt DEFINITIEF verwijderd (zonder prullenbak), in totaal {0}:\n\n{1}\n\nMap: {2}\n\nDit is uw bronbestand en kan niet worden hersteld. Verwijderen?
+228	Bestand verwijderd: {0}
+229	Item uit de lijst verwijderen? Bestanden op de schijf blijven ongemoeid.
+230	bezig met detecteren...
+231	Systeem: {0}\nProcessor: {1}\nWerkgeheugen: {2}\nVideokaart: {3}
+232	Er is een nieuwe versie van Portabilizer beschikbaar: {0}. U kunt die downloaden in Portabilizer Launcher of op de pagina {1}.
+233	_пример.json
+234	Mijn thema
+235	Hoofdkleur (knoppen, voortgang)
+236	Portabilizer (R) - radicale modus
+237	Nu actief: Portabilizer (R) - radicaal
+238	Nu actief: Portabilizer (normale versie)
+239	U kunt de versie wisselen als de huidige taak klaar is.
+240	Gestopt. Maak ruimte vrij, kies een andere schijf of voeg --force toe.
+241	De ruimte is krap: er is bijna geen marge, de taak kan op pauze gaan.
+242	U hebt gekozen: {0}
+243	nee
+244	downloadadres gevonden via indirecte aanwijzingen
+245	Geannuleerd: bibliotheken zijn nodig (
+246	Bibliotheken:
+247	Het bestand kon niet worden verplaatst ({0}), ik kopieer op de gewone manier.
+248	Het ingesloten pakket kon niet worden uitgepakt.
+249	De installatiemodus geldt niet voor een archief: het wordt alleen uitgepakt.
+250	Het archief kon niet worden uitgepakt.
+251	De installatiemodus is alleen beschikbaar voor Inno/NSIS-installatieprogramma's onder Windows.
+252	Modus:
+253	   Starten:
+254	Er moet nog ongeveer {0} worden geschreven en er is {1} vrij: dat moet genoeg zijn, het kan af.
+255	Er moet nog ongeveer {0} worden geschreven, maar er is {1} vrij: er ontbreekt ongeveer {2}.
+256	Ik blijf op pauze. Maak ruimte vrij en klik op «Hervatten».
+257	Doorgaan op eigen risico: ik stop pas als er minder dan {0} vrij is.
+258	Pauze. Maak schijfruimte vrij en klik op «Hervatten».
+259	 De taak staat op pauze: kies in het venster wat u wilt doen.
+260	Schatting van de benodigde ruimte
+261	Afgebroken. De resten kunt u verwijderen op het tabblad «Geschiedenis».
+262	Er is nog steeds weinig schijfruimte: {0}.
+263	Bezig
+264	nog ~{0}
+265	PAUZE
+266	Start handmatig:\n{0}\n\n{1}
+267	, daarom kan het niet worden herhaald. Download of installeer het opnieuw.
+268	De map kon niet volledig worden verwijderd. Sluit de programma's die hem gebruiken en probeer opnieuw.
+269	Portable kopie verwijderen?
+270	{0}\n\nGrootte: {1}\n\nDe map wordt definitief verwijderd. Het bronbestand (installatieprogramma of archief) blijft ongemoeid.
+271	{0} kernen / {1} threads
+272	{0:.0f}%  ({1} van {2})
+273	, geheugen {0} van {1}, {2:.0f} °C
+274	 (schatting via 3D)
+275	Kies hoe Portabilizer portable kopieën maakt. U kunt op elk moment wisselen (dit wijzigt alleen de werkmodus). Bij elke start begint het programma in de normale versie.
+276	Veilige versie.\n\nHet bronbestand (installatieprogramma, pakket of archief) blijft ongemoeid, ernaast wordt een portable map gemaakt.\n\nNadeel: beide kopieën blijven op de schijf: het bronbestand en de portable map.\n\nGeschikt voor bijna alles, vooral als u niet zeker weet of het programma zal werken.
+277	Radicale versie (risico).\n\nVerwijdert na een geslaagde build het bronbestand (alle delen van het archief) en tijdelijke kopieën, zodat het resultaat minder ruimte inneemt. De portable map wordt naast het bronbestand gemaakt.\n\nBelangrijk: tijdens het werk is evenveel ruimte nodig als in de normale versie: het bronbestand wordt pas helemaal aan het eind verwijderd, na controle. Een verwijderd bestand kan niet worden hersteld: als er later iets misgaat, moet u het opnieuw downloaden of vanaf het platform installeren.\n\nVoor elke start vraagt het programma om bevestiging.
+278	Er is een nieuwe versie beschikbaar: {0}.
+279	U hebt de nieuwste versie ({0}) of er is geen verbinding met GitHub.
+280	Programmaversie: {0}
+281	Bij het starten controleren op nieuwe versies (verzoek aan GitHub, er worden geen gegevens verzonden)
+282	Nu controleren
+283	Uiterlijk van het venster. Wijzigingen worden direct toegepast en onthouden. Rode thema's worden automatisch ingeschakeld in versie (R) en aangepast aan het lichte of donkere thema.
+284	 (eigen)
+285	Klassiek uiterlijk: de kleuren worden door Windows bepaald.
+286	. Kleuren: achtergrond, velden, knoppen, tekst, secundair, accent, succes, waarschuwing, fout.
+287	Kon de map niet openen: {0}
+288	Kon het thema niet opslaan: {0}
+289	Eigen kleur kiezen...
+290	Map themes openen
+291	Themalijst vernieuwen
+292	Eigen thema's: plaats een .json-bestand in de map themes naast het programma (het voorbeeld _пример.json wordt gemaakt met de knop hierboven). Daarin staan kleuren in de vorm #rrggbb, de naam, "kind": "light" of "dark" en "r": true voor rode thema's van modus R. Ontbrekende kleuren komen uit het ingebouwde thema. Bevestigingsvensters (Windows-berichten) blijven die van het systeem.
+293	Portable maken (R)
+294	Bezig met werken
+295	De taak loopt nog. Afbreken en afsluiten?
+296	LET OP:
+297	GEVAAR:
+298	 Het werk is gestopt om te voorkomen dat de schijf volloopt.
+299	beschadigd MSZIP-blok
+300	Ontbreekt:
+301	Kon de bundel niet verplaatsen: {0}
+302	Het archief bevat geen kant-en-klaar programma, maar wel een installatieprogramma: {0}. Ik ga ermee verder. De inhoud van het archief is opgeslagen in {1}.
+303	Naast het installatieprogramma zijn .bin-bestanden gevonden: {0} ({1}):
+304	Uitpakken is mislukt. Mogelijk is het installatieprogramma niet standaard (dan is een virtualisatieprogramma zoals Cameyo / Turbo Studio nodig).
+305	Ik probeer de stille installatie. De uitgepakte bestanden bewaar ik in {0}.
+306	De download wordt op uw keuze geannuleerd.
+307	Stoppen: ik ruim de schijf op
+308	Download annuleren
+309	Portabilizer (R): het bestand wordt verplaatst
+310	{0} ({1}) wordt VERPLAATST naar de map App ernaast: er wordt geen kopie gemaakt, extra ruimte is niet nodig.\n\nOp de oude plek staat het bestand dan niet meer. U kunt het terugkrijgen door het uit de map App te halen.\n\nDoorgaan?
+311	Portabilizer (R): het bronbestand wordt verwijderd
+312	Wilt u dit bestand echt in de radicale modus portable maken?\n\nNa een geslaagde build worden DEFINITIEF VERWIJDERD (zonder prullenbak):\n{0}\nin totaal {1}, plus tijdelijke kopieën.\n\nHet bronbestand kan daarna niet worden hersteld. Als er iets misgaat (bijvoorbeeld de game start niet), moet u het opnieuw downloaden of vanaf het platform installeren.\n\nVerwijderen gebeurt alleen als de build is gelukt en alles is gecontroleerd; bij een fout of annulering blijft het bestand staan. Het resultaat wordt naast het bronbestand gemaakt.\n\nDoorgaan?
+313	Klaar. Het bestand is zonder kopie verplaatst: er is geen extra ruimte gebruikt.
+314	vrij op schijf {0}
+315	 (niet op de schijf)
+316	Het bronbestand bestaat niet meer
+317	Opnieuw beginnen?
+318	De map bestaat al (rest van een eerdere poging):\n{0}\nGrootte: {1}\n\nVerwijderen en opnieuw beginnen?
+319	CPU/RAM-belasting niet beschikbaar: installeer psutil (pip install psutil). In de gebouwde Portabilizer.exe zit het al.
+320	Er is bijna geen werkgeheugen meer. Sluit de browser en overbodige programma's, anders kan het uitpakken sterk vertragen.
+321	Schijf: lezen {0}/s, schrijven {1}/s
+322	belasting niet beschikbaar
+323	Nu:
+324	Zonder DirectX doorgaan is gekozen.
+325	Doorgaan zonder is gekozen.
+326	Map {0} kan na controle worden verwijderd: hij is alleen nodig als bron van het installatieprogramma.
+327	Na het uitpakken is de hoofd-exe niet gevonden.
+328	Onvoldoende ruimte
+329	Volgens de schatting is er niet genoeg ruimte. Als de ruimte op raakt, stopt het uitpakken met een fout.\n\nToch doorgaan?
+330	Er zijn meerdere geschikte programma's gevonden en ik weet niet zeker welke het hoofdprogramma is. Kies het programma dat de gewenste toepassing start (u kunt het later wijzigen in de modus «Alleen Launch.bat»).
+331	Automatisch kiezen
+332	Is er genoeg ruimte?
+333	Klaar. Het bronbestand is verwijderd, {0} vrijgemaakt.
+334	 (verwijderd door de radicale modus)
+335	  <- waar we opslaan
+336	Op schijf {0}, waarop u opslaat, is weinig ruimte ({1}). Kies een andere schijf in het veld «Naar».
+337	Kon het uitgepakte archief niet verplaatsen: {0}
+338	Uitgepakt {0}, maar in .bin staat {1}: lijkt op een repack waarvan de gegevens door het installatieprogramma zelf worden geïnstalleerd.
+339	Kon het uitgepakte niet verplaatsen: {0}
+340	Installatie mislukt - de uitgepakte bestanden zijn teruggezet in App.
+341	Kon het uitgepakte niet terugzetten in App: {0}
+342	\n\nToch beginnen?
+343	Waarschuwing: er staan .bin-bestanden naast. Als het programma niet start of er gegevens ontbreken, herhaal dan in de modus 'Alleen installeren (in App)'.
+344	Installatieprogramma's, pakketten, archieven
+345	Alle
+346	Programma's
+347	Klaar. Het resultaat staat op het tabblad «Geschiedenis».
+348	Het is niet gelukt. Details staan in het logboek en bij de aanbevelingen.
+349	Klaar, maar het bronbestand is niet verwijderd:
+350	Taal
+351	Interfacetaal:
+352	De taal verandert meteen: het venster start zichzelf opnieuw op en de instellingen blijven behouden.
+353	Wacht tot de taak klaar is of annuleer haar: na het wisselen van taal wordt het venster opnieuw opgestart.

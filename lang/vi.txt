@@ -1,0 +1,353 @@
+1	Cần {0} {1}, còn trống {2} trên ổ đĩa {3}.{4}
+2	đang chạy
+3	tạm dừng
+4	xong
+5	lỗi
+6	đã hủy
+7	đã hủy (ứng dụng bị đóng)
+8	Tự động (theo Windows)
+9	Sáng
+10	Tối
+11	Cổ điển (hệ thống)
+12	Màu của tôi
+13	B
+14	KB
+15	MB
+16	GB
+17	 Nếu bên trong kho lưu trữ có trình cài đặt, sẽ cần thêm dung lượng tương đương.
+18	theo nội dung kho lưu trữ
+19	ước tính
+20	Game Unreal Engine có thể cần thư viện DirectX (June 2010). Nếu khi khởi động xuất hiện lỗi về xinput1_3.dll, X3DAudio1_7.dll hoặc XAPOFX1_5.dll, hãy chạy DX_fix.bat trong thư mục kết quả: không cần quyền quản trị.
+21	Chế độ cực đoan không xóa tệp nguồn vì không kiểm tra được hết mọi thứ (lý do có trong nhật ký). Thư mục portable đã được tạo, tệp nguồn vẫn còn: hãy kiểm tra thư mục đó rồi tự xóa tệp nguồn.
+22	Chương trình cần .NET nhưng máy tính này không có. Hãy chạy Install_dotnet.bat trong thư mục kết quả (tệp này tải runtime vào bản portable, không cần quyền quản trị).
+23	Tệp yêu cầu mật khẩu. Portabilizer không nhập mật khẩu: hãy giải nén thủ công bằng 7-Zip (sẽ hỏi mật khẩu) rồi chọn trình cài đặt hoặc thư mục từ kết quả.
+24	Không tìm thấy 7z.exe (không có cạnh chương trình, cũng không có trong 7-Zip đã cài). Hãy cài 7-Zip từ 7-zip.org hoặc đặt 7z.exe và 7z.dll cạnh Portabilizer hoặc vào thư mục tools.
+25	Không tìm thấy innoextract.exe. Hãy đặt nó cạnh Portabilizer hoặc vào thư mục tools.
+26	Ổ đĩa không đủ dung lượng. Hãy giải phóng dung lượng hoặc chọn ổ khác trong ô «Đích», sau đó vào tab «Lịch sử» và nhấn «Thử lại».
+27	Trình cài đặt yêu cầu quyền quản trị. Nếu không có, hãy thử chế độ «Chỉ giải nén» hoặc tìm bản portable từ nhà phát triển.
+28	Không tìm thấy exe chính. Nhật ký phía trên liệt kê các exe đã tìm thấy và lý do loại bỏ: hãy chép tên cần dùng vào ô «Exe chính» và chạy chế độ «Chỉ Launch.bat».
+29	Có vẻ đây là ứng dụng UWP: ngoài gói đã cài đặt, nhiều khả năng nó sẽ không chạy. Hãy tìm trình cài đặt exe.
+30	Hãy kiểm tra tệp đã được tải đầy đủ (so sánh dung lượng hoặc tải lại) và 7z.exe nằm cạnh chương trình.
+31	Thư mục này đã được tạo trước đó. Hãy mở nó trong tab «Lịch sử» hoặc xóa nếu muốn bắt đầu lại.
+32	Dữ liệu nằm trong các tệp .bin bên ngoài, do chính trình cài đặt cài. Việc này có thể cần cài đặt, mà cài đặt thì cần quyền quản trị.
+33	Các tệp đã tạo một phần vẫn còn trên đĩa. Bạn có thể xóa chúng trong tab «Lịch sử».
+34	N/A
+35	Giải nén
+36	Trình giải nén: {0}
+37	Cài đặt
+38	Cài đặt ngầm vào thư mục App (có thể mất nhiều phút, đừng đóng cửa sổ)...
+39	Không có quyền quản trị thì không được - đang thử với UAC (hãy nhấn 'Yes'). Không thể dừng trình cài đặt chạy với quyền quản trị từ đây.
+40	tên hệ thống (setup/update/redist, v.v.)
+41	tiện ích hệ thống của bản repack
+42	thư mục tạm của trình cài đặt
+43	chương trình dòng lệnh
+44	Tìm thấy exe: {0}. Dưới đây là {1} exe đầu tiên và lý do không phù hợp:
+45	Hãy chép tên cần dùng vào ô «Exe chính» và chạy chế độ «Chỉ Launch.bat».
+46	Không tìm thấy tệp '{0}' trong App.
+47	Cần .NET ({0}) cho {1}, nhưng máy tính này không có. Hãy chạy Install_dotnet.bat trong thư mục kết quả: tệp này tải runtime vào thư mục dotnet bên trong bản portable (không cần quyền quản trị), Launch.bat sẽ tự dùng nó.
+48	Khởi chạy: bình thường, không cần nâng quyền.
+49	Chương trình cần các thư viện mà hệ thống không có:\n{0}\n\nĐặt chúng vào thư mục chương trình? Không cần quyền quản trị, hệ thống không bị thay đổi, mọi thứ nằm trong thư mục portable.\n\nCó - đặt vào.\nKhông - tiếp tục mà không có chúng (chương trình có thể không chạy).\nHủy - dừng lại.
+50	Xong: {0}
+51	Exe chính: {0}
+52	Hãy chạy qua Launch.bat. Có thể chép thư mục này sang ổ USB.
+53	Chế độ cực đoan: đã giải phóng {0}.
+54	Chế độ: {0}
+55	Loại: {0}
+56	Đỏ nhạt (R)
+57	Than chì điểm đỏ
+58	Đỏ đô
+59	Đỏ anh đào
+60	Tệp: exe, msi, msix/appx, kho lưu trữ (rar, zip, 7z...). Exe chính không bắt buộc: tên (App.exe), đường dẫn bên trong App hoặc tệp từ thư mục App. Nhật ký được lưu trong portabilizer.log.
+61	CHẾ ĐỘ (R): exe thông thường chỉ được DI CHUYỂN vào thư mục App (không có bản sao, không cần thêm dung lượng). Kho lưu trữ và trình cài đặt được giải nén trước, sau đó mới xóa tệp nguồn: trong lúc chạy cần dung lượng cho phần đã giải nén. Sẽ có xác nhận trước khi bắt đầu.
+62	Không xóa {0}: thư mục này không giống do Portabilizer tạo.
+63	Cần 7z.exe: không tìm thấy cạnh chương trình, cũng không có trong 7-Zip đã cài. Hãy cài 7-Zip (7-zip.org) hoặc đặt 7z.exe và 7z.dll cạnh chương trình hoặc trong tools/.
+64	7-Zip, mã 1
+65	Tệp được bảo vệ bằng mật khẩu. Portabilizer không nhập mật khẩu: hãy giải nén thủ công (7-Zip sẽ tự hỏi mật khẩu), sau đó chọn thư mục đã giải nén hoặc trình cài đặt.
+66	Trình cài đặt kết thúc với lỗi. Hãy kiểm tra các tệp .bin nằm cạnh setup.exe.
+67	Trong thư mục {0} hoàn toàn không có tệp exe. Hãy kiểm tra chương trình đã được giải nén hoặc cài đặt đúng vào đây.
+68	MSIX: đã sửa tên có mã hóa %XX: {0}
+69	MSIX: không tìm thấy AppxManifest.xml - tìm exe theo cách thông thường.
+70	MSIX: manifest không có runFullTrust - nhiều khả năng đây là ứng dụng UWP. Ngoài gói đã cài đặt, có thể nó sẽ không chạy.
+71	, manifest: {0}.
+72	Đây có vẻ là trình cài đặt trực tuyến (stub): bên trong có liên kết tải xuống ({0}). Chương trình thật sẽ được tải khi chạy và cài vào hệ thống, nên nó sẽ không thành bản portable. Để portable thực sự, hãy tải trình cài đặt ngoại tuyến đầy đủ và chuyển nó sang portable.
+73	Tệp được bảo vệ bằng packer: không thể giải nén và phân tích, chỉ có thể chạy.
+74	Khởi chạy: có yêu cầu UAC (chọn thủ công). Launch.bat không thay đổi quyền.
+75	Khởi chạy: không yêu cầu UAC (RunAsInvoker, chọn thủ công).
+76	{0} yêu cầu quyền quản trị. Launch.bat chạy nó mà không có yêu cầu UAC (RunAsInvoker), không cần mật khẩu. Nếu chương trình thực sự ghi vào Program Files, HKLM, cài dịch vụ hoặc trình điều khiển thì khi thiếu quyền nó có thể không hoạt động. Khi đó hãy dùng Launch_admin.bat (khởi chạy thông thường có yêu cầu UAC).
+77	không phải cab
+78	cab nhiều phần
+79	Khác
+80	Game Unreal Engine: Launch.bat chạy trực tiếp {0}. {1} ở thư mục gốc khi chạy lần đầu sẽ yêu cầu cài DirectX và Visual C++ vào hệ thống và tự đóng nếu bạn từ chối. Để chạy qua nó: Launch_stub.bat.
+81	Unreal: khởi chạy {0}
+82	exe yêu cầu quyền quản trị: Launch.bat chạy qua RunAsInvoker
+83	Chế độ cực đoan: tệp nguồn được di chuyển chứ không sao chép - không tốn thêm gigabyte nào.
+84	công việc đã bị hủy
+85	Launch.bat chưa được tạo
+86	thư mục App trống
+87	Các tệp nằm trong: {0}
+88	Các thư mục tệp đang trống.
+89	Chế độ không xác định: {0}
+90	Chưa chỉ định tệp.
+91	Không tìm thấy tệp.
+92	Thư mục đã tồn tại: {0}
+93	Hãy xóa nó, hoặc chọn chế độ 'Chỉ Launch.bat'.
+94	Không tìm thấy exe chính.
+95	Hãy chỉ định exe trong ô 'Exe chính' và chạy chế độ 'Chỉ Launch.bat'.
+96	màu phải có dạng #rrggbb
+97	Tự động
+98	Chỉ giải nén
+99	Chỉ cài đặt (vào App)
+100	Chỉ Launch.bat
+101	Tự động (không UAC nếu exe yêu cầu quyền quản trị)
+102	Luôn không UAC
+103	Luôn có UAC (như bản gốc)
+104	Tệp:
+105	Đích:
+106	Exe chính:
+107	Bộ xử lý
+108	Bộ nhớ
+109	Card đồ họa
+110	--run chấp nhận: auto, noadmin, admin
+111	Chế độ cực đoan XÓA tệp nguồn sau khi tạo thành công (không thể khôi phục).\nNếu bạn chắc chắn, hãy thêm --yes. Chưa làm gì cả.
+112	--dx chấp nhận: install, skip, cancel
+113	Trên ổ đĩa {0} chỉ còn {1}.
+114	Cần innoextract.exe (đặt cạnh nó hoặc trong tools/).
+115	Khởi chạy không quyền quản trị không thành công: {0}
+116	Không có chương trình đồ họa, dùng chương trình dòng lệnh: {0}. Nếu đây không phải game, hãy chỉ định exe thủ công.
+117	Đã chọn: {0} (exe phù hợp: {1}). Lựa chọn khác: {2}. Nếu chạy sai, hãy chỉ định exe thủ công.
+118	phù hợp
+119	bị loại:
+120	MSIX: không đọc được manifest: {0}
+121	Không tạo được Install_dotnet.bat: {0}
+122	Phân tích {0}: {1}, {2}
+123	\n\nMột số tệp không được tích hợp trong Portabilizer:
+124	. Với DirectX sẽ tạo DX_fix.bat (tải gói DirectX đầy đủ).
+125	. Bạn sẽ phải cài chúng thủ công.
+126	cần DX_fix.bat
+127	đã giải nén {0} trong {1}
+128	tệp nguồn nằm bên trong thư mục kết quả
+129	Đã xóa tệp nguồn: {0} ({1})
+130	. Nếu đây là dữ liệu của cùng bản repack, hãy tự xóa chúng.
+131	Đã lưu vào: {0}
+132	Không có thư mục {0}. Hãy giải nén hoặc cài đặt trước.
+133	Không tìm thấy exe chính - hãy chỉ định trong ô 'Exe chính'.
+134	Đây là exe thông thường - sao chép nguyên trạng.
+135	Chú ý: MSIX được giải nén như thư mục thông thường, không đăng ký gói. Chương trình cổ điển (full trust) thường chạy được theo cách này, còn ứng dụng UWP và mọi thứ cần định danh gói có thể không chạy.
+136	Chế độ cực đoan chưa được xác nhận: không làm gì cả.
+137	Đã bị người dùng dừng. Các tệp tạo dở vẫn còn trên đĩa: bạn có thể xóa chúng trong tab «Lịch sử».
+138	Lỗi: {0}
+139	Bộ chuyển đổi
+140	Lịch sử
+141	Chẩn đoán
+142	Phiên bản
+143	Giao diện
+144	Sẵn sàng.
+145	Tạo bản portable
+146	Tạm dừng
+147	Tiếp tục
+148	Hủy bỏ
+149	Gợi ý
+150	Cần DirectX
+151	Việc tải đang tạm dừng, không mất gì cả. Hủy bỏ sẽ dừng hẳn công việc: sau đó chỉ có thể bắt đầu lại («Thử lại» trong tab «Lịch sử»).
+152	Sắp hết dung lượng ổ đĩa
+153	Tạm dừng: tiến trình bị đóng băng, tiến độ được giữ lại.
+154	Tiếp tục từ chỗ cũ.
+155	Ngày
+156	Nguồn
+157	Phiên bản
+158	Loại
+159	Trạng thái
+160	Dung lượng
+161	Kết quả
+162	Ghi chú
+163	Đang xóa {0} ...
+164	\n... và {0} mục nữa
+165	Mở thư mục
+166	Chạy
+167	Thử lại
+168	Xóa bản sao
+169	Xóa tệp nguồn
+170	Xóa khỏi danh sách
+171	Làm mới
+172	Đang thu thập thông tin hệ thống...
+173	Ổ đĩa: N/A
+174	Ổ đĩa
+175	Dung lượng
+176	Còn trống
+177	Đã dùng
+178	Portabilizer (R) - cực đoan
+179	Bật bản thông thường
+180	Bật bản (R)
+181	Giao diện:
+182	Đỏ tối (R):
+183	Đỏ sáng (R):
+184	Màu tùy chọn
+185	Tô màu nền cửa sổ theo màu này luôn?\n\nCó - nền sẽ hơi ngả theo màu đã chọn.\nKhông - nền giữ trung tính, màu chỉ áp dụng cho nút và điểm nhấn.
+186	Nhiều khả năng không đủ dung lượng.
+187	không đọc được
+188	 (ưu tiên thấp)
+189	Exe đã chỉ định nằm ngoài thư mục App - hãy chọn tệp bên trong App.
+190	{0}: cab này dùng nén LZX, chỉ giải nén được trên Windows (expand.exe).
+191	expand.exe không lấy được {0}: {1}
+192	Các thư viện ({0}) đã được đặt cạnh {1}: {2}.
+193	. Nếu chương trình báo thiếu chúng, hãy chạy DX_fix.bat trong thư mục kết quả (không cần quyền quản trị).
+194	 ({0}). Chúng không được tích hợp trong Portabilizer hoặc không khớp kiến trúc: nếu chương trình báo lỗi, hãy cài gói tương ứng vào hệ thống.
+195	thiếu:
+196	Tệp nguồn CHƯA bị xóa:
+197	trình giải nén báo có cảnh báo (
+198	Không xóa được {0}: {1}
+199	Đã xóa bản sao tạm: {0} ({1})
+200	Các tệp .bin cạnh trình cài đặt không bị xóa (có thể chương trình khác cần đến):
+201	Chế độ R: tệp đã được chuyển vào App mà không sao chép ({0}).
+202	Chế độ cài đặt không áp dụng cho MSIX/APPX: gói chỉ được giải nén.
+203	Không giải nén được gói.
+204	Đây là bundle. Gói chính: {0}. Kết quả giải nén bundle được lưu trong {1}.
+205	Hiện mọi thứ vẫn yên ổn. Gợi ý sẽ xuất hiện ở đây khi thiếu dung lượng hoặc gặp lỗi thường gặp.
+206	Không thể nói chính xác còn phải ghi bao nhiêu.
+207	Chạy chương trình nào?
+208	Hãy chọn tệp.
+209	\n  ... và {0} mục nữa
+210	Chuẩn bị
+211	Đã hủy trước khi bắt đầu: ổ đĩa ít dung lượng.
+212	Hiện chưa thể tạm dừng (cần psutil: pip install psutil).
+213	Dừng lại?
+214	Dừng công việc? Sau đó không thể tiếp tục từ chỗ dừng: trong tab «Lịch sử» sẽ có «Thử lại» (bắt đầu lại từ đầu).
+215	đã qua {0}
+216	Hãy chọn một mục trong danh sách trước.
+217	Hãy đợi tác vụ hiện tại kết thúc (hoặc hủy bỏ).
+218	Thư mục kết quả không còn trên đĩa.
+219	Hãy mở thủ công:\n{0}
+220	Không tìm thấy Launch.bat: chuyển đổi chưa hoàn tất.
+221	Xóa
+222	Thư mục này không giống do Portabilizer tạo (cần tên *_portable và Launch.bat cùng thư mục App). Để đảm bảo an toàn, không xóa.
+223	Đã xóa thư mục.
+224	Không xóa hết được: một số tệp đang được chương trình sử dụng.
+225	Không tìm thấy tệp nguồn (có thể đã bị xóa).
+226	Xóa tệp nguồn?
+227	Sẽ bị xóa VĨNH VIỄN (không qua thùng rác), tổng cộng {0}:\n\n{1}\n\nThư mục: {2}\n\nĐây là tệp nguồn của bạn, không thể khôi phục. Xóa?
+228	Đã xóa tệp: {0}
+229	Xóa mục khỏi danh sách? Các tệp trên đĩa không bị ảnh hưởng.
+230	đang xác định...
+231	Hệ thống: {0}\nBộ xử lý: {1}\nRAM: {2}\nCard đồ họa: {3}
+232	Đã có phiên bản Portabilizer mới: {0}. Bạn có thể tải trong Portabilizer Launcher hoặc tại trang {1}.
+233	_mau.json
+234	Giao diện của tôi
+235	Màu chính (nút, tiến trình)
+236	Portabilizer (R) - chế độ cực đoan
+237	Đang bật: Portabilizer (R) - cực đoan
+238	Đang bật: Portabilizer (bản thông thường)
+239	Có thể đổi phiên bản sau khi tác vụ hiện tại kết thúc.
+240	Đã dừng. Hãy giải phóng dung lượng, chọn ổ khác hoặc thêm --force.
+241	Dung lượng sát nút: gần như không còn dự phòng, tác vụ có thể bị tạm dừng.
+242	Bạn đã chọn: {0}
+243	không
+244	địa chỉ tải xuống được tìm thấy qua dấu hiệu gián tiếp
+245	Đã hủy: cần các thư viện (
+246	Thư viện:
+247	Không chuyển được tệp ({0}), sao chép theo cách thông thường.
+248	Không giải nén được gói lồng bên trong.
+249	Chế độ cài đặt không áp dụng cho kho lưu trữ: nó chỉ được giải nén.
+250	Không giải nén được kho lưu trữ.
+251	Chế độ cài đặt chỉ khả dụng cho trình cài đặt Inno/NSIS trên Windows.
+252	Chế độ:
+253	   Khởi chạy:
+254	Còn phải ghi khoảng {0}, còn trống {1}: chắc là đủ, có thể hoàn tất.
+255	Còn phải ghi khoảng {0}, mà còn trống {1}: thiếu khoảng {2}.
+256	Vẫn đang tạm dừng. Hãy giải phóng dung lượng và nhấn «Tiếp tục».
+257	Tiếp tục tự chịu rủi ro: chỉ dừng khi dung lượng trống còn dưới {0}.
+258	Tạm dừng. Hãy giải phóng dung lượng ổ đĩa và nhấn «Tiếp tục».
+259	 Tác vụ đang tạm dừng: hãy chọn việc cần làm trong cửa sổ.
+260	Ước tính dung lượng cần thiết
+261	Đã dừng. Có thể xóa phần còn lại trong tab «Lịch sử».
+262	Ổ đĩa vẫn còn ít dung lượng: {0}.
+263	Công việc
+264	còn ~{0}
+265	TẠM DỪNG
+266	Hãy chạy thủ công:\n{0}\n\n{1}
+267	, vì vậy không thể thử lại. Hãy tải hoặc cài đặt lại.
+268	Không xóa hết được thư mục. Hãy đóng các chương trình đang dùng nó rồi thử lại.
+269	Xóa bản portable?
+270	{0}\n\nDung lượng: {1}\n\nThư mục sẽ bị xóa vĩnh viễn. Tệp nguồn (trình cài đặt hoặc kho lưu trữ) không bị ảnh hưởng.
+271	{0} nhân / {1} luồng
+272	{0:.0f}%  ({1} trên {2})
+273	, bộ nhớ {0} trên {1}, {2:.0f} °C
+274	 (ước tính theo 3D)
+275	Hãy chọn cách Portabilizer tạo bản portable. Bạn có thể chuyển đổi bất cứ lúc nào (chỉ đổi chế độ làm việc). Mỗi lần mở, chương trình bắt đầu ở bản thông thường.
+276	Bản an toàn.\n\nTệp nguồn (trình cài đặt, gói hoặc kho lưu trữ) được giữ nguyên, thư mục portable được tạo bên cạnh.\n\nNhược điểm: cả hai bản đều còn trên đĩa, gồm tệp nguồn và thư mục portable.\n\nPhù hợp với hầu hết trường hợp, nhất là khi bạn không chắc chương trình sẽ chạy.
+277	Bản cực đoan (có rủi ro).\n\nSau khi tạo thành công, XÓA tệp nguồn (mọi phần của kho lưu trữ) và các bản sao tạm, nên kết quả chiếm ít dung lượng hơn. Thư mục portable được tạo cạnh tệp nguồn.\n\nQuan trọng: trong lúc chạy, dung lượng cần có bằng bản thông thường: tệp nguồn chỉ bị xóa ở cuối cùng, sau khi kiểm tra. Không thể khôi phục tệp đã xóa: nếu sau đó có sự cố, bạn sẽ phải tải hoặc cài lại từ nền tảng gốc.\n\nTrước mỗi lần chạy, chương trình sẽ yêu cầu xác nhận.
+278	Có phiên bản mới: {0}.
+279	Bạn đang dùng phiên bản mới nhất ({0}) hoặc không kết nối được GitHub.
+280	Phiên bản chương trình: {0}
+281	Kiểm tra phiên bản mới khi khởi động (gửi yêu cầu tới GitHub, không gửi dữ liệu nào)
+282	Kiểm tra ngay
+283	Giao diện cửa sổ. Thay đổi có hiệu lực ngay và được ghi nhớ. Giao diện đỏ tự động bật ở bản (R) và được chọn phù hợp với giao diện sáng hoặc tối.
+284	 (tùy chỉnh)
+285	Giao diện cổ điển: màu do Windows quyết định.
+286	. Màu: nền, ô nhập, nút, văn bản, phụ, điểm nhấn, thành công, cảnh báo, lỗi.
+287	Không mở được thư mục: {0}
+288	Không lưu được giao diện: {0}
+289	Chọn màu tùy chọn...
+290	Mở thư mục themes
+291	Làm mới danh sách giao diện
+292	Giao diện riêng: hãy đặt tệp .json vào thư mục themes cạnh chương trình (tệp mẫu _mau.json được tạo bằng nút phía trên). Trong đó có màu dạng #rrggbb, tên, "kind": "light" hoặc "dark" và "r": true cho giao diện đỏ của chế độ R. Các màu còn thiếu lấy từ giao diện có sẵn. Hộp thoại xác nhận (thông báo Windows) vẫn theo kiểu hệ thống.
+293	Tạo bản portable (R)
+294	Đang làm việc
+295	Tác vụ vẫn đang chạy. Dừng và thoát?
+296	CHÚ Ý:
+297	NGUY HIỂM:
+298	 Công việc đã dừng để không làm đầy ổ đĩa.
+299	khối MSZIP bị hỏng
+300	Thiếu:
+301	Không di chuyển được bundle: {0}
+302	Trong kho lưu trữ không có chương trình sẵn dùng, nhưng có trình cài đặt: {0}. Tiếp tục với nó. Nội dung kho lưu trữ được lưu trong {1}.
+303	Tìm thấy tệp .bin cạnh trình cài đặt: {0} ({1}):
+304	Không giải nén được. Có thể trình cài đặt không chuẩn (khi đó cần công cụ ảo hóa như Cameyo / Turbo Studio).
+305	Đang thử cài đặt ngầm. Các tệp đã giải nén sẽ được lưu trong {0}.
+306	Việc tải bị hủy theo lựa chọn của bạn.
+307	Dừng: dọn đĩa
+308	Hủy tải
+309	Portabilizer (R): tệp sẽ được di chuyển
+310	{0} ({1}) sẽ được DI CHUYỂN vào thư mục App cạnh nó: không tạo bản sao, không cần thêm dung lượng.\n\nỞ vị trí cũ sẽ không còn tệp. Bạn có thể lấy lại từ thư mục App.\n\nTiếp tục?
+311	Portabilizer (R): tệp nguồn sẽ bị xóa
+312	Bạn có chắc muốn tạo bản portable cho tệp này ở chế độ cực đoan?\n\nSau khi tạo thành công, sẽ XÓA VĨNH VIỄN (không qua thùng rác):\n{0}\ntổng cộng {1}, cùng các bản sao tạm.\n\nSau đó không thể khôi phục tệp nguồn. Nếu có sự cố (ví dụ game không chạy), bạn sẽ phải tải hoặc cài lại từ nền tảng gốc.\n\nChỉ xóa khi quá trình tạo thành công và mọi thứ đã được kiểm tra; nếu có lỗi hoặc bị hủy, tệp vẫn còn. Kết quả được tạo cạnh tệp nguồn.\n\nTiếp tục?
+313	Xong. Tệp được di chuyển mà không sao chép: không tốn thêm dung lượng.
+314	còn trống trên ổ đĩa {0}
+315	 (không có trên đĩa)
+316	Tệp nguồn không còn nữa
+317	Bắt đầu lại?
+318	Thư mục đã tồn tại (phần còn lại của lần thử trước):\n{0}\nDung lượng: {1}\n\nXóa và bắt đầu lại?
+319	Không có thông tin tải CPU/RAM: hãy cài psutil (pip install psutil). Trong Portabilizer.exe đã build, nó có sẵn bên trong.
+320	Gần hết bộ nhớ RAM. Hãy đóng trình duyệt và các chương trình không cần thiết, nếu không việc giải nén có thể chậm đi nhiều.
+321	Ổ đĩa: đọc {0}/s, ghi {1}/s
+322	không có thông tin tải
+323	Hiện tại:
+324	Đã chọn tiếp tục mà không có DirectX.
+325	Đã chọn tiếp tục mà không có chúng.
+326	Có thể xóa thư mục {0} sau khi kiểm tra: nó chỉ cần làm nguồn của trình cài đặt.
+327	Sau khi giải nén không tìm thấy exe chính.
+328	Không đủ dung lượng
+329	Theo ước tính, dung lượng sẽ không đủ. Nếu hết dung lượng, việc giải nén sẽ dừng với lỗi.\n\nVẫn tiếp tục?
+330	Tìm thấy nhiều chương trình phù hợp và tôi không chắc cái nào là chính. Hãy chọn cái chạy ứng dụng cần dùng (có thể đổi sau ở chế độ «Chỉ Launch.bat»).
+331	Chọn tự động
+332	Có đủ dung lượng không?
+333	Xong. Tệp nguồn đã bị xóa, đã giải phóng {0}.
+334	 (đã bị chế độ cực đoan xóa)
+335	  <- nơi lưu
+336	Ổ đĩa {0} mà bạn lưu vào còn ít dung lượng ({1}). Hãy chọn ổ khác trong ô «Đích».
+337	Không di chuyển được kho lưu trữ đã giải nén: {0}
+338	Đã giải nén {0}, còn trong .bin là {1}: có vẻ là bản repack mà dữ liệu do chính trình cài đặt cài.
+339	Không di chuyển được phần đã giải nén: {0}
+340	Cài đặt không thành công - các tệp đã giải nén được trả về App.
+341	Không trả được phần đã giải nén về App: {0}
+342	\n\nVẫn bắt đầu?
+343	Cảnh báo: bên cạnh có các tệp .bin. Nếu chương trình không chạy hoặc thiếu dữ liệu, hãy làm lại ở chế độ 'Chỉ cài đặt (vào App)'.
+344	Trình cài đặt, gói, kho lưu trữ
+345	Tất cả
+346	Chương trình
+347	Xong. Kết quả nằm trong tab «Lịch sử».
+348	Không thành công. Chi tiết xem trong nhật ký và gợi ý.
+349	Xong, nhưng tệp nguồn chưa bị xóa:
+350	Ngôn ngữ
+351	Ngôn ngữ giao diện:
+352	Ngôn ngữ đổi ngay: cửa sổ sẽ tự khởi động lại, cài đặt được giữ nguyên.
+353	Hãy đợi tác vụ kết thúc hoặc hủy bỏ trước: sau khi đổi ngôn ngữ, cửa sổ sẽ khởi động lại.

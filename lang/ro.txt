@@ -1,0 +1,353 @@
+1	Sunt necesari {0} {1}, liber: {2} pe discul {3}.{4}
+2	în curs
+3	pauză
+4	gata
+5	eroare
+6	întrerupt
+7	întrerupt (aplicația a fost închisă)
+8	Auto (ca în Windows)
+9	Luminoasă
+10	Întunecată
+11	Clasică (de sistem)
+12	Culoarea mea
+13	B
+14	KB
+15	MB
+16	GB
+17	 Dacă în arhivă se află un program de instalare, va fi nevoie de aproximativ încă pe atât.
+18	după conținutul arhivei
+19	orientativ
+20	Un joc pe Unreal Engine poate avea nevoie de bibliotecile DirectX (June 2010). Dacă la pornire apare o eroare despre xinput1_3.dll, X3DAudio1_7.dll sau XAPOFX1_5.dll, rulați DX_fix.bat din folderul rezultatului: nu sunt necesare drepturi de administrator.
+21	Modul radical nu a șters fișierul sursă, deoarece nu s-a putut verifica totul (motivul este în jurnal). Folderul portativ a fost creat, sursa a rămas la locul ei: verificați-l și ștergeți sursa singur.
+22	Programul are nevoie de .NET, care lipsește de pe acest calculator. Rulați Install_dotnet.bat din folderul rezultatului (va descărca runtime-ul în copia portativă, fără drepturi de administrator).
+23	Fișierul cere o parolă. Portabilizer nu introduce parole: dezarhivați-l manual cu 7-Zip (va cere parola) și alegeți programul de instalare sau folderul din rezultat.
+24	7z.exe nu a fost găsit (nici lângă program, nici în 7-Zip instalat). Instalați 7-Zip de pe 7-zip.org sau puneți 7z.exe și 7z.dll lângă Portabilizer sau în folderul tools.
+25	innoextract.exe nu a fost găsit. Puneți-l lângă Portabilizer sau în folderul tools.
+26	Nu a mai rămas spațiu pe disc. Eliberați spațiu sau alegeți alt disc în câmpul «Destinație», apoi în fila «Istoric» apăsați «Repetă».
+27	Programul de instalare cere drepturi de administrator. Dacă nu le aveți, încercați modul «Doar dezarhivare» sau căutați la dezvoltator o versiune portativă.
+28	Fișierul exe principal nu a fost găsit. În jurnalul de mai sus sunt listate fișierele exe găsite și motivul excluderii: copiați numele dorit în câmpul «Exe principal» și porniți modul «Doar Launch.bat».
+29	Pare o aplicație UWP: în afara pachetului instalat, cel mai probabil nu va porni. Căutați un program de instalare exe.
+30	Verificați dacă fișierul este descărcat complet (comparați dimensiunea sau descărcați din nou) și dacă 7z.exe se află lângă program.
+31	Acest folder a fost creat deja. Deschideți-l în fila «Istoric» sau ștergeți-l dacă doriți să începeți de la zero.
+32	Datele se află în fișiere .bin externe, pe care le instalează programul de instalare însuși. Pentru aceasta poate fi necesară instalarea, iar pentru ea, drepturi de administrator.
+33	Fișierele create parțial au rămas pe disc. Le puteți șterge în fila «Istoric».
+34	n/d
+35	Dezarhivare
+36	Dezarhivator: {0}
+37	Instalare
+38	Instalare silențioasă în folderul App (poate dura multe minute, nu închideți fereastra)...
+39	Fără administrator nu a mers - încerc cu cerere UAC (apăsați 'Da'). Un program de instalare pornit cu drepturi de administrator nu poate fi oprit de aici.
+40	nume de serviciu (setup/update/redist etc.)
+41	utilitar de serviciu al repack-ului
+42	folder temporar al programului de instalare
+43	program de consolă
+44	Fișiere exe găsite: {0}. Iată primele {1} și motivul pentru care nu s-au potrivit:
+45	Copiați numele dorit în câmpul «Exe principal» și porniți modul «Doar Launch.bat».
+46	Fișierul '{0}' nu a fost găsit în App.
+47	Este necesar .NET ({0}) pentru {1}, dar nu a fost găsit pe acest calculator. Rulați Install_dotnet.bat din folderul rezultatului: va descărca runtime-ul în folderul dotnet din copia portativă (nu sunt necesare drepturi de administrator), iar Launch.bat îl va prelua singur.
+48	Pornire: obișnuită, nu sunt necesare drepturi ridicate.
+49	Programul are nevoie de biblioteci care lipsesc din sistem:\n{0}\n\nLe puneți în folderul programului? Nu sunt necesare drepturi de administrator, sistemul nu se modifică, totul rămâne în folderul portativ.\n\nDa - le pune.\nNu - continuă fără ele (programul poate să nu pornească).\nAnulare - întrerupe.
+50	Gata: {0}
+51	Exe principal: {0}
+52	Porniți prin Launch.bat. Folderul poate fi mutat pe un stick USB.
+53	Mod radical: eliberat {0}.
+54	Mod: {0}
+55	Tip: {0}
+56	Roșu deschis (R)
+57	Cărbune cu accent roșu
+58	Burgundy
+59	Vișiniu
+60	Fișier: exe, msi, msix/appx, arhivă (rar, zip, 7z...). Exe principal este opțional: nume (App.exe), cale în App sau un fișier din folderul App. Jurnalul se salvează în portabilizer.log.
+61	MOD (R): un exe obișnuit este doar MUTAT în folderul App (nu se face copie, nu este nevoie de spațiu). Arhivele și programele de instalare se dezarhivează mai întâi, iar sursa se șterge abia apoi: pe durata lucrului este nevoie de spațiu pentru datele dezarhivate. Înainte de start se cere confirmare.
+62	Nu șterg {0}: folderul nu pare creat de Portabilizer.
+63	Este necesar 7z.exe: nu a fost găsit nici lângă program, nici în 7-Zip instalat. Instalați 7-Zip (7-zip.org) sau puneți 7z.exe și 7z.dll alături sau în tools/.
+64	7-Zip, cod 1
+65	Fișierul este protejat cu parolă. Portabilizer nu introduce parole: dezarhivați-l manual (7-Zip va cere parola), apoi alegeți folderul dezarhivat sau programul de instalare.
+66	Programul de instalare s-a încheiat cu o eroare. Verificați dacă fișierele .bin se află lângă setup.exe.
+67	În folderul {0} nu există deloc fișiere exe. Verificați dacă programul a fost dezarhivat sau instalat chiar aici.
+68	MSIX: nume corectate cu codificare %XX: {0}
+69	MSIX: AppxManifest.xml nu a fost găsit - caut exe în mod obișnuit.
+70	MSIX: în manifest nu există runFullTrust - cel mai probabil este o aplicație UWP. În afara pachetului instalat, probabil nu va porni.
+71	, manifest: {0}.
+72	Pare un program de instalare online (stub): în interior există un link de descărcare ({0}). Programul propriu-zis se descarcă la pornire și se instalează în sistem, deci nu va deveni copie portativă. Pentru portabilitate reală, descărcați programul de instalare offline complet și faceți-l portativ pe acesta.
+73	Fișierul este protejat de un packer: nu poate fi dezarhivat și analizat, doar pornit.
+74	Pornire: cu cerere UAC (ales manual). Launch.bat nu modifică drepturile.
+75	Pornire: fără cerere UAC (RunAsInvoker, ales manual).
+76	{0} cere drepturi de administrator. Launch.bat îl pornește fără cerere UAC (RunAsInvoker), parola nu este necesară. Dacă programul chiar scrie în Program Files, HKLM, instalează servicii sau drivere, fără drepturi poate să nu funcționeze. Atunci folosiți Launch_admin.bat (pornire obișnuită cu cerere UAC).
+77	nu este cab
+78	cab pe mai multe volume
+79	Altele
+80	Joc pe Unreal Engine: Launch.bat pornește direct {0}. {1} din rădăcină cere la prima pornire instalarea DirectX și Visual C++ în sistem și se închide dacă refuzați. Pornirea prin el: Launch_stub.bat.
+81	Unreal: pornire {0}
+82	exe cere administrator: Launch.bat merge prin RunAsInvoker
+83	Mod radical: fișierul sursă a fost mutat, nu copiat - nu s-au ocupat gigabaiți în plus.
+84	lucrul a fost întrerupt
+85	Launch.bat nu a fost creat
+86	folderul App este gol
+87	Fișierele se află în: {0}
+88	Folderele cu fișiere sunt goale.
+89	Mod necunoscut: {0}
+90	Fișierul nu este specificat.
+91	Fișierul nu a fost găsit.
+92	Folderul există deja: {0}
+93	Ștergeți-l sau alegeți modul 'Doar Launch.bat'.
+94	Fișierul exe principal nu a fost găsit.
+95	Specificați exe în câmpul 'Exe principal' și porniți modul 'Doar Launch.bat'.
+96	culoarea trebuie să aibă forma #rrggbb
+97	Auto
+98	Doar dezarhivare
+99	Doar instalare (în App)
+100	Doar Launch.bat
+101	Auto (fără UAC, dacă exe cere administrator)
+102	Întotdeauna fără UAC
+103	Întotdeauna cu UAC (ca în original)
+104	Fișier:
+105	Destinație:
+106	Exe principal:
+107	Procesor
+108	Memorie
+109	Placă video
+110	--run acceptă: auto, noadmin, admin
+111	Modul radical ȘTERGE fișierul sursă după o asamblare reușită (nu poate fi recuperat).\nDacă sunteți sigur, adăugați --yes. Nu s-a făcut nimic.
+112	--dx acceptă: install, skip, cancel
+113	Pe discul {0} a rămas doar {1}.
+114	Este necesar innoextract.exe (puneți-l alături sau în tools/).
+115	Pornirea fără administrator a eșuat: {0}
+116	Nu s-au găsit programe grafice, aleg unul de consolă: {0}. Dacă nu este un joc, specificați exe manual.
+117	Ales: {0} (exe potrivite: {1}). Alte variante: {2}. Dacă a pornit altceva, specificați exe manual.
+118	se potrivește
+119	exclus: 
+120	MSIX: nu s-a putut citi manifestul: {0}
+121	Nu s-a putut crea Install_dotnet.bat: {0}
+122	Analiză {0}: {1}, {2}
+123	\n\nUnele fișiere nu sunt incluse în Portabilizer: 
+124	. Pentru DirectX se va crea DX_fix.bat (descarcă pachetul complet DirectX).
+125	. Va trebui să le instalați manual.
+126	este necesar DX_fix.bat
+127	dezarhivat {0} din {1}
+128	fișierul sursă se află în folderul rezultatului
+129	Fișier sursă șters: {0} ({1})
+130	. Dacă sunt datele aceluiași repack, ștergeți-le singur.
+131	Salvat în: {0}
+132	Folderul {0} nu există. Faceți mai întâi dezarhivarea sau instalarea.
+133	Fișierul exe principal nu a fost găsit - specificați-l în câmpul 'Exe principal'.
+134	Este un exe obișnuit - îl copiez ca atare.
+135	Atenție: MSIX a fost dezarhivat ca folder obișnuit, fără înregistrarea pachetului. Programele clasice (full trust) funcționează de obicei astfel, dar aplicațiile UWP și tot ce necesită identificatorul pachetului pot să nu pornească.
+136	Modul radical nu a fost confirmat: nu fac nimic.
+137	Întrerupt de utilizator. Fișierele create parțial au rămas pe disc: le puteți șterge în fila «Istoric».
+138	Eroare: {0}
+139	Convertor
+140	Istoric
+141	Diagnosticare
+142	Versiuni
+143	Aspect
+144	Gata de lucru.
+145	Fă portativ
+146	Pauză
+147	Continuă
+148	Întrerupe
+149	Recomandări
+150	Este necesar DirectX
+151	Descărcarea este în pauză, nimic nu s-a pierdut. Anularea oprește lucrul definitiv: apoi se poate doar relua de la început («Repetă» în fila «Istoric»).
+152	Se termină spațiul pe disc
+153	Pauză: procesul este înghețat, progresul este salvat.
+154	Continui din același loc.
+155	Data
+156	Sursă
+157	Versiune
+158	Tip
+159	Stare
+160	Dimensiune
+161	Rezultat
+162	Note
+163	Șterg {0} ...
+164	\n... și încă {0}
+165	Deschide folderul
+166	Pornește
+167	Repetă
+168	Șterge copia
+169	Șterge fișierul sursă
+170	Elimină din listă
+171	Actualizează
+172	Adun informații despre sistem...
+173	Disc: n/d
+174	Disc
+175	Capacitate
+176	Liber
+177	Ocupat
+178	Portabilizer (R) - radical
+179	Activează versiunea obișnuită
+180	Activează versiunea (R)
+181	Temă:
+182	Roșu închis (R):
+183	Roșu deschis (R):
+184	Culoare proprie
+185	Colorez în această culoare și fundalul ferestrei?\n\nDa - fundalul va primi o ușoară nuanță a culorii alese.\nNu - fundalul rămâne neutru, culoarea va fi doar la butoane și accente.
+186	Probabil nu va ajunge spațiul. 
+187	nu poate fi citit
+188	 (prioritate scăzută)
+189	Exe specificat se află în afara folderului App - alegeți un fișier din App.
+190	{0}: acest cab folosește compresia LZX, poate fi dezarhivat doar în Windows (expand.exe).
+191	expand.exe nu a putut extrage {0}: {1}
+192	Bibliotecile ({0}) au fost puse lângă {1}: {2}.
+193	. Dacă programul se plânge de ele, rulați DX_fix.bat din folderul rezultatului (nu sunt necesare drepturi de administrator).
+194	 ({0}). Nu sunt incluse în Portabilizer sau nu se potrivesc ca arhitectură: dacă programul se plânge, instalați pachetul corespunzător în sistem.
+195	lipsesc: 
+196	Fișierul sursă NU a fost șters: 
+197	dezarhivatorul a raportat avertismente (
+198	Nu s-a putut șterge {0}: {1}
+199	Copie temporară ștearsă: {0} ({1})
+200	Fișierele .bin de lângă programul de instalare nu au fost șterse (ar fi putut fi necesare altor programe): 
+201	Mod R: fișierul a fost mutat în App fără copie ({0}).
+202	Modul de instalare nu se aplică la MSIX/APPX: pachetul doar se dezarhivează.
+203	Nu s-a putut dezarhiva pachetul.
+204	Acesta este un bundle. Pachetul principal: {0}. Dezarhivarea bundle-ului este salvată în {1}.
+205	Deocamdată totul e liniștit. Aici vor apărea sfaturi la lipsa de spațiu și la erori obișnuite.
+206	Cât mai rămâne de scris nu se poate spune exact.
+207	Ce program să pornesc?
+208	Alegeți fișierul.
+209	\n  ... și încă {0}
+210	Pregătire
+211	Anulat înainte de start: spațiu insuficient pe disc.
+212	Acum nu se poate pune pe pauză (este necesar psutil: pip install psutil).
+213	Întrerupeți?
+214	Opriți lucrul? Apoi nu se mai poate continua din locul opririi: în fila «Istoric» va fi «Repetă» (începe de la zero).
+215	au trecut {0}
+216	Mai întâi alegeți o înregistrare din listă.
+217	Așteptați terminarea sarcinii curente (sau întrerupeți-o).
+218	Folderul rezultatului nu există pe disc.
+219	Deschideți manual:\n{0}
+220	Launch.bat nu a fost găsit: conversia nu s-a terminat.
+221	Ștergere
+222	Acest folder nu pare creat de Portabilizer (sunt necesare numele *_portable și Launch.bat cu folderul App). Din precauție nu îl șterg.
+223	Folderul a fost șters.
+224	Nu s-a putut șterge tot: o parte din fișiere sunt folosite de un program.
+225	Fișierul sursă nu a fost găsit (poate a fost deja șters).
+226	Ștergeți fișierul sursă?
+227	Vor fi șterse DEFINITIV (ocolind Coșul de reciclare), în total {0}:\n\n{1}\n\nFolder: {2}\n\nAcesta este fișierul dumneavoastră sursă, nu va putea fi recuperat. Ștergeți?
+228	Fișier șters: {0}
+229	Eliminați înregistrarea din listă? Fișierele de pe disc nu sunt afectate.
+230	determin...
+231	Sistem: {0}\nProcesor: {1}\nMemorie RAM: {2}\nPlacă video: {3}
+232	Este disponibilă o versiune nouă de Portabilizer: {0}. O puteți descărca din Portabilizer Launcher sau de pe pagina {1}.
+233	_пример.json
+234	Tema mea
+235	Culoarea principală (butoane, progres)
+236	Portabilizer (R) - mod radical
+237	Acum este activă: Portabilizer (R) - radical
+238	Acum este activă: Portabilizer (versiunea obișnuită)
+239	Versiunea poate fi schimbată după terminarea sarcinii curente.
+240	Oprit. Eliberați spațiu, alegeți alt disc sau adăugați --force.
+241	Spațiul este la limită: aproape nu există rezervă, sarcina poate fi pusă pe pauză. 
+242	Ați ales: {0}
+243	nu
+244	adresa de descărcare a fost găsită după indicii indirecte
+245	Anulat: sunt necesare biblioteci (
+246	Biblioteci: 
+247	Nu s-a putut muta fișierul ({0}), copiez ca de obicei.
+248	Nu s-a putut dezarhiva pachetul încorporat.
+249	Modul de instalare nu se aplică la arhivă: aceasta doar se dezarhivează.
+250	Nu s-a putut dezarhiva arhiva.
+251	Modul de instalare este disponibil doar pentru programe de instalare Inno/NSIS în Windows.
+252	Mod:
+253	   Pornire:
+254	Mai rămân de scris aproximativ {0}, liber: {1}: ar trebui să ajungă, se poate termina.
+255	Mai rămân de scris aproximativ {0}, iar liber este {1}: vor lipsi aproximativ {2}.
+256	Rămân în pauză. Eliberați spațiu și apăsați «Continuă».
+257	Continui pe propriul risc: mă opresc doar dacă spațiul liber scade sub {0}.
+258	Pauză. Eliberați spațiu pe disc și apăsați «Continuă».
+259	 Sarcina este în pauză: alegeți în fereastră ce să faceți.
+260	Estimarea spațiului necesar
+261	Întrerupt. Resturile pot fi șterse în fila «Istoric».
+262	Pe disc este în continuare puțin spațiu: {0}.
+263	Lucru
+264	au mai rămas ~{0}
+265	PAUZĂ
+266	Porniți manual:\n{0}\n\n{1}
+267	, de aceea nu se poate repeta. Descărcați-l sau instalați-l din nou.
+268	Nu s-a putut șterge întregul folder. Închideți programele care îl folosesc și încercați din nou.
+269	Ștergeți copia portativă?
+270	{0}\n\nDimensiune: {1}\n\nFolderul va fi șters definitiv. Fișierul sursă (programul de instalare sau arhiva) nu este afectat.
+271	{0} nuclee / {1} fire
+272	{0:.0f}%  ({1} din {2})
+273	, memorie {0} din {1}, {2:.0f} °C
+274	 (estimare după 3D)
+275	Alegeți cum creează Portabilizer copiile portative. Puteți comuta oricând (se schimbă doar modul de lucru). La fiecare pornire programul începe în versiunea obișnuită.
+276	Versiune sigură.\n\nFișierul sursă (program de instalare, pachet sau arhivă) rămâne neatins, alături se creează un folder portativ.\n\nDezavantaj: pe disc rămân ambele copii: și sursa, și folderul portativ.\n\nSe potrivește aproape pentru orice, mai ales dacă nu sunteți sigur că programul va funcționa.
+277	Versiune radicală (risc).\n\nDupă o asamblare reușită ȘTERGE fișierul sursă (toate volumele arhivei) și copiile temporare, de aceea rezultatul ocupă mai puțin spațiu. Folderul portativ se creează lângă sursă.\n\nImportant: cât timp lucrează, este nevoie de același spațiu ca în versiunea obișnuită: sursa se șterge abia la sfârșit, după verificare. Fișierul șters nu poate fi recuperat: dacă ulterior ceva nu merge, va trebui descărcat sau instalat din nou de pe platformă.\n\nÎnainte de fiecare pornire programul cere confirmare.
+278	Este disponibilă o versiune nouă: {0}.
+279	Aveți ultima versiune ({0}) sau nu există conexiune cu GitHub.
+280	Versiunea programului: {0}
+281	Verifică la pornire dacă există versiuni noi (cerere către GitHub, nu se trimit date)
+282	Verifică acum
+283	Aspectul ferestrei. Modificările se aplică imediat și sunt reținute. Temele roșii se activează automat în versiunile (R) și se potrivesc cu tema luminoasă sau întunecată.
+284	 (proprie)
+285	Aspect clasic: culorile sunt stabilite de Windows.
+286	. Culori: fundal, câmpuri, butoane, text, secundar, accent, succes, avertisment, eroare.
+287	Nu s-a putut deschide folderul: {0}
+288	Nu s-a putut salva tema: {0}
+289	Alege o culoare proprie...
+290	Deschide folderul themes
+291	Actualizează lista de teme
+292	Teme proprii: puneți un fișier .json în folderul themes de lângă program (modelul _пример.json se creează cu butonul de mai sus). În el: culorile în forma #rrggbb, numele, "kind": "light" sau "dark" și "r": true pentru temele roșii ale modului R. Culorile lipsă se iau din tema încorporată. Ferestrele de confirmare (mesajele Windows) rămân cele de sistem.
+293	Fă portativ (R)
+294	Lucru în curs
+295	Sarcina încă rulează. O întrerupeți și ieșiți?
+296	ATENȚIE: 
+297	PERICOL: 
+298	 Lucrul a fost oprit pentru a nu umple discul.
+299	bloc MSZIP deteriorat
+300	Lipsesc: 
+301	Nu s-a putut muta bundle-ul: {0}
+302	În arhivă nu există un program gata făcut, dar există un program de instalare: {0}. Continui cu el. Conținutul arhivei este salvat în {1}.
+303	Lângă programul de instalare s-au găsit fișiere .bin: {0} ({1}): 
+304	Nu s-a putut dezarhiva. Poate programul de instalare este nestandard (atunci este nevoie de un virtualizator precum Cameyo / Turbo Studio).
+305	Încerc instalarea silențioasă. Fișierele dezarhivate le salvez în {0}.
+306	Descărcarea se anulează la alegerea dumneavoastră.
+307	Oprește: curăț discul
+308	Anulează descărcarea
+309	Portabilizer (R): fișierul va fi mutat
+310	{0} ({1}) va fi MUTAT în folderul App de lângă el: nu se creează copie, nu este nevoie de spațiu suplimentar.\n\nPe locul vechi fișierul nu va mai fi. Îl puteți recupera scoțându-l din folderul App.\n\nContinuați?
+311	Portabilizer (R): fișierul sursă va fi șters
+312	Chiar doriți să faceți acest fișier portativ în modul radical?\n\nDupă o asamblare reușită vor fi ȘTERSE DEFINITIV (ocolind Coșul de reciclare):\n{0}\nîn total {1}, precum și copiile temporare.\n\nFișierul sursă nu va mai putea fi recuperat. Dacă ceva nu merge (de exemplu, jocul nu pornește), va trebui descărcat sau instalat din nou de pe platformă.\n\nȘtergerea are loc doar dacă asamblarea a reușit și totul a fost verificat; în caz de eroare sau anulare fișierul rămâne. Rezultatul va fi creat lângă fișierul sursă.\n\nContinuați?
+313	Gata. Fișierul a fost mutat fără copie: nu s-a ocupat spațiu suplimentar.
+314	liber pe disc: {0}
+315	 (nu este pe disc)
+316	Fișierul sursă nu mai există
+317	Începeți de la zero?
+318	Folderul există deja (rest al încercării anterioare):\n{0}\nDimensiune: {1}\n\nÎl ștergeți și începeți de la zero?
+319	Încărcarea CPU/RAM nu este disponibilă: instalați psutil (pip install psutil). În Portabilizer.exe compilat este deja inclus.
+320	Aproape că nu a mai rămas memorie RAM. Închideți browserul și programele inutile, altfel dezarhivarea poate încetini mult.
+321	Disc: citire {0}/s, scriere {1}/s
+322	încărcare indisponibilă
+323	Acum: 
+324	S-a ales continuarea fără DirectX. 
+325	S-a ales continuarea fără ele. 
+326	Folderul {0} poate fi șters după verificare: este necesar doar ca sursă a programului de instalare.
+327	După dezarhivare, fișierul exe principal nu a fost găsit.
+328	Spațiul nu va ajunge
+329	Conform estimării, spațiul nu va ajunge. Dacă spațiul se termină, dezarhivarea se va opri cu o eroare.\n\nContinuați oricum?
+330	Au fost găsite mai multe programe potrivite și nu sunt sigur care este cel principal. Alegeți-l pe cel care pornește aplicația dorită (poate fi schimbat ulterior în modul «Doar Launch.bat»).
+331	Alege automat
+332	Va ajunge spațiul?
+333	Gata. Fișierul sursă a fost șters, eliberat {0}.
+334	 (l-a șters modul radical)
+335	  <- unde salvăm
+336	Pe discul {0}, unde salvați, este puțin spațiu ({1}). Alegeți alt disc în câmpul «Destinație».
+337	Nu s-a putut muta arhiva dezarhivată: {0}
+338	Dezarhivat {0}, iar în .bin se află {1}: pare un repack ale cărui date le instalează programul de instalare însuși.
+339	Nu s-a putut muta ce a fost dezarhivat: {0}
+340	Instalarea a eșuat - fișierele dezarhivate au fost returnate în App.
+341	Nu s-a putut returna în App ce a fost dezarhivat: {0}
+342	\n\nPorniți oricum?
+343	Avertisment: lângă program sunt fișiere .bin. Dacă programul nu pornește sau îi lipsesc date, repetați în modul 'Doar instalare (în App)'.
+344	Programe de instalare, pachete, arhive
+345	Toate
+346	Programe
+347	Gata. Rezultatul este în fila «Istoric».
+348	Nu a reușit. Detalii sunt în jurnal și în recomandări.
+349	Gata, dar fișierul sursă nu a fost șters: 
+350	Limbă
+351	Limba interfeței:
+352	Limba se schimbă imediat: fereastra repornește singură, iar setările se păstrează.
+353	Așteptați să se termine sarcina sau anulați-o: după schimbarea limbii fereastra repornește.

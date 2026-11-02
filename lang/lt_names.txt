@@ -1,0 +1,34 @@
+ru	rusų
+en	anglų
+et	estų
+fr	prancūzų
+es	ispanų
+de	vokiečių
+it	italų
+pt	portugalų
+nl	olandų
+pl	lenkų
+uk	ukrainiečių
+sv	švedų
+fi	suomių
+tr	turkų
+zh	kinų (supaprastinta)
+ja	japonų
+ko	korėjiečių
+ar	arabų
+cs	čekų
+ro	rumunų
+hu	vengrų
+el	graikų
+he	hebrajų
+hi	hindi
+id	indoneziečių
+vi	vietnamiečių
+th	tajų
+bg	bulgarų
+sr	serbų (kirilica)
+hr	kroatų
+lv	latvių
+lt	lietuvių
+no	norvegų (bokmål)
+da	danų

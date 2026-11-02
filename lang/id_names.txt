@@ -1,0 +1,34 @@
+ru	Rusia
+en	Inggris
+et	Estonia
+fr	Prancis
+es	Spanyol
+de	Jerman
+it	Italia
+pt	Portugis
+nl	Belanda
+pl	Polandia
+uk	Ukraina
+sv	Swedia
+fi	Finlandia
+tr	Turki
+zh	Tionghoa (Sederhana)
+ja	Jepang
+ko	Korea
+ar	Arab
+cs	Ceko
+ro	Rumania
+hu	Hungaria
+el	Yunani
+he	Ibrani
+hi	Hindi
+id	Indonesia
+vi	Vietnam
+th	Thai
+bg	Bulgaria
+sr	Serbia (Sirilik)
+hr	Kroasia
+lv	Latvia
+lt	Lituania
+no	Norwegia (Bokmål)
+da	Denmark

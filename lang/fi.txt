@@ -1,0 +1,353 @@
+1	Tarvitaan {0} {1}, vapaana {2} levyllä {3}.{4}
+2	käynnissä
+3	tauolla
+4	valmis
+5	virhe
+6	keskeytetty
+7	keskeytetty (sovellus suljettiin)
+8	Automaattinen (kuten Windowsissa)
+9	Vaalea
+10	Tumma
+11	Klassinen (järjestelmän)
+12	Oma väri
+13	B
+14	kB
+15	MB
+16	GB
+17	 Jos arkiston sisällä on asennusohjelma, tarvitaan vielä suunnilleen sama määrä lisää.
+18	arkiston sisällön mukaan
+19	arviolta
+20	Unreal Engine -peli voi tarvita DirectX-kirjastoja (June 2010). Jos käynnistyksessä ilmenee virhe xinput1_3.dll, X3DAudio1_7.dll tai XAPOFX1_5.dll, suorita DX_fix.bat tuloskansiossa: järjestelmänvalvojan oikeuksia ei tarvita.
+21	Radikaali tila ei poistanut lähdetiedostoa, koska kaikkea ei voitu tarkistaa (syy on lokissa). Kannettava kansio on luotu ja lähdetiedosto on paikallaan: tarkista kansio ja poista lähdetiedosto itse.
+22	Ohjelma tarvitsee .NET:in, jota tässä tietokoneessa ei ole. Suorita Install_dotnet.bat tuloskansiossa (se lataa ajoympäristön kannettavan kopion sisään, järjestelmänvalvojan oikeuksia ei tarvita).
+23	Tiedosto vaatii salasanan. Portabilizer ei syötä salasanoja: pura tiedosto käsin 7-Zipillä (se kysyy salasanan) ja valitse tuloksesta asennusohjelma tai kansio.
+24	7z.exe ei löydy (ei ohjelman vierestä eikä asennetusta 7-Zipistä). Asenna 7-Zip osoitteesta 7-zip.org tai aseta 7z.exe ja 7z.dll Portabilizerin viereen tai tools-kansioon.
+25	innoextract.exe ei löydy. Aseta se Portabilizerin viereen tai tools-kansioon.
+26	Levyllä ei ollut tarpeeksi tilaa. Vapauta tilaa tai valitse toinen levy «Kohde»-kentässä ja paina sitten «Historia»-välilehdellä «Toista».
+27	Asennusohjelma vaatii järjestelmänvalvojan oikeudet. Jos niitä ei ole, kokeile «Vain purku» -tilaa tai etsi kehittäjältä kannettava versio.
+28	Pää-exeä ei löytynyt. Yllä olevassa lokissa on lueteltu löydetyt exe-tiedostot ja hylkäämisen syy: kopioi haluamasi nimi «Pää-exe»-kenttään ja suorita «Vain Launch.bat» -tila.
+29	Näyttää UWP-sovellukselta: asennetun paketin ulkopuolella se ei todennäköisesti käynnisty. Etsi exe-asennusohjelma.
+30	Tarkista, että tiedosto on ladattu kokonaan (vertaa kokoa tai lataa uudelleen) ja että 7z.exe on ohjelman vieressä.
+31	Tämä kansio on jo luotu aiemmin. Avaa se «Historia»-välilehdellä tai poista se, jos haluat aloittaa alusta.
+32	Tiedot ovat ulkoisissa .bin-tiedostoissa, jotka asennusohjelma asentaa itse. Tämä voi vaatia asennuksen, ja asennus vaatii järjestelmänvalvojan oikeudet.
+33	Osittain luodut tiedostot jäivät levylle. Voit poistaa ne «Historia»-välilehdellä.
+34	-
+35	Purku
+36	Purkuohjelma: {0}
+37	Asennus
+38	Hiljainen asennus App-kansioon (voi kestää useita minuutteja, älä sulje ikkunaa)...
+39	Ilman järjestelmänvalvojaa ei onnistunut - yritän UAC-kehotteella (paina 'Kyllä'). Järjestelmänvalvojan oikeuksilla käynnistettyä asennusohjelmaa ei voi pysäyttää täältä.
+40	järjestelmän apunimi (setup/update/redist jne.)
+41	uudelleenpakkauksen apuohjelma
+42	asennusohjelman väliaikainen kansio
+43	konsoliohjelma
+44	Exe-tiedostoja löytyi: {0}. Tässä ensimmäiset {1} ja syy, miksi ne eivät kelvanneet:
+45	Kopioi haluamasi nimi «Pää-exe»-kenttään ja suorita «Vain Launch.bat» -tila.
+46	Tiedostoa '{0}' ei löydy App-kansiosta.
+47	Tarvitaan .NET ({0}) ohjelmalle {1}, eikä sitä löytynyt tästä tietokoneesta. Suorita Install_dotnet.bat tuloskansiossa: se lataa ajoympäristön kannettavan kopion sisällä olevaan dotnet-kansioon (järjestelmänvalvojan oikeuksia ei tarvita), ja Launch.bat ottaa sen käyttöön itse.
+48	Käynnistys: tavallinen, oikeuksien korotusta ei tarvita.
+49	Ohjelma tarvitsee kirjastoja, joita järjestelmässä ei ole:\n{0}\n\nAsetetaanko ne ohjelman kansioon? Järjestelmänvalvojan oikeuksia ei tarvita, järjestelmää ei muuteta, kaikki pysyy kannettavan kansion sisällä.\n\nKyllä - aseta.\nEi - jatka ilman niitä (ohjelma ei ehkä käynnisty).\nPeruuta - keskeytä.
+50	Valmis: {0}
+51	Pää-exe: {0}
+52	Käynnistä Launch.bat-tiedostolla. Kansion voi siirtää muistitikulle.
+53	Radikaali tila: vapautettu {0}.
+54	Tila: {0}
+55	Tyyppi: {0}
+56	Vaaleanpunainen (R)
+57	Hiili punaisella korostuksella
+58	Viininpunainen
+59	Kirsikka
+60	Tiedosto: exe, msi, msix/appx, arkisto (rar, zip, 7z...). Pää-exe on valinnainen: nimi (App.exe), polku App-kansion sisällä tai tiedosto App-kansiosta. Loki tallennetaan tiedostoon portabilizer.log.
+61	TILA (R): tavallinen exe vain SIIRRETÄÄN App-kansioon (kopiota ei tehdä, tilaa ei tarvita). Arkistot ja asennusohjelmat puretaan ensin, ja vasta sitten lähdetiedosto poistetaan: työn ajaksi tarvitaan tilaa puretulle sisällölle. Ennen aloitusta pyydetään vahvistus.
+62	Ei poisteta kansiota {0}: se ei näytä Portabilizerin luomalta.
+63	Tarvitaan 7z.exe: sitä ei löydy ohjelman vierestä eikä asennetusta 7-Zipistä. Asenna 7-Zip (7-zip.org) tai aseta 7z.exe ja 7z.dll viereen tai tools/-kansioon.
+64	7-Zip, koodi 1
+65	Tiedosto on salasanasuojattu. Portabilizer ei syötä salasanoja: pura se käsin (7-Zip kysyy salasanan itse) ja valitse sitten purettu kansio tai asennusohjelma.
+66	Asennusohjelma päättyi virheeseen. Tarkista, että .bin-tiedostot ovat setup.exe:n vieressä.
+67	Kansiossa {0} ei ole lainkaan exe-tiedostoja. Tarkista, että ohjelma purkautui tai asentui juuri tähän.
+68	MSIX: korjattu nimiä, joissa oli %XX-koodaus: {0}
+69	MSIX: AppxManifest.xml ei löydy - etsin exe-tiedostoa tavalliseen tapaan.
+70	MSIX: manifestissa ei ole runFullTrust - tämä on todennäköisesti UWP-sovellus. Asennetun paketin ulkopuolella se ei luultavasti käynnisty.
+71	, manifesti: {0}.
+72	Tämä näyttää verkkoasennuksen kuorelta: sisällä on latauslinkki ({0}). Itse ohjelma ladataan käynnistettäessä ja asentuu järjestelmään, joten tästä ei tule kannettavaa kopiota. Jos haluat aidosti kannettavan, lataa täydellinen offline-asennusohjelma ja tee kannettava siitä.
+73	Tiedosto on pakkaajan suojaama: sitä ei voi purkaa eikä analysoida, vain käynnistää.
+74	Käynnistys: UAC-kehotteella (valittu käsin). Launch.bat ei muuta oikeuksia.
+75	Käynnistys: ilman UAC-kehotetta (RunAsInvoker, valittu käsin).
+76	{0} pyytää järjestelmänvalvojan oikeuksia. Launch.bat käynnistää sen ilman UAC-kehotetta (RunAsInvoker), salasanaa ei tarvita. Jos ohjelma todella kirjoittaa Program Filesiin tai HKLM:ään tai asentaa palveluja tai ajureita, se ei ehkä toimi ilman oikeuksia. Käytä silloin Launch_admin.bat-tiedostoa (tavallinen käynnistys UAC-kehotteella).
+77	ei cab
+78	usean osan cab
+79	Muut
+80	Unreal Engine -peli: Launch.bat käynnistää tiedoston {0} suoraan. Juuritason {1} pyytää ensimmäisellä käynnistyksellä asentamaan DirectX:n ja Visual C++:n järjestelmään ja sulkeutuu, jos kieltäydyt. Käynnistys sen kautta: Launch_stub.bat.
+81	Unreal: käynnistys {0}
+82	exe vaatii järjestelmänvalvojan: Launch.bat käyttää RunAsInvokeria
+83	Radikaali tila: lähdetiedosto siirrettiin eikä kopioitu - ylimääräisiä gigatavuja ei kulunut.
+84	työ keskeytettiin
+85	Launch.bat ei luotu
+86	App-kansio on tyhjä
+87	Tiedostot ovat täällä: {0}
+88	Tiedostokansiot ovat tyhjiä.
+89	Tuntematon tila: {0}
+90	Tiedostoa ei ole määritetty.
+91	Tiedostoa ei löydy.
+92	Kansio on jo olemassa: {0}
+93	Poista se tai valitse «Vain Launch.bat» -tila.
+94	Pää-exeä ei löytynyt.
+95	Määritä exe «Pää-exe»-kentässä ja suorita «Vain Launch.bat» -tila.
+96	värin on oltava muotoa #rrggbb
+97	Auto
+98	Vain purku
+99	Vain asennus (App-kansioon)
+100	Vain Launch.bat
+101	Auto (ilman UAC:ta, jos exe pyytää järjestelmänvalvojaa)
+102	Aina ilman UAC:ta
+103	Aina UAC:lla (kuten alkuperäisessä)
+104	Tiedosto:
+105	Kohde:
+106	Pää-exe:
+107	Suoritin
+108	Muisti
+109	Näytönohjain
+110	--run hyväksyy: auto, noadmin, admin
+111	Radikaali tila POISTAA lähdetiedoston onnistuneen koonnin jälkeen (sitä ei voi palauttaa).\nJos olet varma, lisää --yes. Mitään ei tehty.
+112	--dx hyväksyy: install, skip, cancel
+113	Levyllä {0} on jäljellä vain {1}.
+114	Tarvitaan innoextract.exe (aseta viereen tai tools/-kansioon).
+115	Käynnistys ilman järjestelmänvalvojaa epäonnistui: {0}
+116	Graafisia ohjelmia ei löytynyt, valitsen konsoliohjelman: {0}. Jos tämä ei ole peli, määritä exe käsin.
+117	Valittu: {0} (sopivia exe-tiedostoja: {1}). Muut vaihtoehdot: {2}. Jos käynnistyi väärä, määritä exe käsin.
+118	sopii
+119	hylätty:
+120	MSIX: manifestin lukeminen epäonnistui: {0}
+121	Install_dotnet.bat-tiedoston luominen epäonnistui: {0}
+122	Erittely {0}: {1}, {2}
+123	\n\nOsia ei ole sisällytetty Portabilizeriin:
+124	. DirectX:ää varten luodaan DX_fix.bat (lataa täydellisen DirectX-paketin).
+125	. Ne on asennettava käsin.
+126	tarvitaan DX_fix.bat
+127	purettu {0} / {1}
+128	lähdetiedosto on tuloskansion sisällä
+129	Lähdetiedosto poistettu: {0} ({1})
+130	. Jos nämä ovat saman uudelleenpakkauksen tietoja, poista ne itse.
+131	Tallennettu: {0}
+132	Kansiota {0} ei ole. Tee ensin purku tai asennus.
+133	Pää-exeä ei löytynyt - määritä se «Pää-exe»-kentässä.
+134	Tämä on tavallinen exe - kopioin sellaisenaan.
+135	Huomio: MSIX purettiin tavallisena kansiona ilman paketin rekisteröintiä. Perinteiset (full trust) ohjelmat toimivat näin yleensä, mutta UWP-sovellukset ja kaikki, mikä vaatii paketin tunnisteen, eivät ehkä käynnisty.
+136	Radikaalia tilaa ei vahvistettu: en tee mitään.
+137	Käyttäjä keskeytti. Osittain luodut tiedostot jäivät levylle: voit poistaa ne «Historia»-välilehdellä.
+138	Virhe: {0}
+139	Muunnin
+140	Historia
+141	Diagnostiikka
+142	Versiot
+143	Ulkoasu
+144	Valmis.
+145	Tee kannettavaksi
+146	Tauko
+147	Jatka
+148	Keskeytä
+149	Suositukset
+150	DirectX tarvitaan
+151	Lataus on tauolla, mitään ei ole menetetty. Peruutus pysäyttää työn lopullisesti: sen jälkeen voi vain aloittaa alusta («Toista» «Historia»-välilehdellä).
+152	Levytila on loppumassa
+153	Tauko: prosessi on jäädytetty, edistyminen tallennettu.
+154	Jatketaan samasta kohdasta.
+155	Päivämäärä
+156	Lähde
+157	Versio
+158	Tyyppi
+159	Tila
+160	Koko
+161	Tulos
+162	Huomautukset
+163	Poistetaan {0} ...
+164	\n... ja {0} lisää
+165	Avaa kansio
+166	Käynnistä
+167	Toista
+168	Poista kopio
+169	Poista lähdetiedosto
+170	Poista luettelosta
+171	Päivitä
+172	Kerätään järjestelmätietoja...
+173	Levy: -
+174	Levy
+175	Koko
+176	Vapaana
+177	Käytössä
+178	Portabilizer (R) - radikaali
+179	Ota käyttöön tavallinen versio
+180	Ota käyttöön versio (R)
+181	Teema:
+182	Tumma punainen (R):
+183	Vaalea punainen (R):
+184	Oma väri
+185	Sävytetäänkö ikkunan tausta tällä värillä?\n\nKyllä - tausta saa kevyen valitun värin sävyn.\nEi - tausta pysyy neutraalina, väri näkyy vain painikkeissa ja korostuksissa.
+186	Tila ei todennäköisesti riitä.
+187	ei voi lukea
+188	 (matala prioriteetti)
+189	Määritetty exe on App-kansion ulkopuolella - valitse tiedosto App-kansion sisältä.
+190	{0}: tämän cabin pakkaus on LZX, purku onnistuu vain Windowsissa (expand.exe).
+191	expand.exe ei saanut purettua tiedostoa {0}: {1}
+192	Kirjastot ({0}) on asetettu tiedoston {1} viereen: {2}.
+193	. Jos ohjelma valittaa niistä, suorita DX_fix.bat tuloskansiossa (järjestelmänvalvojan oikeuksia ei tarvita).
+194	 ({0}). Ne eivät ole Portabilizerissa mukana tai eivät sopineet bittisyyden mukaan: jos ohjelma valittaa, asenna vastaava paketti järjestelmään.
+195	puuttuu:
+196	Lähdetiedostoa EI poistettu:
+197	purkuohjelma ilmoitti varoituksista (
+198	Kohdetta {0} ei voitu poistaa: {1}
+199	Väliaikainen kopio poistettu: {0} ({1})
+200	Asennusohjelman vieressä olevia .bin-tiedostoja ei poistettu (muut ohjelmat saattavat tarvita niitä):
+201	R-tila: tiedosto siirrettiin App-kansioon ilman kopiota ({0}).
+202	Asennustila ei sovellu MSIX/APPX-tiedostoille: paketti vain puretaan.
+203	Paketin purkaminen epäonnistui.
+204	Tämä on nippu. Pääpaketti: {0}. Nipun purku tallennettiin kansioon {1}.
+205	Toistaiseksi kaikki on rauhallista. Tähän ilmestyy vihjeitä, kun tila loppuu tai ilmenee tyypillisiä virheitä.
+206	Kuinka paljon on vielä kirjoitettavaa, ei voi sanoa tarkasti.
+207	Mikä ohjelma käynnistetään?
+208	Valitse tiedosto.
+209	\n  ... ja {0} lisää
+210	Valmistelu
+211	Peruttu ennen aloitusta: levyllä on liian vähän tilaa.
+212	Taukoa ei voi nyt asettaa (tarvitaan psutil: pip install psutil).
+213	Keskeytetäänkö?
+214	Pysäytetäänkö työ? Myöhemmin ei voi jatkaa pysäytyskohdasta: «Historia»-välilehdelle tulee «Toista» (aloittaa alusta).
+215	kulunut {0}
+216	Valitse ensin merkintä luettelosta.
+217	Odota nykyisen tehtävän päättymistä (tai keskeytä se).
+218	Tuloskansiota ei ole levyllä.
+219	Avaa käsin:\n{0}
+220	Launch.bat ei löydy: muunnos ei ole valmis.
+221	Poisto
+222	Tämä kansio ei näytä Portabilizerin luomalta (tarvitaan nimi *_portable ja Launch.bat, jossa on App-kansio). Varmuuden vuoksi en poista.
+223	Kansio poistettu.
+224	Kaikkea ei voitu poistaa: osa tiedostoista on ohjelman käytössä.
+225	Lähdetiedostoa ei löydy (ehkä se on jo poistettu).
+226	Poistetaanko lähdetiedosto?
+227	POISTETAAN PYSYVÄSTI (roskakorin ohi), yhteensä {0}:\n\n{1}\n\nKansio: {2}\n\nTämä on alkuperäinen lähdetiedostosi, sitä ei voi palauttaa. Poistetaanko?
+228	Tiedosto poistettu: {0}
+229	Poistetaanko merkintä luettelosta? Levyllä olevia tiedostoja ei kosketa.
+230	tunnistetaan...
+231	Järjestelmä: {0}\nSuoritin: {1}\nTyömuisti: {2}\nNäytönohjain: {3}
+232	Portabilizerista on saatavilla uusi versio: {0}. Voit ladata sen Portabilizer Launcherissa tai sivulta {1}.
+233	_example.json
+234	Oma teemani
+235	Pääväri (painikkeet, edistyminen)
+236	Portabilizer (R) - radikaali tila
+237	Nyt käytössä: Portabilizer (R) - radikaali
+238	Nyt käytössä: Portabilizer (tavallinen versio)
+239	Versiota voi vaihtaa nykyisen tehtävän päätyttyä.
+240	Pysäytetty. Vapauta tilaa, valitse toinen levy tai lisää --force.
+241	Tila on aivan rajalla: varaa ei juuri ole, tehtävä voi pysähtyä tauolle.
+242	Valitsit: {0}
+243	ei
+244	latausosoite löytyi epäsuorien merkkien perusteella
+245	Peruttu: tarvitaan kirjastoja (
+246	Kirjastot:
+247	Tiedoston siirto epäonnistui ({0}), kopioin tavalliseen tapaan.
+248	Sisäkkäisen paketin purkaminen epäonnistui.
+249	Asennustila ei sovellu arkistoille: ne vain puretaan.
+250	Arkiston purkaminen epäonnistui.
+251	Asennustila on käytettävissä vain Inno/NSIS-asennusohjelmille Windowsissa.
+252	Tila:
+253	   Käynnistys:
+254	Kirjoitettavaa on jäljellä noin {0}, vapaana {1}: sen pitäisi riittää, työ voidaan saada loppuun.
+255	Kirjoitettavaa on jäljellä noin {0}, mutta vapaana on {1}: noin {2} puuttuu.
+256	Pysyn tauolla. Vapauta tilaa ja paina «Jatka».
+257	Jatkan omalla vastuulla: pysähdyn vasta, kun vapaata on alle {0}.
+258	Tauko. Vapauta levytilaa ja paina «Jatka».
+259	 Tehtävä on tauolla: valitse ikkunassa, mitä tehdään.
+260	Tarvittavan tilan arvio
+261	Keskeytetty. Jäänteet voi poistaa «Historia»-välilehdellä.
+262	Levyllä on edelleen vähän tilaa: {0}.
+263	Työ
+264	jäljellä ~{0}
+265	TAUKO
+266	Käynnistä käsin:\n{0}\n\n{1}
+267	, joten toistaminen ei onnistu. Lataa tai asenna se uudelleen.
+268	Koko kansiota ei voitu poistaa. Sulje sitä käyttävät ohjelmat ja yritä uudelleen.
+269	Poistetaanko kannettava kopio?
+270	{0}\n\nKoko: {1}\n\nKansio poistetaan pysyvästi. Lähdetiedostoa (asennusohjelmaa tai arkistoa) ei kosketa.
+271	{0} ydintä / {1} säiettä
+272	{0:.0f} %  ({1} / {2})
+273	, muisti {0} / {1}, {2:.0f} °C
+274	 (arvio 3D:n mukaan)
+275	Valitse, miten Portabilizer tekee kannettavia kopioita. Voit vaihtaa milloin tahansa (se muuttaa vain toimintatapaa). Joka käynnistyksellä ohjelma aloittaa tavallisessa versiossa.
+276	Turvallinen versio.\n\nLähdetiedosto (asennusohjelma, paketti tai arkisto) pysyy koskemattomana, ja viereen luodaan kannettava kansio.\n\nHaittapuoli: levylle jäävät molemmat kopiot: sekä lähdetiedosto että kannettava kansio.\n\nSopii lähes kaikkeen, varsinkin jos et ole varma, toimiiko ohjelma.
+277	Radikaali versio (riski).\n\nOnnistuneen koonnin jälkeen POISTAA lähdetiedoston (kaikki arkiston osat) ja väliaikaiset kopiot, joten lopputulos vie vähemmän tilaa. Kannettava kansio luodaan lähdetiedoston viereen.\n\nTärkeää: työn aikana tilaa tarvitaan yhtä paljon kuin tavallisessa versiossa: lähdetiedosto poistetaan vasta aivan lopussa tarkistuksen jälkeen. Poistettua tiedostoa ei voi palauttaa: jos myöhemmin jokin menee pieleen, se on ladattava tai asennettava alustalta uudelleen.\n\nOhjelma pyytää vahvistuksen ennen jokaista käynnistystä.
+278	Uusi versio saatavilla: {0}.
+279	Sinulla on uusin versio ({0}) tai GitHubiin ei ole yhteyttä.
+280	Ohjelman versio: {0}
+281	Tarkista uudet versiot käynnistettäessä (kysely GitHubiin, mitään tietoja ei lähetetä)
+282	Tarkista nyt
+283	Ikkunan ulkoasu. Muutokset otetaan käyttöön heti ja ne muistetaan. Punaiset teemat otetaan automaattisesti käyttöön (R)-versioissa ja ne sovitetaan vaaleaan tai tummaan teemaan.
+284	 (oma)
+285	Klassinen ulkoasu: värit määrää Windows.
+286	. Värit: tausta, kentät, painikkeet, teksti, toissijainen, korostus, onnistuminen, varoitus, virhe.
+287	Kansion avaaminen epäonnistui: {0}
+288	Teeman tallennus epäonnistui: {0}
+289	Valitse oma väri...
+290	Avaa themes-kansio
+291	Päivitä teemaluettelo
+292	Omat teemat: aseta .json-tiedosto ohjelman vieressä olevaan themes-kansioon (malli _example.json luodaan yllä olevalla painikkeella). Siinä on värit muodossa #rrggbb, nimi, "kind": "light" tai "dark" ja "r": true R-tilan punaisille teemoille. Puuttuvat värit otetaan sisäänrakennetusta teemasta. Vahvistusikkunat (Windowsin viestit) pysyvät järjestelmän omina.
+293	Tee kannettavaksi (R)
+294	Työ käynnissä
+295	Tehtävä on vielä käynnissä. Keskeytetäänkö se ja poistutaanko?
+296	HUOMIO:
+297	VAARA:
+298	 Työ pysäytettiin, jotta levy ei täyty.
+299	vioittunut MSZIP-lohko
+300	Puuttuu:
+301	Nipun siirto epäonnistui: {0}
+302	Arkistossa ei ole valmista ohjelmaa, mutta siinä on asennusohjelma: {0}. Jatkan sillä. Arkiston sisältö tallennettiin kansioon {1}.
+303	Asennusohjelman vierestä löytyi .bin-tiedostoja: {0} ({1}):
+304	Purku epäonnistui. Asennusohjelma on ehkä epästandardi (silloin tarvitaan virtualisointityökalu kuten Cameyo / Turbo Studio).
+305	Kokeilen hiljaista asennusta. Puretut tiedostot tallennetaan kansioon {0}.
+306	Lataus perutaan valintasi mukaan.
+307	Pysäytä: siivoan levyn
+308	Peruuta lataus
+309	Portabilizer (R): tiedosto siirretään
+310	{0} ({1}) SIIRRETÄÄN App-kansioon omalta paikaltaan: kopiota ei luoda, lisätilaa ei tarvita.\n\nTiedosto ei enää ole vanhalla paikallaan. Sen saa takaisin App-kansiosta.\n\nJatketaanko?
+311	Portabilizer (R): lähdetiedosto poistetaan
+312	Haluatko varmasti tehdä tästä tiedostosta kannettavan radikaalissa tilassa?\n\nOnnistuneen koonnin jälkeen POISTETAAN PYSYVÄSTI (roskakorin ohi):\n{0}\nyhteensä {1}, sekä väliaikaiset kopiot.\n\nLähdetiedostoa ei voi enää palauttaa. Jos jokin menee pieleen (esimerkiksi peli ei käynnisty), se on ladattava tai asennettava alustalta uudelleen.\n\nPoisto tapahtuu vain, jos koonti onnistui ja kaikki on tarkistettu; virheen tai peruutuksen sattuessa tiedosto säilyy. Tulos luodaan lähdetiedoston viereen.\n\nJatketaanko?
+313	Valmis. Tiedosto siirrettiin ilman kopiota: lisätilaa ei kulunut.
+314	levyllä vapaana {0}
+315	 (ei levyllä)
+316	Lähdetiedostoa ei enää ole
+317	Aloitetaanko alusta?
+318	Kansio on jo olemassa (edellisen yrityksen jäänne):\n{0}\nKoko: {1}\n\nPoistetaanko se ja aloitetaanko alusta?
+319	Suorittimen/muistin kuormitus ei ole saatavilla: asenna psutil (pip install psutil). Koostetussa Portabilizer.exe-tiedostossa se on jo mukana.
+320	Työmuistia on lähes loppu. Sulje selain ja turhat ohjelmat, muuten purku voi hidastua paljon.
+321	Levy: luku {0}/s, kirjoitus {1}/s
+322	kuormitus ei saatavilla
+323	Nyt:
+324	Ilman DirectX:ää valittiin jatkaa.
+325	Valittiin jatkaa ilman niitä.
+326	Kansion {0} voi poistaa tarkistuksen jälkeen: sitä tarvittiin vain asennusohjelman lähteenä.
+327	Purun jälkeen pää-exeä ei löytynyt.
+328	Tila ei riitä
+329	Arvion mukaan tila ei riitä. Jos tila loppuu, purku pysähtyy virheeseen.\n\nJatketaanko silti?
+330	Löytyi useita sopivia ohjelmia, enkä ole varma, mikä on pääohjelma. Valitse se, joka käynnistää tarvitsemasi sovelluksen (sen voi vaihtaa myöhemmin «Vain Launch.bat» -tilassa).
+331	Valitse automaattisesti
+332	Riittääkö tila?
+333	Valmis. Lähdetiedosto poistettu, vapautettu {0}.
+334	 (radikaali tila poisti sen)
+335	  <- minne tallennetaan
+336	Levyllä {0}, jolle tallennat, on vähän tilaa ({1}). Valitse toinen levy «Kohde»-kentässä.
+337	Puretun arkiston siirto epäonnistui: {0}
+338	Purettu {0}, mutta .bin-tiedostoissa on {1}: näyttää uudelleenpakkaukselta, jonka tiedot asennusohjelma asentaa itse.
+339	Puretun sisällön siirto epäonnistui: {0}
+340	Asennus epäonnistui - puretut tiedostot palautettiin App-kansioon.
+341	Puretun sisällön palauttaminen App-kansioon epäonnistui: {0}
+342	\n\nAloitetaanko silti?
+343	Varoitus: vieressä on .bin-tiedostoja. Jos ohjelma ei käynnisty tai siltä puuttuu tietoja, toista «Vain asennus (App-kansioon)» -tilassa.
+344	Asennusohjelmat, paketit, arkistot
+345	Kaikki
+346	Ohjelmat
+347	Valmis. Tulos on «Historia»-välilehdellä.
+348	Ei onnistunut. Lisätiedot ovat lokissa ja suosituksissa.
+349	Valmis, mutta lähdetiedostoa ei poistettu:
+350	Kieli
+351	Käyttöliittymän kieli:
+352	Kieli vaihtuu heti: ikkuna käynnistyy itse uudelleen ja asetukset säilyvät.
+353	Odota, että tehtävä päättyy, tai keskeytä se: ikkuna käynnistyy uudelleen kielen vaihdon jälkeen.

@@ -1,0 +1,34 @@
+ru	Rusça
+en	İngilizce
+et	Estonca
+fr	Fransızca
+es	İspanyolca
+de	Almanca
+it	İtalyanca
+pt	Portekizce
+nl	Felemenkçe
+pl	Lehçe
+uk	Ukraynaca
+sv	İsveççe
+fi	Fince
+tr	Türkçe
+zh	Çince (Basitleştirilmiş)
+ja	Japonca
+ko	Korece
+ar	Arapça
+cs	Çekçe
+ro	Romence
+hu	Macarca
+el	Yunanca
+he	İbranice
+hi	Hintçe
+id	Endonezce
+vi	Vietnamca
+th	Tayca
+bg	Bulgarca
+sr	Sırpça (Kiril)
+hr	Hırvatça
+lv	Letonca
+lt	Litvanca
+no	Norveççe (Bokmål)
+da	Danca

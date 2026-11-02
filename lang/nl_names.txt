@@ -1,0 +1,34 @@
+ru	Russisch
+en	Engels
+et	Estisch
+fr	Frans
+es	Spaans
+de	Duits
+it	Italiaans
+pt	Portugees
+nl	Nederlands
+pl	Pools
+uk	Oekraïens
+sv	Zweeds
+fi	Fins
+tr	Turks
+zh	Chinees (vereenvoudigd)
+ja	Japans
+ko	Koreaans
+ar	Arabisch
+cs	Tsjechisch
+ro	Roemeens
+hu	Hongaars
+el	Grieks
+he	Hebreeuws
+hi	Hindi
+id	Indonesisch
+vi	Vietnamees
+th	Thais
+bg	Bulgaars
+sr	Servisch (Cyrillisch)
+hr	Kroatisch
+lv	Lets
+lt	Litouws
+no	Noors (Bokmål)
+da	Deens

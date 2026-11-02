@@ -1,0 +1,353 @@
+1	Der kræves {0} {1}, ledig plads er {2} på disk {3}.{4}
+2	i gang
+3	pause
+4	færdig
+5	fejl
+6	afbrudt
+7	afbrudt (programmet blev lukket)
+8	Auto (som i Windows)
+9	Lys
+10	Mørk
+11	Klassisk (system)
+12	Min farve
+13	B
+14	KB
+15	MB
+16	GB
+17	 Hvis arkivet indeholder et installationsprogram, skal der bruges omtrent lige så meget til.
+18	efter arkivets indhold
+19	vejledende
+20	Spil på Unreal Engine kan have brug for DirectX-biblioteker (June 2010). Hvis der ved start opstår en fejl om xinput1_3.dll, X3DAudio1_7.dll eller XAPOFX1_5.dll, så kør DX_fix.bat i resultatmappen: administratorrettigheder er ikke nødvendige.
+21	Den radikale tilstand slettede ikke kildefilen, fordi ikke alt kunne kontrolleres (årsagen står i loggen). Den bærbare mappe er oprettet, kilden ligger stadig: kontroller den, og slet selv kilden.
+22	Programmet har brug for .NET, som ikke findes på denne computer. Kør Install_dotnet.bat i resultatmappen (den henter runtime ind i den bærbare kopi, uden administratorrettigheder).
+23	Filen kræver en adgangskode. Portabilizer indtaster ikke adgangskoder: udpak den manuelt i 7-Zip (den spørger om adgangskoden), og vælg installationsprogrammet eller mappen fra resultatet.
+24	7z.exe blev ikke fundet (hverken ved siden af programmet eller i den installerede 7-Zip). Installer 7-Zip fra 7-zip.org, eller læg 7z.exe og 7z.dll ved siden af Portabilizer eller i mappen tools.
+25	innoextract.exe blev ikke fundet. Læg den ved siden af Portabilizer eller i mappen tools.
+26	Der var ikke plads nok på disken. Frigør plads, eller vælg en anden disk i feltet «Til», og klik derefter på «Prøv igen» under fanen «Historik».
+27	Installationsprogrammet kræver administratorrettigheder. Hvis du ikke har dem, så prøv tilstanden «Kun udpakning», eller se efter en bærbar version hos udvikleren.
+28	Hoved-exe blev ikke fundet. I loggen ovenfor står de fundne exe-filer og årsagen til, at de blev sorteret fra: kopiér det ønskede navn til feltet «Hoved-exe», og kør tilstanden «Kun Launch.bat».
+29	Ligner en UWP-app: uden for den installerede pakke starter den sandsynligvis ikke. Se efter et exe-installationsprogram.
+30	Kontroller, at filen er hentet helt (sammenlign størrelsen, eller hent den igen), og at 7z.exe ligger ved siden af programmet.
+31	Denne mappe er oprettet tidligere. Åbn den under fanen «Historik», eller slet den, hvis du vil starte forfra.
+32	Dataene ligger i eksterne .bin-filer, som installationsprogrammet selv installerer. Det kan kræve installation, og den kræver administratorrettigheder.
+33	Delvist oprettede filer ligger stadig på disken. Du kan slette dem under fanen «Historik».
+34	i/t
+35	Udpakning
+36	Udpakker: {0}
+37	Installation
+38	Lydløs installation i mappen App (kan tage mange minutter, luk ikke vinduet)...
+39	Det lykkedes ikke uden administrator - prøver med UAC-forespørgsel (klik 'Ja'). Et installationsprogram, der kører med administratorrettigheder, kan ikke stoppes herfra.
+40	systemnavn (setup/update/redist osv.)
+41	repack-værktøj
+42	installationsprogrammets midlertidige mappe
+43	konsolprogram
+44	Fandt exe: {0}. Her er de første {1}, og hvorfor de ikke passede:
+45	Kopiér det ønskede navn til feltet «Hoved-exe», og kør tilstanden «Kun Launch.bat».
+46	Filen '{0}' blev ikke fundet i App.
+47	{1} har brug for .NET ({0}), men det blev ikke fundet på denne computer. Kør Install_dotnet.bat i resultatmappen: den henter runtime til mappen dotnet inde i den bærbare kopi (administratorrettigheder er ikke nødvendige), og Launch.bat finder den selv.
+48	Start: almindelig, forhøjede rettigheder er ikke nødvendige.
+49	Programmet har brug for biblioteker, som ikke findes i systemet:\n{0}\n\nSkal de lægges i programmets mappe? Administratorrettigheder er ikke nødvendige, systemet ændres ikke, alt bliver inde i den bærbare mappe.\n\nJa - læg dem der.\nNej - fortsæt uden dem (programmet starter muligvis ikke).\nAnnuller - afbryd.
+50	Færdig: {0}
+51	Hoved-exe: {0}
+52	Start via Launch.bat. Mappen kan flyttes til en USB-nøgle.
+53	Radikal tilstand: frigjort {0}.
+54	Tilstand: {0}
+55	Type: {0}
+56	Lys rød (R)
+57	Kul med rød accent
+58	Bordeaux
+59	Kirsebær
+60	Fil: exe, msi, msix/appx, arkiv (rar, zip, 7z...). Hoved-exe er valgfri: navn (App.exe), sti inde i App eller fil fra mappen App. Loggen gemmes i portabilizer.log.
+61	TILSTAND (R): en almindelig exe FLYTTES blot til mappen App (ingen kopi, der skal ikke bruges plads). Arkiver og installationsprogrammer udpakkes først, og først derefter slettes kilden: mens arbejdet står på, skal der være plads til det udpakkede. Du får en bekræftelse før start.
+62	Sletter ikke {0}: mappen ligner ikke en, der er oprettet af Portabilizer.
+63	7z.exe er nødvendig: den blev ikke fundet hverken ved siden af programmet eller i den installerede 7-Zip. Installer 7-Zip (7-zip.org), eller læg 7z.exe og 7z.dll ved siden af eller i tools/.
+64	7-Zip, kode 1
+65	Filen er beskyttet med adgangskode. Portabilizer indtaster ikke adgangskoder: udpak den manuelt (7-Zip spørger selv om adgangskoden), og vælg derefter den udpakkede mappe eller installationsprogrammet.
+66	Installationsprogrammet sluttede med en fejl. Kontroller, at .bin-filerne ligger ved siden af setup.exe.
+67	Mappen {0} indeholder slet ingen exe-filer. Kontroller, at programmet blev udpakket eller installeret netop hertil.
+68	MSIX: rettet navne med %XX-kodning: {0}
+69	MSIX: AppxManifest.xml blev ikke fundet - leder efter exe på almindelig vis.
+70	MSIX: manifestet mangler runFullTrust - det er højst sandsynligt en UWP-app. Uden for den installerede pakke starter den formentlig ikke.
+71	, manifest: {0}.
+72	Dette ligner en online-stub: indeni ligger et downloadlink ({0}). Selve programmet hentes ved start og installeres i systemet, så det bliver ikke en bærbar kopi. For ægte portabilitet skal du hente det fulde offline-installationsprogram og gøre det bærbart.
+73	Filen er beskyttet af en packer: den kan ikke udpakkes og analyseres, kun startes.
+74	Start: med UAC-forespørgsel (valgt manuelt). Launch.bat ændrer ikke rettigheder.
+75	Start: uden UAC-forespørgsel (RunAsInvoker, valgt manuelt).
+76	{0} beder om administratorrettigheder. Launch.bat starter det uden UAC-forespørgsel (RunAsInvoker), adgangskode er ikke nødvendig. Hvis programmet reelt skriver til Program Files, HKLM, installerer tjenester eller drivere, virker det muligvis ikke uden rettigheder. Brug i så fald Launch_admin.bat (almindelig start med UAC-forespørgsel).
+77	ikke cab
+78	flerdelt cab
+79	Andet
+80	Spil på Unreal Engine: Launch.bat starter {0} direkte. Rod-{1} beder ved første start om at installere DirectX og Visual C++ i systemet og lukker, hvis du afslår. Start via den: Launch_stub.bat.
+81	Unreal: start af {0}
+82	exe kræver administrator: Launch.bat går via RunAsInvoker
+83	Radikal tilstand: kildefilen blev flyttet, ikke kopieret - ingen ekstra gigabyte er brugt.
+84	arbejdet blev afbrudt
+85	Launch.bat blev ikke oprettet
+86	mappen App er tom
+87	Filerne ligger i: {0}
+88	Mapperne med filer er tomme.
+89	Ukendt tilstand: {0}
+90	Ingen fil er angivet.
+91	Filen blev ikke fundet.
+92	Mappen findes allerede: {0}
+93	Slet den, eller vælg tilstanden 'Kun Launch.bat'.
+94	Hoved-exe blev ikke fundet.
+95	Angiv exe i feltet 'Hoved-exe', og kør tilstanden 'Kun Launch.bat'.
+96	farven skal have formatet #rrggbb
+97	Auto
+98	Kun udpakning
+99	Kun installation (i App)
+100	Kun Launch.bat
+101	Auto (uden UAC, hvis exe beder om administrator)
+102	Altid uden UAC
+103	Altid med UAC (som i originalen)
+104	Fil:
+105	Til:
+106	Hoved-exe:
+107	Processor
+108	Hukommelse
+109	Grafikkort
+110	--run accepterer: auto, noadmin, admin
+111	Radikal tilstand SLETTER kildefilen efter vellykket bygning (den kan ikke gendannes).\nHvis du er sikker, så tilføj --yes. Intet er gjort.
+112	--dx accepterer: install, skip, cancel
+113	På disk {0} er der kun {1} tilbage.
+114	innoextract.exe er nødvendig (læg den ved siden af eller i tools/).
+115	Start uden administrator mislykkedes: {0}
+116	Fandt ingen grafiske programmer, bruger et konsolprogram: {0}. Hvis det ikke er et spil, så angiv exe manuelt.
+117	Valgt: {0} (egnede exe-filer: {1}). Andre muligheder: {2}. Hvis det forkerte program startede, så angiv exe manuelt.
+118	passer
+119	sorteret fra:
+120	MSIX: kunne ikke læse manifestet: {0}
+121	Kunne ikke oprette Install_dotnet.bat: {0}
+122	Analyse af {0}: {1}, {2}
+123	\n\nNogle filer er ikke indbygget i Portabilizer:
+124	. Til DirectX oprettes DX_fix.bat (den henter den fulde DirectX-pakke).
+125	. Du må installere dem manuelt.
+126	DX_fix.bat er nødvendig
+127	udpakket {0} af {1}
+128	kildefilen ligger inde i resultatmappen
+129	Kildefilen er slettet: {0} ({1})
+130	. Hvis det er data fra samme repack, så slet dem selv.
+131	Gemt i: {0}
+132	Mappen {0} findes ikke. Udfør først udpakning eller installation.
+133	Hoved-exe blev ikke fundet - angiv den i feltet 'Hoved-exe'.
+134	Dette er en almindelig exe - kopierer den som den er.
+135	Bemærk: MSIX er udpakket som en almindelig mappe, uden registrering af pakken. Klassiske (full trust) programmer fungerer normalt sådan, men UWP-apps og alt, der kræver pakkeidentifikator, starter muligvis ikke.
+136	Radikal tilstand er ikke bekræftet: gør ingenting.
+137	Afbrudt af brugeren. Delvist oprettede filer ligger stadig på disken: du kan slette dem under fanen «Historik».
+138	Fejl: {0}
+139	Konverter
+140	Historik
+141	Diagnostik
+142	Versioner
+143	Udseende
+144	Klar til brug.
+145	Gør bærbar
+146	Pause
+147	Fortsæt
+148	Afbryd
+149	Anbefalinger
+150	DirectX er nødvendig
+151	Overførslen er sat på pause, intet er tabt. Annullering stopper arbejdet for altid: bagefter kan du kun starte forfra («Prøv igen» under fanen «Historik»).
+152	Der er ved at være for lidt plads på disken
+153	Pause: processen er frosset, fremskridtet er gemt.
+154	Fortsætter fra samme sted.
+155	Dato
+156	Kilde
+157	Version
+158	Type
+159	Status
+160	Størrelse
+161	Resultat
+162	Noter
+163	Sletter {0} ...
+164	\n... og {0} mere
+165	Åbn mappen
+166	Start
+167	Prøv igen
+168	Slet kopi
+169	Slet kildefilen
+170	Fjern fra listen
+171	Opdater
+172	Indsamler systemoplysninger...
+173	Disk: i/t
+174	Disk
+175	Kapacitet
+176	Ledig
+177	Brugt
+178	Portabilizer (R) - radikal
+179	Slå almindelig version til
+180	Slå version (R) til
+181	Tema:
+182	Mørk rød (R):
+183	Lys rød (R):
+184	Egen farve
+185	Skal vinduets baggrund også farves i denne farve?\n\nJa - baggrunden får en let tone af den valgte farve.\nNej - baggrunden forbliver neutral, farven bruges kun på knapper og accenter.
+186	Der er sandsynligvis ikke plads nok.
+187	kan ikke læses
+188	 (lav prioritet)
+189	Den angivne exe ligger uden for mappen App - vælg en fil inde i App.
+190	{0}: denne cab bruger LZX-komprimering og kan kun udpakkes i Windows (expand.exe).
+191	expand.exe kunne ikke udtrække {0}: {1}
+192	Bibliotekerne ({0}) er lagt ved siden af {1}: {2}.
+193	. Hvis programmet klager over dem, så kør DX_fix.bat i resultatmappen (administratorrettigheder er ikke nødvendige).
+194	 ({0}). De er ikke indbygget i Portabilizer eller passede ikke i bitbredde: hvis programmet klager, så installer den tilsvarende pakke i systemet.
+195	mangler:
+196	Kildefilen er IKKE slettet:
+197	udpakkeren gav advarsler (
+198	Kunne ikke slette {0}: {1}
+199	Midlertidig kopi slettet: {0} ({1})
+200	.bin-filerne ved siden af installationsprogrammet blev ikke slettet (andre programmer kan have brug for dem):
+201	Tilstand R: filen blev flyttet til App uden kopi ({0}).
+202	Installationstilstand gælder ikke MSIX/APPX: pakken bliver kun udpakket.
+203	Kunne ikke udpakke pakken.
+204	Dette er en bundle. Hovedpakke: {0}. Den udpakkede bundle er gemt i {1}.
+205	Indtil videre er alt roligt. Her vises tips, når der er for lidt plads, og ved typiske fejl.
+206	Hvor meget der mangler at blive skrevet, kan ikke siges nøjagtigt.
+207	Hvilket program skal startes?
+208	Vælg en fil.
+209	\n  ... og {0} mere
+210	Forberedelse
+211	Annulleret før start: for lidt plads på disken.
+212	Pause kan ikke sættes nu (psutil er nødvendig: pip install psutil).
+213	Afbryde?
+214	Stoppe arbejdet? Det kan ikke fortsættes fra stedet, hvor det blev stoppet: under fanen «Historik» vises «Prøv igen» (starter forfra).
+215	{0} er gået
+216	Vælg først en post på listen.
+217	Vent til den igangværende opgave er færdig (eller afbryd den).
+218	Resultatmappen findes ikke på disken.
+219	Åbn manuelt:\n{0}
+220	Launch.bat blev ikke fundet: konverteringen er ikke fuldført.
+221	Sletning
+222	Denne mappe ligner ikke en, der er oprettet af Portabilizer (navnet *_portable og Launch.bat med mappen App er påkrævet). Sletter ikke, for en sikkerheds skyld.
+223	Mappen er slettet.
+224	Det lykkedes ikke at slette alt: nogle filer er i brug af et program.
+225	Kildefilen blev ikke fundet (måske er den allerede slettet).
+226	Slette kildefilen?
+227	Følgende slettes PERMANENT (uden om papirkurven), i alt {0}:\n\n{1}\n\nMappe: {2}\n\nDette er din kildefil, den kan ikke gendannes. Slette?
+228	Filen er slettet: {0}
+229	Fjerne posten fra listen? Filerne på disken berøres ikke.
+230	afgør...
+231	System: {0}\nProcessor: {1}\nArbejdshukommelse: {2}\nGrafikkort: {3}
+232	Der er en ny version af Portabilizer: {0}. Du kan hente den i Portabilizer Launcher eller på siden {1}.
+233	_eksempel.json
+234	Mit tema
+235	Hovedfarve (knapper, fremdrift)
+236	Portabilizer (R) - radikal tilstand
+237	Slået til nu: Portabilizer (R) - radikal
+238	Slået til nu: Portabilizer (almindelig version)
+239	Du kan skifte version, når den igangværende opgave er færdig.
+240	Stoppet. Frigør plads, vælg en anden disk, eller tilføj --force.
+241	Pladsen er knap: næsten ingen reserve, opgaven kan blive sat på pause.
+242	Du valgte: {0}
+243	nej
+244	downloadadressen blev fundet ud fra indirekte tegn
+245	Annulleret: bibliotekerne er nødvendige (
+246	Biblioteker:
+247	Kunne ikke flytte filen ({0}), kopierer som sædvanligt.
+248	Kunne ikke udpakke den indlejrede pakke.
+249	Installationstilstand gælder ikke arkiver: de bliver kun udpakket.
+250	Kunne ikke udpakke arkivet.
+251	Installationstilstand er kun tilgængelig for Inno/NSIS-installationsprogrammer i Windows.
+252	Tilstand:
+253	   Start:
+254	Der mangler at blive skrevet omtrent {0}, ledig er {1}: det burde række, du kan nå i mål.
+255	Der mangler at blive skrevet omtrent {0}, og ledig er {1}: der mangler omtrent {2}.
+256	Forbliver på pause. Frigør plads, og klik på «Fortsæt».
+257	Fortsætter på eget ansvar: stopper kun, hvis den ledige plads bliver mindre end {0}.
+258	Pause. Frigør plads på disken, og klik på «Fortsæt».
+259	 Opgaven er på pause: vælg i vinduet, hvad der skal gøres.
+260	Vurdering af nødvendig plads
+261	Afbrudt. Resterne kan slettes under fanen «Historik».
+262	Der er stadig lidt plads på disken: {0}.
+263	Arbejde
+264	~{0} tilbage
+265	PAUSE
+266	Start manuelt:\n{0}\n\n{1}
+267	, derfor kan det ikke gentages. Hent eller installer det igen.
+268	Kunne ikke slette hele mappen. Luk programmer, der bruger den, og prøv igen.
+269	Slette den bærbare kopi?
+270	{0}\n\nStørrelse: {1}\n\nMappen slettes uigenkaldeligt. Kildefilen (installationsprogram eller arkiv) berøres ikke.
+271	{0} kerner / {1} tråde
+272	{0:.0f}%  ({1} af {2})
+273	, hukommelse {0} af {1}, {2:.0f} °C
+274	 (vurdering ud fra 3D)
+275	Vælg, hvordan Portabilizer laver bærbare kopier. Du kan skifte når som helst (det ændrer kun arbejdstilstanden). Ved hver start starter programmet i den almindelige version.
+276	Sikker version.\n\nKildefilen (installationsprogram, pakke eller arkiv) forbliver urørt, og en bærbar mappe oprettes ved siden af.\n\nMinus: begge kopier bliver liggende på disken: både kilden og den bærbare mappe.\n\nEgner sig til næsten alt, især hvis du er i tvivl om, at programmet vil virke.
+277	Radikal version (risiko).\n\nEfter vellykket bygning SLETTER den kildefilen (alle dele af arkivet) og midlertidige kopier, så slutresultatet fylder mindre. Den bærbare mappe oprettes ved siden af kilden.\n\nVigtigt: mens arbejdet står på, skal der bruges lige så meget plads som i den almindelige version: kilden slettes først helt til sidst, efter kontrol. En slettet fil kan ikke gendannes: hvis noget går galt senere, skal du hente den eller installere den fra platformen igen.\n\nFør hver start beder programmet om bekræftelse.
+278	Ny version er tilgængelig: {0}.
+279	Du har den nyeste version ({0}), eller der er ingen forbindelse til GitHub.
+280	Programversion: {0}
+281	Søg efter nye versioner ved start (forespørgsel til GitHub, ingen data sendes)
+282	Søg nu
+283	Vinduets udseende. Ændringer anvendes straks og huskes. De røde temaer slås automatisk til i versionerne (R) og tilpasses lyst eller mørkt tema.
+284	 (egen)
+285	Klassisk udseende: farverne bestemmes af Windows.
+286	. Farver: baggrund, felter, knapper, tekst, sekundær, accent, succes, advarsel, fejl.
+287	Kunne ikke åbne mappen: {0}
+288	Kunne ikke gemme temaet: {0}
+289	Vælg egen farve...
+290	Åbn mappen themes
+291	Opdater listen over temaer
+292	Egne temaer: læg en .json-fil i mappen themes ved siden af programmet (eksemplet _eksempel.json oprettes med knappen ovenfor). Den indeholder farver i formatet #rrggbb, navn, "kind": "light" eller "dark" og "r": true for røde temaer i tilstand R. Manglende farver hentes fra det indbyggede tema. Bekræftelsesvinduer (Windows-meddelelser) forbliver systemvinduer.
+293	Gør bærbar (R)
+294	Arbejde i gang
+295	Opgaven kører stadig. Afbryde den og afslutte?
+296	OBS:
+297	FARE:
+298	 Arbejdet blev stoppet for at undgå, at disken fyldes.
+299	beskadiget MSZIP-blok
+300	Mangler:
+301	Kunne ikke flytte bundlen: {0}
+302	Arkivet indeholder ikke et færdigt program, men et installationsprogram: {0}. Fortsætter med det. Arkivets indhold er gemt i {1}.
+303	Ved siden af installationsprogrammet blev der fundet .bin-filer: {0} ({1}):
+304	Kunne ikke udpakke. Måske er installationsprogrammet ikke standard (så skal der bruges en virtualiseringsløsning som Cameyo / Turbo Studio).
+305	Prøver lydløs installation. De udpakkede filer gemmes i {0}.
+306	Overførslen annulleres efter dit valg.
+307	Stop: jeg rydder disken
+308	Annuller overførslen
+309	Portabilizer (R): filen bliver flyttet
+310	{0} ({1}) bliver FLYTTET til mappen App ved siden af sig selv: der oprettes ingen kopi, ekstra plads er ikke nødvendig.\n\nFilen vil ikke længere ligge på det gamle sted. Du kan få den tilbage ved at tage den ud af mappen App.\n\nFortsætte?
+311	Portabilizer (R): kildefilen bliver slettet
+312	Vil du virkelig gøre denne fil bærbar i radikal tilstand?\n\nEfter vellykket bygning bliver følgende SLETTET PERMANENT (uden om papirkurven):\n{0}\ni alt {1}, samt midlertidige kopier.\n\nDu kan ikke gendanne kildefilen bagefter. Hvis noget går galt (for eksempel at spillet ikke starter), skal du hente den eller installere den fra platformen igen.\n\nSletningen sker kun, hvis bygningen lykkedes, og alt er kontrolleret; ved fejl eller annullering bliver filen liggende. Resultatet oprettes ved siden af kildefilen.\n\nFortsætte?
+313	Færdig. Filen blev flyttet uden kopi: ingen ekstra plads er brugt.
+314	ledig på disken {0}
+315	 (findes ikke på disken)
+316	Kildefilen findes ikke længere
+317	Starte forfra?
+318	Mappen findes allerede (rest fra sidste forsøg):\n{0}\nStørrelse: {1}\n\nSlette den og starte forfra?
+319	CPU/RAM-belastning er ikke tilgængelig: installer psutil (pip install psutil). I den færdigbyggede Portabilizer.exe er den allerede med.
+320	Der er næsten ingen arbejdshukommelse tilbage. Luk browseren og unødvendige programmer, ellers kan udpakningen blive meget langsom.
+321	Disk: læsning {0}/s, skrivning {1}/s
+322	belastning ikke tilgængelig
+323	Nu:
+324	Du valgte at fortsætte uden DirectX.
+325	Du valgte at fortsætte uden dem.
+326	Mappen {0} kan slettes efter kontrol: den er kun nødvendig som kilde til installationsprogrammet.
+327	Hoved-exe blev ikke fundet efter udpakning.
+328	Der bliver ikke plads nok
+329	Efter vurderingen bliver der ikke plads nok. Hvis pladsen slipper op, stopper udpakningen med en fejl.\n\nFortsætte alligevel?
+330	Der blev fundet flere egnede programmer, og jeg er ikke sikker på, hvilket der er hovedprogrammet. Vælg det, der starter det ønskede program (det kan ændres senere i tilstanden «Kun Launch.bat»).
+331	Vælg automatisk
+332	Er der plads nok?
+333	Færdig. Kildefilen er slettet, frigjort {0}.
+334	 (slettet af radikal tilstand)
+335	  <- hvor vi gemmer
+336	Disken {0}, som du gemmer til, har lidt plads ({1}). Vælg en anden disk i feltet «Til».
+337	Kunne ikke flytte det udpakkede arkiv: {0}
+338	Udpakket {0}, men i .bin ligger {1}: ligner en repack, hvor installationsprogrammet selv installerer dataene.
+339	Kunne ikke flytte det udpakkede: {0}
+340	Installationen mislykkedes - de udpakkede filer er lagt tilbage i App.
+341	Kunne ikke lægge det udpakkede tilbage i App: {0}
+342	\n\nStarte alligevel?
+343	Advarsel: der ligger .bin-filer ved siden af. Hvis programmet ikke starter eller mangler data, så gentag i tilstanden 'Kun installation (i App)'.
+344	Installationsprogrammer, pakker, arkiver
+345	Alle
+346	Programmer
+347	Færdig. Resultatet findes under fanen «Historik».
+348	Det lykkedes ikke. Detaljer findes i loggen og i anbefalingerne.
+349	Færdig, men kildefilen er ikke slettet:
+350	Sprog
+351	Grænsefladesprog:
+352	Sproget skiftes med det samme: vinduet genstarter af sig selv, indstillingerne bevares.
+353	Vent først, til opgaven er færdig, eller afbryd den: efter sprogskiftet genstarter vinduet.

@@ -1,0 +1,34 @@
+ru	rusă
+en	engleză
+et	estonă
+fr	franceză
+es	spaniolă
+de	germană
+it	italiană
+pt	portugheză
+nl	neerlandeză
+pl	poloneză
+uk	ucraineană
+sv	suedeză
+fi	finlandeză
+tr	turcă
+zh	chineză (simplificată)
+ja	japoneză
+ko	coreeană
+ar	arabă
+cs	cehă
+ro	română
+hu	maghiară
+el	greacă
+he	ebraică
+hi	hindi
+id	indoneziană
+vi	vietnameză
+th	thailandeză
+bg	bulgară
+sr	sârbă (chirilică)
+hr	croată
+lv	letonă
+lt	lituaniană
+no	norvegiană (bokmål)
+da	daneză

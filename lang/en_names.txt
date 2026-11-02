@@ -1,0 +1,34 @@
+ru	Russian
+en	English
+et	Estonian
+fr	French
+es	Spanish
+de	German
+it	Italian
+pt	Portuguese
+nl	Dutch
+pl	Polish
+uk	Ukrainian
+sv	Swedish
+fi	Finnish
+tr	Turkish
+zh	Chinese (Simplified)
+ja	Japanese
+ko	Korean
+ar	Arabic
+cs	Czech
+ro	Romanian
+hu	Hungarian
+el	Greek
+he	Hebrew
+hi	Hindi
+id	Indonesian
+vi	Vietnamese
+th	Thai
+bg	Bulgarian
+sr	Serbian (Cyrillic)
+hr	Croatian
+lv	Latvian
+lt	Lithuanian
+no	Norwegian (Bokmål)
+da	Danish

@@ -1,0 +1,353 @@
+1	Vaja on {0} {1}, kettal {3} on vaba {2}.{4}
+2	käib
+3	paus
+4	valmis
+5	viga
+6	katkestatud
+7	katkestatud (rakendus suleti)
+8	Automaatne (nagu Windowsis)
+9	Hele
+10	Tume
+11	Klassikaline (süsteemne)
+12	Minu värv
+13	B
+14	KB
+15	MB
+16	GB
+17	 Kui arhiivis on installer, on vaja umbes sama palju juurde.
+18	arhiivi sisu järgi
+19	ligikaudu
+20	Unreal Engine'i mäng võib vajada DirectX-i teeke (June 2010). Kui käivitamisel ilmub viga xinput1_3.dll, X3DAudio1_7.dll või XAPOFX1_5.dll kohta, käivitage tulemuskaustas DX_fix.bat: administraatoriõigusi pole vaja.
+21	Radikaalne režiim ei kustutanud lähtefaili, sest kõike ei õnnestunud kontrollida (põhjus on logis). Portatiivne kaust on loodud, lähtefail on alles: kontrollige kausta ja kustutage lähtefail ise.
+22	Programm vajab .NET-i, mida sellel arvutil pole. Käivitage tulemuskaustas Install_dotnet.bat (see laadib käitusaja portatiivse koopia sisse, administraatoriõigusi pole vaja).
+23	Fail küsib parooli. Portabilizer paroole ei sisesta: pakkige see käsitsi lahti 7-Zipiga (see küsib parooli) ja valige tulemusest installer või kaust.
+24	7z.exe ei leitud (ei programmi kõrvalt ega installitud 7-Zipist). Installige 7-Zip aadressilt 7-zip.org või pange 7z.exe ja 7z.dll Portabilizeri kõrvale või kausta tools.
+25	innoextract.exe ei leitud. Pange see Portabilizeri kõrvale või kausta tools.
+26	Kettal sai ruum otsa. Vabastage ruumi või valige väljal «Kuhu» teine ketas, seejärel vajutage vahekaardil «Ajalugu» nuppu «Korda».
+27	Installer nõuab administraatoriõigusi. Kui neid pole, proovige režiimi «Ainult lahtipakkimine» või otsige arendajalt portatiivset versiooni.
+28	Peamist exe-faili ei leitud. Ülalolevas logis on leitud exe-failid ja välistamise põhjus: kopeerige vajalik nimi väljale «Peamine exe» ja käivitage režiim «Ainult Launch.bat».
+29	See näib olevat UWP-rakendus: väljaspool installitud paketti see tõenäoliselt ei käivitu. Otsige exe-installerit.
+30	Kontrollige, et fail on täielikult alla laaditud (võrrelge suurust või laadige uuesti) ja et 7z.exe asub programmi kõrval.
+31	See kaust on juba varem loodud. Avage see vahekaardil «Ajalugu» või kustutage, kui soovite otsast alustada.
+32	Andmed asuvad välistes .bin-failides, mida installer ise installib. Selleks võib olla vaja installimist ja selleks administraatoriõigusi.
+33	Osaliselt loodud failid jäid kettale. Neid saab kustutada vahekaardil «Ajalugu».
+34	n/a
+35	Lahtipakkimine
+36	Lahtipakkija: {0}
+37	Installimine
+38	Vaikne installimine kausta App (võib võtta palju minuteid, ärge sulgege akent)...
+39	Ilma administraatorita ei õnnestunud - proovin UAC-päringuga (vajutage 'Jah'). Administraatoriõigustega käivitatud installerit siit peatada ei saa.
+40	teenusenimi (setup/update/redist jms)
+41	repacki abiutiliit
+42	installeri ajutine kaust
+43	konsooliprogramm
+44	Leitud exe-faile: {0}. Siin on esimesed {1} ja põhjus, miks need ei sobinud:
+45	Kopeerige vajalik nimi väljale «Peamine exe» ja käivitage režiim «Ainult Launch.bat».
+46	Faili '{0}' ei leitud kaustast App.
+47	Rakendusele {1} on vaja .NET-i ({0}), kuid sellel arvutil seda ei leitud. Käivitage tulemuskaustas Install_dotnet.bat: see laadib käitusaja portatiivse koopia sees olevasse kausta dotnet (administraatoriõigusi pole vaja), Launch.bat võtab selle ise kasutusele.
+48	Käivitamine: tavaline, õiguste tõstmist pole vaja.
+49	Programm vajab teeke, mida süsteemis pole:\n{0}\n\nKas panna need programmi kausta? Administraatoriõigusi pole vaja, süsteemi ei muudeta, kõik jääb portatiivse kausta sisse.\n\nJah - pane.\nEi - jätka ilma nendeta (programm ei pruugi käivituda).\nTühista - katkesta.
+50	Valmis: {0}
+51	Peamine exe: {0}
+52	Käivitage Launch.bat kaudu. Kausta võib kanda mälupulgale.
+53	Radikaalne režiim: vabastati {0}.
+54	Režiim: {0}
+55	Tüüp: {0}
+56	Helepunane (R)
+57	Süsi punase rõhuga
+58	Bordoo
+59	Kirsipunane
+60	Fail: exe, msi, msix/appx, arhiiv (rar, zip, 7z...). Peamine exe pole kohustuslik: nimi (App.exe), tee kaustas App või fail kaustast App. Logi salvestatakse faili portabilizer.log.
+61	REŽIIM (R): tavaline exe lihtsalt VIIAKSE kausta App (koopiat ei tehta, ruumi pole vaja). Arhiivid ja installerid pakitakse esmalt lahti ning alles seejärel kustutatakse lähtefail: töö ajaks on vaja ruumi lahtipakitu jaoks. Enne algust küsitakse kinnitust.
+62	Ei kustuta {0}: kaust ei näi olevat Portabilizeri loodud.
+63	Vaja on 7z.exe: seda ei leitud ei programmi kõrvalt ega installitud 7-Zipist. Installige 7-Zip (7-zip.org) või pange 7z.exe ja 7z.dll kõrvale või kausta tools/.
+64	7-Zip, kood 1
+65	Fail on parooliga kaitstud. Portabilizer paroole ei sisesta: pakkige see käsitsi lahti (7-Zip küsib ise parooli), seejärel valige lahtipakitud kaust või installer.
+66	Installer lõpetas veaga. Kontrollige, et .bin-failid asuvad setup.exe kõrval.
+67	Kaustas {0} pole üldse exe-faile. Kontrollige, et programm pakiti lahti või installiti just siia.
+68	MSIX: parandatud %XX-kodeeringuga nimesid: {0}
+69	MSIX: AppxManifest.xml ei leitud - otsin exe-faili tavalisel viisil.
+70	MSIX: manifestis pole runFullTrust - see on tõenäoliselt UWP-rakendus. Väljaspool installitud paketti see tõenäoliselt ei käivitu.
+71	, manifest: {0}.
+72	See näib olevat veebipõhine allalaadija: sees on allalaadimislink ({0}). Programm laaditakse alla käivitamisel ja installitakse süsteemi, nii et portatiivset koopiat sellest ei saa. Tõelise teisaldatavuse jaoks laadige alla täielik offline-installer ja tehke portatiivseks see.
+73	Fail on pakkijaga kaitstud: seda ei saa lahti pakkida ega analüüsida, ainult käivitada.
+74	Käivitamine: UAC-päringuga (valitud käsitsi). Launch.bat õigusi ei muuda.
+75	Käivitamine: ilma UAC-päringuta (RunAsInvoker, valitud käsitsi).
+76	{0} nõuab administraatoriõigusi. Launch.bat käivitab selle ilma UAC-päringuta (RunAsInvoker), parooli pole vaja. Kui programm tegelikult kirjutab kausta Program Files, HKLM-i, installib teenuseid või draivereid, ei pruugi see ilma õigusteta töötada. Siis kasutage Launch_admin.bat (tavaline käivitus UAC-päringuga).
+77	pole cab
+78	mitmeköiteline cab
+79	Muu
+80	Unreal Engine'i mäng: Launch.bat käivitab {0} otse. Juur-{1} palub esmakäivitusel installida süsteemi DirectX ja Visual C++ ning sulgub, kui keeldute. Käivitamiseks selle kaudu: Launch_stub.bat.
+81	Unreal: käivitan {0}
+82	exe nõuab administraatorit: Launch.bat töötab RunAsInvokeri kaudu
+83	Radikaalne režiim: lähtefail viidi üle, mitte ei kopeeritud - lisagigabaite ei võetud.
+84	töö katkestati
+85	Launch.bat on loomata
+86	kaust App on tühi
+87	Failid asuvad: {0}
+88	Failikaustad on tühjad.
+89	Tundmatu režiim: {0}
+90	Faili pole määratud.
+91	Faili ei leitud.
+92	Kaust on juba olemas: {0}
+93	Kustutage see või valige režiim 'Ainult Launch.bat'.
+94	Peamist exe-faili ei leitud.
+95	Määrake exe väljal 'Peamine exe' ja käivitage režiim 'Ainult Launch.bat'.
+96	värv peab olema kujul #rrggbb
+97	Automaatne
+98	Ainult lahtipakkimine
+99	Ainult installimine (kausta App)
+100	Ainult Launch.bat
+101	Automaatne (ilma UAC-ta, kui exe nõuab administraatorit)
+102	Alati ilma UAC-ta
+103	Alati UAC-ga (nagu originaalis)
+104	Fail:
+105	Kuhu:
+106	Peamine exe:
+107	Protsessor
+108	Mälu
+109	Graafikakaart
+110	--run võtab väärtusi: auto, noadmin, admin
+111	Radikaalne režiim KUSTUTAB lähtefaili pärast edukat koostamist (tagasi seda tuua ei saa).\nKui olete kindel, lisage --yes. Midagi ei tehtud.
+112	--dx võtab väärtusi: install, skip, cancel
+113	Kettal {0} on alles ainult {1}.
+114	Vaja on innoextract.exe (pange kõrvale või kausta tools/).
+115	Käivitamine ilma administraatorita ebaõnnestus: {0}
+116	Graafilisi programme ei leitud, valin konsooliprogrammi: {0}. Kui see pole mäng, määrake exe käsitsi.
+117	Valitud: {0} (sobivaid exe-faile: {1}). Muud variandid: {2}. Kui käivitus midagi muud, määrake exe käsitsi.
+118	sobib
+119	välistatud:
+120	MSIX: manifesti lugemine ebaõnnestus: {0}
+121	Install_dotnet.bat loomine ebaõnnestus: {0}
+122	Analüüs {0}: {1}, {2}
+123	\n\nOsa faile pole Portabilizerisse sisse ehitatud:
+124	. DirectX-i jaoks luuakse DX_fix.bat (see laadib alla täieliku DirectX-i paketi).
+125	. Need tuleb installida käsitsi.
+126	vaja on DX_fix.bat
+127	lahti pakitud {0} / {1}
+128	lähtefail asub tulemuskausta sees
+129	Lähtefail kustutatud: {0} ({1})
+130	. Kui need on sama repacki andmed, kustutage need ise.
+131	Salvestatud: {0}
+132	Kausta {0} pole. Tehke esmalt lahtipakkimine või installimine.
+133	Peamist exe-faili ei leitud - määrake see väljal 'Peamine exe'.
+134	See on tavaline exe - kopeerin nagu on.
+135	Tähelepanu: MSIX pakiti lahti tavalise kaustana, ilma paketti registreerimata. Klassikalised (full trust) programmid töötavad nii tavaliselt, UWP-rakendused ja kõik, mis nõuab paketi identifikaatorit, ei pruugi käivituda.
+136	Radikaalset režiimi ei kinnitatud: ei tee midagi.
+137	Kasutaja katkestas. Osaliselt loodud failid jäid kettale: neid saab kustutada vahekaardil «Ajalugu».
+138	Viga: {0}
+139	Konverter
+140	Ajalugu
+141	Diagnostika
+142	Versioonid
+143	Kujundus
+144	Valmis tööks.
+145	Tee portatiivseks
+146	Paus
+147	Jätka
+148	Katkesta
+149	Soovitused
+150	Vaja on DirectX-i
+151	Allalaadimine on pausil, midagi pole kadunud. Tühistamine peatab töö lõplikult: edaspidi saab ainult otsast alustada («Korda» vahekaardil «Ajalugu»).
+152	Kettaruum hakkab otsa saama
+153	Paus: protsess on külmutatud, edenemine salvestatud.
+154	Jätkan samast kohast.
+155	Kuupäev
+156	Allikas
+157	Versioon
+158	Tüüp
+159	Olek
+160	Suurus
+161	Tulemus
+162	Märkmed
+163	Kustutan {0} ...
+164	\n... ja veel {0}
+165	Ava kaust
+166	Käivita
+167	Korda
+168	Kustuta koopia
+169	Kustuta lähtefail
+170	Eemalda loendist
+171	Värskenda
+172	Kogun süsteemiteavet...
+173	Ketas: n/a
+174	Ketas
+175	Maht
+176	Vaba
+177	Kasutatud
+178	Portabilizer (R) - radikaalne
+179	Lülita sisse tavaversioon
+180	Lülita sisse versioon (R)
+181	Teema:
+182	Tume punane (R):
+183	Hele punane (R):
+184	Oma värv
+185	Kas värvida selle värviga ka akna taust?\n\nJah - taust saab valitud värvi kerge tooni.\nEi - taust jääb neutraalseks, värv on ainult nuppudel ja rõhutustel.
+186	Ruumi tõenäoliselt ei jätku.
+187	pole loetav
+188	 (madal prioriteet)
+189	Määratud exe asub väljaspool kausta App - valige fail kaustast App.
+190	{0}: selles cab-failis on LZX-pakkimine, lahti saab pakkida ainult Windowsis (expand.exe).
+191	expand.exe ei suutnud faili {0} kätte saada: {1}
+192	Teegid ({0}) pandi faili {1} kõrvale: {2}.
+193	. Kui programm nende üle kaebab, käivitage tulemuskaustas DX_fix.bat (administraatoriõigusi pole vaja).
+194	 ({0}). Need pole Portabilizerisse sisse ehitatud või ei sobinud bitisügavuse poolest: kui programm kaebab, installige süsteemi vastav pakett.
+195	puudub:
+196	Lähtefaili EI kustutatud:
+197	lahtipakkija teatas hoiatustest (
+198	Faili {0} kustutamine ebaõnnestus: {1}
+199	Ajutine koopia kustutatud: {0} ({1})
+200	.bin-faile installeri kõrvalt ei kustutatud (neid võisid vajada teised programmid):
+201	Režiim R: fail viidi kausta App ilma koopiata ({0}).
+202	Installimisrežiim ei kehti MSIX/APPX puhul: pakett pakitakse ainult lahti.
+203	Paketti ei õnnestunud lahti pakkida.
+204	See on komplekt. Põhipakett: {0}. Komplekti lahtipakitud sisu salvestati kausta {1}.
+205	Praegu on kõik rahulik. Siia ilmuvad vihjed ruumipuuduse ja tüüpiliste vigade korral.
+206	Kui palju veel kirjutada on, ei saa täpselt öelda.
+207	Millist programmi käivitada?
+208	Valige fail.
+209	\n  ... ja veel {0}
+210	Ettevalmistus
+211	Tühistatud enne algust: kettal on vähe ruumi.
+212	Praegu ei saa pausile panna (vaja on psutil: pip install psutil).
+213	Katkestada?
+214	Kas peatada töö? Hiljem pole võimalik samast kohast jätkata: vahekaardil «Ajalugu» on «Korda» (alustab otsast).
+215	möödunud {0}
+216	Valige esmalt loendist kirje.
+217	Oodake praeguse ülesande lõppu (või katkestage see).
+218	Tulemuskausta kettal pole.
+219	Avage käsitsi:\n{0}
+220	Launch.bat ei leitud: teisendus pole lõppenud.
+221	Kustutamine
+222	See kaust ei näi olevat Portabilizeri loodud (vaja on nime *_portable ja Launch.bat koos kaustaga App). Ettevaatusest ei kustuta.
+223	Kaust kustutatud.
+224	Kõike ei õnnestunud kustutada: osa faile on programmi poolt kasutusel.
+225	Lähtefaili ei leitud (võib-olla on see juba kustutatud).
+226	Kustutada lähtefail?
+227	KUSTUTATAKSE LÕPLIKULT (prügikasti läbimata), kokku {0}:\n\n{1}\n\nKaust: {2}\n\nSee on teie lähtefail, seda ei saa taastada. Kustutada?
+228	Fail kustutatud: {0}
+229	Eemaldada kirje loendist? Kettal olevaid faile see ei mõjuta.
+230	tuvastan...
+231	Süsteem: {0}\nProtsessor: {1}\nOperatiivmälu: {2}\nGraafikakaart: {3}
+232	Saadaval on Portabilizeri uus versioon: {0}. Selle saab alla laadida Portabilizer Launcheris või lehelt {1}.
+233	_näide.json
+234	Minu teema
+235	Põhivärv (nupud, edenemine)
+236	Portabilizer (R) - radikaalne režiim
+237	Praegu on sisse lülitatud: Portabilizer (R) - radikaalne
+238	Praegu on sisse lülitatud: Portabilizer (tavaversioon)
+239	Versiooni saab vahetada pärast praeguse ülesande lõppu.
+240	Peatatud. Vabastage ruumi, valige teine ketas või lisage --force.
+241	Ruumi on napilt: varu on peaaegu olematu, ülesanne võib pausile jääda.
+242	Valisite: {0}
+243	ei
+244	allalaadimisaadress leiti kaudsete tunnuste järgi
+245	Tühistatud: vaja on teeke (
+246	Teegid:
+247	Faili teisaldamine ebaõnnestus ({0}), kopeerin tavapäraselt.
+248	Pesastatud paketti ei õnnestunud lahti pakkida.
+249	Installimisrežiim ei kehti arhiivi puhul: see pakitakse ainult lahti.
+250	Arhiivi ei õnnestunud lahti pakkida.
+251	Installimisrežiim on saadaval ainult Inno/NSIS-installeritele Windowsis.
+252	Režiim:
+253	   Käivitamine:
+254	Kirjutada on veel umbes {0}, vaba on {1}: peaks jätkuma, saab lõpuni teha.
+255	Kirjutada on veel umbes {0}, vaba on {1}: puudu jääb umbes {2}.
+256	Jään pausile. Vabastage ruumi ja vajutage «Jätka».
+257	Jätkan omal vastutusel: peatun alles siis, kui vaba ruumi jääb alla {0}.
+258	Paus. Vabastage kettaruumi ja vajutage «Jätka».
+259	 Ülesanne on pausil: valige aknas, mida teha.
+260	Vajaliku ruumi hinnang
+261	Katkestatud. Jäägid saab kustutada vahekaardil «Ajalugu».
+262	Kettal on endiselt vähe ruumi: {0}.
+263	Töö
+264	jäänud ~{0}
+265	PAUS
+266	Käivitage käsitsi:\n{0}\n\n{1}
+267	, seetõttu ei saa korrata. Laadige või installige see uuesti.
+268	Kausta ei õnnestunud täielikult kustutada. Sulgege seda kasutavad programmid ja proovige uuesti.
+269	Kustutada portatiivne koopia?
+270	{0}\n\nSuurus: {1}\n\nKaust kustutatakse jäädavalt. Lähtefaili (installerit või arhiivi) see ei mõjuta.
+271	{0} tuuma / {1} lõime
+272	{0:.0f}%  ({1} / {2})
+273	, mälu {0} / {1}, {2:.0f} °C
+274	 (hinnang 3D järgi)
+275	Valige, kuidas Portabilizer portatiivseid koopiaid teeb. Saate igal ajal vahetada (see muudab ainult töörežiimi). Igal käivitamisel algab programm tavaversioonis.
+276	Turvaline versioon.\n\nLähtefail (installer, pakett või arhiiv) jääb puutumata, selle kõrvale luuakse portatiivne kaust.\n\nMiinus: kettale jäävad mõlemad koopiad: nii lähtefail kui ka portatiivne kaust.\n\nSobib peaaegu kõigele, eriti kui pole kindel, kas programm hakkab tööle.
+277	Radikaalne versioon (risk).\n\nPärast edukat koostamist KUSTUTAB lähtefaili (kõik arhiivi köited) ja ajutised koopiad, mistõttu lõpptulemus võtab vähem ruumi. Portatiivne kaust luuakse lähtefaili kõrvale.\n\nOluline: töö ajal on ruumi vaja sama palju kui tavaversioonis: lähtefail kustutatakse alles päris lõpus, pärast kontrolli. Kustutatud faili tagasi tuua ei saa: kui hiljem midagi untsu läheb, tuleb see platvormilt uuesti alla laadida või installida.\n\nIga käivituse eel küsib programm kinnitust.
+278	Saadaval on uus versioon: {0}.
+279	Teil on uusim versioon ({0}) või puudub ühendus GitHubiga.
+280	Programmi versioon: {0}
+281	Kontrolli käivitamisel uusi versioone (päring GitHubi, andmeid ei saadeta)
+282	Kontrolli kohe
+283	Akna välimus. Muudatused rakenduvad kohe ja jäävad meelde. Punased teemad lülituvad versioonides (R) automaatselt sisse ja valitakse heleda või tumeda teema järgi.
+284	 (oma)
+285	Klassikaline välimus: värvid määrab Windows.
+286	. Värvid: taust, väljad, nupud, tekst, teisejärguline, rõhk, õnnestumine, hoiatus, viga.
+287	Kausta avamine ebaõnnestus: {0}
+288	Teema salvestamine ebaõnnestus: {0}
+289	Vali oma värv...
+290	Ava kaust themes
+291	Värskenda teemade loendit
+292	Oma teemad: pange .json-fail programmi kõrval olevasse kausta themes (näidis _näide.json luuakse ülaloleva nupuga). Selles on värvid kujul #rrggbb, nimi, "kind": "light" või "dark" ning "r": true režiimi R punaste teemade jaoks. Puuduvad värvid võetakse sisseehitatud teemast. Kinnitusaknad (Windowsi teated) jäävad süsteemseteks.
+293	Tee portatiivseks (R)
+294	Töö käib
+295	Ülesanne on veel pooleli. Katkestada see ja väljuda?
+296	TÄHELEPANU:
+297	OHTLIK:
+298	 Töö peatati, et ketast mitte täita.
+299	vigane MSZIP-plokk
+300	Puudub:
+301	Komplekti teisaldamine ebaõnnestus: {0}
+302	Arhiivis pole valmis programmi, aga on installer: {0}. Jätkan sellega. Arhiivi sisu salvestati kausta {1}.
+303	Installeri kõrvalt leiti .bin-faile: {0} ({1}):
+304	Lahtipakkimine ebaõnnestus. Võimalik, et installer on mittestandardne (siis on vaja virtualiseerijat nagu Cameyo / Turbo Studio).
+305	Proovin vaikset installimist. Lahtipakitud failid salvestan kausta {0}.
+306	Allalaadimine tühistatakse teie valiku järgi.
+307	Peata: puhastan ketta
+308	Tühista allalaadimine
+309	Portabilizer (R): fail viiakse üle
+310	{0} ({1}) VIIAKSE kausta App enda kõrval: koopiat ei looda, lisaruumi pole vaja.\n\nVanasse kohta faili enam ei jää. Selle saab tagasi, võttes kaustast App.\n\nJätkata?
+311	Portabilizer (R): lähtefail kustutatakse
+312	Kas soovite selle faili tõesti radikaalses režiimis portatiivseks teha?\n\nPärast edukat koostamist KUSTUTATAKSE LÕPLIKULT (prügikasti läbimata):\n{0}\nkokku {1}, samuti ajutised koopiad.\n\nLähtefaili hiljem tagasi tuua ei saa. Kui midagi läheb valesti (näiteks mäng ei käivitu), tuleb see platvormilt uuesti alla laadida või installida.\n\nKustutamine toimub ainult siis, kui koostamine õnnestus ja kõik on kontrollitud; vea või tühistamise korral jääb fail alles. Tulemus luuakse lähtefaili kõrvale.\n\nJätkata?
+313	Valmis. Fail viidi üle ilma koopiata: lisaruumi ei võetud.
+314	kettal vaba {0}
+315	 (kettal puudub)
+316	Lähtefaili enam pole
+317	Alustada otsast?
+318	Kaust on juba olemas (eelmise katse jääk):\n{0}\nSuurus: {1}\n\nKustutada see ja alustada otsast?
+319	CPU/RAM-i koormus pole saadaval: installige psutil (pip install psutil). Kokku pandud Portabilizer.exe-s on see juba sees.
+320	Operatiivmälu on peaaegu otsas. Sulgege brauser ja üleliigsed programmid, muidu võib lahtipakkimine oluliselt aeglustuda.
+321	Ketas: lugemine {0}/s, kirjutamine {1}/s
+322	koormus pole saadaval
+323	Praegu:
+324	DirectX-i osas valiti jätkamine.
+325	Valiti jätkamine ilma nendeta.
+326	Kausta {0} saab pärast kontrolli kustutada: seda on vaja ainult installeri allikana.
+327	Pärast lahtipakkimist peamist exe-faili ei leitud.
+328	Ruumi ei jätku
+329	Hinnangu järgi ruumi ei jätku. Kui ruum saab otsa, peatub lahtipakkimine veaga.\n\nKas jätkata ikkagi?
+330	Leiti mitu sobivat programmi ja ma pole kindel, milline on peamine. Valige see, mis käivitab vajaliku rakenduse (seda saab hiljem režiimis «Ainult Launch.bat» muuta).
+331	Vali automaatselt
+332	Kas ruumi jätkub?
+333	Valmis. Lähtefail kustutatud, vabastati {0}.
+334	 (selle kustutas radikaalne režiim)
+335	  <- kuhu salvestame
+336	Kettal {0}, kuhu salvestate, on vähe ruumi ({1}). Valige väljal «Kuhu» teine ketas.
+337	Lahtipakitud arhiivi teisaldamine ebaõnnestus: {0}
+338	Lahti pakiti {0}, aga .bin-is on {1}: näib olevat repack, mille andmeid installib installer ise.
+339	Lahtipakitu teisaldamine ebaõnnestus: {0}
+340	Installimine ebaõnnestus - lahtipakitud failid tagastati kausta App.
+341	Lahtipakitu tagastamine kausta App ebaõnnestus: {0}
+342	\n\nKas alustada ikkagi?
+343	Hoiatus: kõrval on .bin-faile. Kui programm ei käivitu või sellel napib andmeid, korrake režiimis 'Ainult installimine (kausta App)'.
+344	Installerid, paketid, arhiivid
+345	Kõik
+346	Programmid
+347	Valmis. Tulemus on vahekaardil «Ajalugu».
+348	Ei õnnestunud. Üksikasjad on logis ja soovitustes.
+349	Valmis, kuid lähtefail on kustutamata:
+350	Keel
+351	Liidese keel:
+352	Keel muutub kohe: aken taaskäivitub ise ja seaded säilivad.
+353	Oota ülesande lõppu või katkesta see: pärast keele vahetamist aken taaskäivitub.

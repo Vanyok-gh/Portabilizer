@@ -1,0 +1,34 @@
+ru	vene
+en	inglise
+et	eesti
+fr	prantsuse
+es	hispaania
+de	saksa
+it	itaalia
+pt	portugali
+nl	hollandi
+pl	poola
+uk	ukraina
+sv	rootsi
+fi	soome
+tr	türgi
+zh	hiina (lihtsustatud)
+ja	jaapani
+ko	korea
+ar	araabia
+cs	tšehhi
+ro	rumeenia
+hu	ungari
+el	kreeka
+he	heebrea
+hi	hindi
+id	indoneesia
+vi	vietnami
+th	tai
+bg	bulgaaria
+sr	serbia (kirillitsa)
+hr	horvaadi
+lv	läti
+lt	leedu
+no	norra (bokmål)
+da	taani
