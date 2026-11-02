@@ -1,0 +1,353 @@
+1	{0} {1} gerekli, {3} sürücüsünde boş alan: {2}.{4}
+2	çalışıyor
+3	duraklatıldı
+4	hazır
+5	hata
+6	durduruldu
+7	durduruldu (uygulama kapatıldı)
+8	Otomatik (Windows gibi)
+9	Açık
+10	Koyu
+11	Klasik (sistem)
+12	Kendi rengim
+13	B
+14	KB
+15	MB
+16	GB
+17	 Arşivin içinde bir yükleyici varsa yaklaşık bu kadar daha alan gerekir.
+18	arşivin içeriğine göre
+19	yaklaşık
+20	Unreal Engine oyunları DirectX (June 2010) kitaplıklarına ihtiyaç duyabilir. Başlatırken xinput1_3.dll, X3DAudio1_7.dll veya XAPOFX1_5.dll hatası çıkarsa sonuç klasöründeki DX_fix.bat dosyasını çalıştırın: yönetici hakları gerekmez.
+21	Radikal mod kaynak dosyayı silmedi, çünkü her şey doğrulanamadı (neden günlükte). Taşınabilir klasör oluşturuldu, kaynak dosya yerinde: klasörü kontrol edin ve kaynak dosyayı kendiniz silin.
+22	Program, bu bilgisayarda bulunmayan .NET'e ihtiyaç duyuyor. Sonuç klasöründeki Install_dotnet.bat dosyasını çalıştırın (çalışma zamanını taşınabilir kopyanın içine indirir, yönetici hakları gerekmez).
+23	Dosya parola istiyor. Portabilizer parola girmez: dosyayı 7-Zip ile elle çıkarın (parolayı sorar), sonra sonuçtaki yükleyiciyi veya klasörü seçin.
+24	7z.exe bulunamadı (ne programın yanında ne de yüklü 7-Zip içinde). 7-Zip'i 7-zip.org adresinden yükleyin veya 7z.exe ile 7z.dll dosyalarını Portabilizer'ın yanına ya da tools klasörüne koyun.
+25	innoextract.exe bulunamadı. Portabilizer'ın yanına veya tools klasörüne koyun.
+26	Diskte yeterli alan yok. Alan açın veya «Hedef» alanında başka bir disk seçin, ardından «Geçmiş» sekmesinde «Yinele» düğmesine basın.
+27	Yükleyici yönetici hakları istiyor. Yoksa «Yalnızca çıkarma» modunu deneyin veya geliştiricide taşınabilir sürüm arayın.
+28	Ana exe bulunamadı. Yukarıdaki günlükte bulunan exe dosyaları ve elenme nedenleri listelenmiştir: gerekli adı «Ana exe» alanına kopyalayın ve «Yalnızca Launch.bat» modunu çalıştırın.
+29	UWP uygulamasına benziyor: yüklü paketin dışında büyük olasılıkla çalışmaz. Bir exe yükleyicisi arayın.
+30	Dosyanın tamamen indirildiğinden (boyutu karşılaştırın veya yeniden indirin) ve 7z.exe'nin programın yanında olduğundan emin olun.
+31	Bu klasör daha önce oluşturulmuş. «Geçmiş» sekmesinde açın veya baştan başlamak istiyorsanız silin.
+32	Veriler, yükleyicinin kendisinin kurduğu harici .bin dosyalarındadır. Bunun için kurulum gerekebilir, kurulum için de yönetici hakları gerekir.
+33	Kısmen oluşturulmuş dosyalar diskte kaldı. Bunları «Geçmiş» sekmesinden silebilirsiniz.
+34	yok
+35	Çıkarma
+36	Çıkarıcı: {0}
+37	Kurulum
+38	App klasörüne sessiz kurulum (birkaç dakika sürebilir, pencereyi kapatmayın)...
+39	Yönetici olmadan olmadı - UAC isteğiyle deniyorum ('Evet'e basın). Yönetici haklarıyla başlatılan yükleyiciyi buradan durdurmak mümkün değil.
+40	hizmet adı (setup/update/redist vb.)
+41	repack yardımcı aracı
+42	yükleyicinin geçici klasörü
+43	konsol programı
+44	Bulunan exe: {0}. İlk {1} tanesi ve uygun olmama nedenleri:
+45	Gerekli adı «Ana exe» alanına kopyalayın ve «Yalnızca Launch.bat» modunu çalıştırın.
+46	'{0}' dosyası App içinde bulunamadı.
+47	{1} için .NET ({0}) gerekli, ancak bu bilgisayarda bulunamadı. Sonuç klasöründeki Install_dotnet.bat dosyasını çalıştırın: çalışma zamanını taşınabilir kopyanın içindeki dotnet klasörüne indirir (yönetici hakları gerekmez), Launch.bat onu kendisi kullanır.
+48	Başlatma: normal, yetki yükseltme gerekmez.
+49	Program, sistemde bulunmayan kitaplıklara ihtiyaç duyuyor:\n{0}\n\nBunlar program klasörüne konulsun mu? Yönetici hakları gerekmez, sistem değişmez, her şey taşınabilir klasörün içinde kalır.\n\nEvet - koy.\nHayır - bunlar olmadan devam et (program başlamayabilir).\nİptal - durdur.
+50	Hazır: {0}
+51	Ana exe: {0}
+52	Launch.bat ile başlatın. Klasör bir USB belleğe taşınabilir.
+53	Radikal mod: {0} boşaltıldı.
+54	Mod: {0}
+55	Tür: {0}
+56	Açık kırmızı (R)
+57	Kırmızı vurgulu kömür
+58	Bordo
+59	Vişne
+60	Dosya: exe, msi, msix/appx, arşiv (rar, zip, 7z...). Ana exe isteğe bağlıdır: ad (App.exe), App içindeki yol veya App klasöründeki dosya. Günlük portabilizer.log dosyasına kaydedilir.
+61	MOD (R): normal bir exe yalnızca App klasörüne TAŞINIR (kopya yok, alan gerekmez). Arşivler ve yükleyiciler önce çıkarılır, kaynak dosya ancak sonra silinir: çalışma sırasında çıkarılan içerik için alan gerekir. Başlamadan önce onay istenecek.
+62	{0} silinmiyor: klasör Portabilizer tarafından oluşturulmuşa benzemiyor.
+63	7z.exe gerekli: ne programın yanında ne de yüklü 7-Zip içinde bulundu. 7-Zip'i (7-zip.org) yükleyin veya 7z.exe ile 7z.dll dosyalarını yanına ya da tools/ klasörüne koyun.
+64	7-Zip, kod 1
+65	Dosya parolayla korunuyor. Portabilizer parola girmez: dosyayı elle çıkarın (7-Zip parolayı kendisi sorar), ardından çıkarılan klasörü veya yükleyiciyi seçin.
+66	Yükleyici hatayla sonlandı. .bin dosyalarının setup.exe'nin yanında olduğunu kontrol edin.
+67	{0} klasöründe hiç exe dosyası yok. Programın tam buraya çıkarıldığını veya yüklendiğini kontrol edin.
+68	MSIX: %XX kodlamalı düzeltilen ad sayısı: {0}
+69	MSIX: AppxManifest.xml bulunamadı - exe normal yöntemle aranıyor.
+70	MSIX: bildirimde runFullTrust yok - bu büyük olasılıkla bir UWP uygulaması. Yüklü paketin dışında muhtemelen çalışmaz.
+71	, bildirim: {0}.
+72	Bu bir çevrimiçi yükleyici saplamasına benziyor: içinde indirme bağlantısı var ({0}). Programın kendisi başlatıldığında indirilir ve sisteme kurulur, bu yüzden taşınabilir kopya olmaz. Gerçek taşınabilirlik için tam çevrimdışı yükleyiciyi indirin ve onu taşınabilir yapın.
+73	Dosya paketleyici tarafından korunuyor: çıkarılamaz ve analiz edilemez, yalnızca başlatılabilir.
+74	Başlatma: UAC isteğiyle (elle seçildi). Launch.bat hakları değiştirmez.
+75	Başlatma: UAC isteği olmadan (RunAsInvoker, elle seçildi).
+76	{0} yönetici hakları istiyor. Launch.bat onu UAC isteği olmadan (RunAsInvoker) başlatır, parola gerekmez. Program gerçekten Program Files'a veya HKLM'ye yazıyorsa, hizmet veya sürücü kuruyorsa haklar olmadan çalışmayabilir. O zaman Launch_admin.bat dosyasını kullanın (UAC isteğiyle normal başlatma).
+77	cab değil
+78	çok parçalı cab
+79	Diğer
+80	Unreal Engine oyunu: Launch.bat {0} dosyasını doğrudan başlatır. Kökteki {1} ilk başlatmada DirectX ve Visual C++'ı sisteme kurmayı ister ve reddederseniz kapanır. Onunla başlatma: Launch_stub.bat.
+81	Unreal: {0} başlatma
+82	exe yönetici istiyor: Launch.bat RunAsInvoker ile çalışır
+83	Radikal mod: kaynak dosya kopyalanmadı, taşındı - fazladan gigabayt kullanılmadı.
+84	çalışma durduruldu
+85	Launch.bat oluşturulmadı
+86	App klasörü boş
+87	Dosyalar şurada: {0}
+88	Dosya klasörleri boş.
+89	Bilinmeyen mod: {0}
+90	Dosya belirtilmedi.
+91	Dosya bulunamadı.
+92	Klasör zaten var: {0}
+93	Silin veya 'Yalnızca Launch.bat' modunu seçin.
+94	Ana exe bulunamadı.
+95	'Ana exe' alanında exe'yi belirtin ve 'Yalnızca Launch.bat' modunu çalıştırın.
+96	renk #rrggbb biçiminde olmalı
+97	Otomatik
+98	Yalnızca çıkarma
+99	Yalnızca kurulum (App içine)
+100	Yalnızca Launch.bat
+101	Otomatik (exe yönetici isterse UAC olmadan)
+102	Her zaman UAC olmadan
+103	Her zaman UAC ile (orijinaldeki gibi)
+104	Dosya:
+105	Hedef:
+106	Ana exe:
+107	İşlemci
+108	Bellek
+109	Ekran kartı
+110	--run şunları kabul eder: auto, noadmin, admin
+111	Radikal mod, başarılı derlemeden sonra kaynak dosyayı SİLER (geri alınamaz).\nEminseniz --yes ekleyin. Hiçbir şey yapılmadı.
+112	--dx şunları kabul eder: install, skip, cancel
+113	{0} sürücüsünde yalnızca {1} kaldı.
+114	innoextract.exe gerekli (yanına veya tools/ klasörüne koyun).
+115	Yönetici olmadan başlatma başarısız oldu: {0}
+116	Grafik program bulunamadı, konsol programı seçiliyor: {0}. Bu bir oyun değilse exe'yi elle belirtin.
+117	Seçilen: {0} (uygun exe sayısı: {1}). Diğer seçenekler: {2}. Yanlış program başladıysa exe'yi elle belirtin.
+118	uygun
+119	elendi:
+120	MSIX: bildirim okunamadı: {0}
+121	Install_dotnet.bat oluşturulamadı: {0}
+122	{0} çözümlemesi: {1}, {2}
+123	\n\nBazı dosyalar Portabilizer'a gömülü değil:
+124	. DirectX için DX_fix.bat oluşturulacak (tam DirectX paketini indirir).
+125	. Bunların elle kurulması gerekecek.
+126	DX_fix.bat gerekli
+127	çıkarıldı: {0} / {1}
+128	kaynak dosya sonuç klasörünün içinde
+129	Kaynak dosya silindi: {0} ({1})
+130	. Bunlar aynı repack'in verileriyse kendiniz silin.
+131	Kaydedildi: {0}
+132	{0} klasörü yok. Önce çıkarma veya kurulum yapın.
+133	Ana exe bulunamadı - 'Ana exe' alanında belirtin.
+134	Bu normal bir exe - olduğu gibi kopyalıyorum.
+135	Dikkat: MSIX, paket kaydı yapılmadan normal bir klasör olarak çıkarıldı. Klasik (full trust) programlar genellikle böyle çalışır, ancak UWP uygulamaları ve paket kimliği gerektiren her şey başlamayabilir.
+136	Radikal mod onaylanmadı: hiçbir şey yapılmıyor.
+137	Kullanıcı tarafından durduruldu. Kısmen oluşturulmuş dosyalar diskte kaldı: «Geçmiş» sekmesinden silebilirsiniz.
+138	Hata: {0}
+139	Dönüştürücü
+140	Geçmiş
+141	Tanılama
+142	Sürümler
+143	Görünüm
+144	Çalışmaya hazır.
+145	Taşınabilir yap
+146	Duraklat
+147	Sürdür
+148	Durdur
+149	Öneriler
+150	DirectX gerekli
+151	İndirme duraklatıldı, hiçbir şey kaybolmadı. İptal işi tamamen durdurur: sonra yalnızca baştan başlanabilir («Geçmiş» sekmesinde «Yinele»).
+152	Disk alanı azalıyor
+153	Duraklatıldı: işlem donduruldu, ilerleme kaydedildi.
+154	Kaldığı yerden devam ediliyor.
+155	Tarih
+156	Kaynak
+157	Sürüm
+158	Tür
+159	Durum
+160	Boyut
+161	Sonuç
+162	Notlar
+163	{0} siliniyor ...
+164	\n... ve {0} tane daha
+165	Klasörü aç
+166	Başlat
+167	Yinele
+168	Kopyayı sil
+169	Kaynak dosyayı sil
+170	Listeden kaldır
+171	Yenile
+172	Sistem bilgileri toplanıyor...
+173	Disk: yok
+174	Disk
+175	Kapasite
+176	Boş
+177	Kullanılan
+178	Portabilizer (R) - radikal
+179	Normal sürümü etkinleştir
+180	(R) sürümünü etkinleştir
+181	Tema:
+182	Koyu kırmızı (R):
+183	Açık kırmızı (R):
+184	Kendi rengim
+185	Pencere arka planı da bu renge boyansın mı?\n\nEvet - arka plan seçilen rengin hafif bir tonunu alır.\nHayır - arka plan nötr kalır, renk yalnızca düğmelerde ve vurgularda olur.
+186	Alan büyük olasılıkla yetmeyecek.
+187	okunamıyor
+188	 (düşük öncelik)
+189	Belirtilen exe App klasörünün dışında - App içinden bir dosya seçin.
+190	{0}: bu cab LZX sıkıştırması kullanıyor, yalnızca Windows'ta çıkarılabilir (expand.exe).
+191	expand.exe {0} dosyasını çıkaramadı: {1}
+192	Kitaplıklar ({0}) {1} yanına konuldu: {2}.
+193	. Program bunlardan şikayet ederse sonuç klasöründeki DX_fix.bat dosyasını çalıştırın (yönetici hakları gerekmez).
+194	 ({0}). Bunlar Portabilizer'a gömülü değil veya mimariye uymadı: program şikayet ederse ilgili paketi sisteme kurun.
+195	eksik:
+196	Kaynak dosya SİLİNMEDİ:
+197	çıkarıcı uyarılar bildirdi (
+198	{0} silinemedi: {1}
+199	Geçici kopya silindi: {0} ({1})
+200	Yükleyicinin yanındaki .bin dosyaları silinmedi (başka programlar bunlara ihtiyaç duyabilir):
+201	R modu: dosya kopyalanmadan App içine taşındı ({0}).
+202	Kurulum modu MSIX/APPX için geçerli değil: paket yalnızca çıkarılır.
+203	Paket çıkarılamadı.
+204	Bu bir paket demeti. Ana paket: {0}. Demetin çıkarılmış hali {1} içine kaydedildi.
+205	Şimdilik her şey yolunda. Alan azaldığında ve tipik hatalarda ipuçları burada görünecek.
+206	Yazılacak miktarın ne kadar kaldığı tam olarak söylenemez.
+207	Hangi program başlatılsın?
+208	Bir dosya seçin.
+209	\n  ... ve {0} tane daha
+210	Hazırlık
+211	Başlamadan önce iptal edildi: diskte alan az.
+212	Şu anda duraklatılamaz (psutil gerekli: pip install psutil).
+213	Durdurulsun mu?
+214	İş durdurulsun mu? Daha sonra kaldığı yerden devam edilemez: «Geçmiş» sekmesinde «Yinele» olacak (baştan başlar).
+215	geçen süre: {0}
+216	Önce listeden bir kayıt seçin.
+217	Geçerli görevin bitmesini bekleyin (veya durdurun).
+218	Sonuç klasörü diskte yok.
+219	Elle açın:\n{0}
+220	Launch.bat bulunamadı: dönüştürme tamamlanmadı.
+221	Silme
+222	Bu klasör Portabilizer tarafından oluşturulmuşa benzemiyor (*_portable adı ve App klasörlü Launch.bat gerekir). İhtiyaten silmiyorum.
+223	Klasör silindi.
+224	Her şey silinemedi: bazı dosyalar program tarafından kullanılıyor.
+225	Kaynak dosya bulunamadı (belki zaten silinmiş).
+226	Kaynak dosya silinsin mi?
+227	KALICI olarak silinecek (Geri Dönüşüm Kutusu'na gitmeden), toplam {0}:\n\n{1}\n\nKlasör: {2}\n\nBu sizin kaynak dosyanız, geri getirilemez. Silinsin mi?
+228	Dosya silindi: {0}
+229	Kayıt listeden kaldırılsın mı? Diskteki dosyalara dokunulmaz.
+230	belirleniyor...
+231	Sistem: {0}\nİşlemci: {1}\nBellek (RAM): {2}\nEkran kartı: {3}
+232	Portabilizer'ın yeni sürümü var: {0}. Portabilizer Launcher'dan veya {1} sayfasından indirebilirsiniz.
+233	_example.json
+234	Temam
+235	Ana renk (düğmeler, ilerleme)
+236	Portabilizer (R) - radikal mod
+237	Şu anda etkin: Portabilizer (R) - radikal
+238	Şu anda etkin: Portabilizer (normal sürüm)
+239	Sürümü geçerli görev bittikten sonra değiştirebilirsiniz.
+240	Durduruldu. Alan açın, başka bir disk seçin veya --force ekleyin.
+241	Alan çok az: neredeyse hiç pay yok, görev duraklayabilir.
+242	Seçiminiz: {0}
+243	yok
+244	indirme adresi dolaylı belirtilerle bulundu
+245	İptal edildi: kitaplıklar gerekli (
+246	Kitaplıklar:
+247	Dosya taşınamadı ({0}), normal şekilde kopyalıyorum.
+248	İç içe paket çıkarılamadı.
+249	Kurulum modu arşivler için geçerli değil: yalnızca çıkarılır.
+250	Arşiv çıkarılamadı.
+251	Kurulum modu yalnızca Windows'ta Inno/NSIS yükleyicileri için kullanılabilir.
+252	Mod:
+253	   Başlatma:
+254	Yazılacak yaklaşık {0} kaldı, boş alan {1}: bu yeterli olmalı, sonuna kadar götürülebilir.
+255	Yazılacak yaklaşık {0} kaldı, boş alan ise {1}: yaklaşık {2} yetmeyecek.
+256	Duraklatılmış kalıyorum. Alan açın ve «Sürdür» düğmesine basın.
+257	Kendi sorumluluğunuzda devam ediliyor: yalnızca boş alan {0} altına düşerse duracağım.
+258	Duraklatıldı. Diskte alan açın ve «Sürdür» düğmesine basın.
+259	 Görev duraklatıldı: pencerede ne yapılacağını seçin.
+260	Gereken alan tahmini
+261	Durduruldu. Kalıntılar «Geçmiş» sekmesinden silinebilir.
+262	Diskte hâlâ az alan var: {0}.
+263	İş
+264	kalan ~{0}
+265	DURAKLATILDI
+266	Elle başlatın:\n{0}\n\n{1}
+267	, bu yüzden yinelenemez. Yeniden indirin veya kurun.
+268	Klasör tamamen silinemedi. Onu kullanan programları kapatıp yeniden deneyin.
+269	Taşınabilir kopya silinsin mi?
+270	{0}\n\nBoyut: {1}\n\nKlasör geri alınamaz şekilde silinecek. Kaynak dosyaya (yükleyici veya arşiv) dokunulmaz.
+271	{0} çekirdek / {1} iş parçacığı
+272	%{0:.0f}  ({2} içinden {1})
+273	, bellek {0} / {1}, {2:.0f} °C
+274	 (3D'ye göre tahmin)
+275	Portabilizer'ın taşınabilir kopyaları nasıl yapacağını seçin. İstediğiniz zaman geçiş yapabilirsiniz (yalnızca çalışma modunu değiştirir). Program her başlatıldığında normal sürümle açılır.
+276	Güvenli sürüm.\n\nKaynak dosya (yükleyici, paket veya arşiv) dokunulmadan kalır, yanında taşınabilir bir klasör oluşturulur.\n\nEksisi: diskte iki kopya da kalır: hem kaynak dosya hem taşınabilir klasör.\n\nNeredeyse her şey için uygundur, özellikle programın çalışacağından emin değilseniz.
+277	Radikal sürüm (riskli).\n\nBaşarılı derlemeden sonra kaynak dosyayı (arşivin tüm ciltlerini) ve geçici kopyaları SİLER, bu yüzden sonuç daha az yer kaplar. Taşınabilir klasör kaynağın yanında oluşturulur.\n\nÖnemli: iş sürerken normal sürümdeki kadar alan gerekir: kaynak dosya yalnızca en sonda, doğrulamadan sonra silinir. Silinen dosya geri getirilemez: daha sonra bir şey ters giderse platformdan yeniden indirmeniz veya kurmanız gerekir.\n\nProgram her başlatmadan önce onay ister.
+278	Yeni sürüm var: {0}.
+279	En son sürümü kullanıyorsunuz ({0}) veya GitHub ile bağlantı yok.
+280	Program sürümü: {0}
+281	Başlangıçta yeni sürümleri denetle (GitHub'a istek gönderilir, hiçbir veri gönderilmez)
+282	Şimdi denetle
+283	Pencerenin görünümü. Değişiklikler hemen uygulanır ve hatırlanır. Kırmızı temalar (R) sürümlerinde otomatik olarak etkinleşir ve açık veya koyu temaya göre seçilir.
+284	 (özel)
+285	Klasik görünüm: renkleri Windows belirler.
+286	. Renkler: arka plan, alanlar, düğmeler, metin, ikincil, vurgu, başarı, uyarı, hata.
+287	Klasör açılamadı: {0}
+288	Tema kaydedilemedi: {0}
+289	Kendi rengimi seç...
+290	themes klasörünü aç
+291	Tema listesini yenile
+292	Kendi temalarınız: programın yanındaki themes klasörüne bir .json dosyası koyun (örnek _example.json yukarıdaki düğmeyle oluşturulur). İçinde #rrggbb biçiminde renkler, bir ad, "kind": "light" veya "dark" ve R modunun kırmızı temaları için "r": true bulunur. Eksik renkler yerleşik temadan alınır. Onay pencereleri (Windows iletileri) sistem penceresi olarak kalır.
+293	Taşınabilir yap (R)
+294	İş sürüyor
+295	Görev hâlâ çalışıyor. Durdurup çıkılsın mı?
+296	DİKKAT:
+297	TEHLİKE:
+298	 Disk dolmasın diye iş durduruldu.
+299	bozuk MSZIP bloğu
+300	Eksik:
+301	Demet taşınamadı: {0}
+302	Arşivde hazır program yok, ancak bir yükleyici var: {0}. Onunla devam ediyorum. Arşivin içeriği {1} içine kaydedildi.
+303	Yükleyicinin yanında bulunan .bin dosyaları: {0} ({1}):
+304	Çıkarılamadı. Yükleyici standart dışı olabilir (o zaman Cameyo / Turbo Studio gibi bir sanallaştırıcı gerekir).
+305	Sessiz kurulum deneniyor. Çıkarılan dosyalar {0} içine kaydedilecek.
+306	İndirme, seçiminiz doğrultusunda iptal ediliyor.
+307	Durdur: diski temizleyeceğim
+308	İndirmeyi iptal et
+309	Portabilizer (R): dosya taşınacak
+310	{0} ({1}) kendi yanındaki App klasörüne TAŞINACAK: kopya oluşturulmaz, ek alan gerekmez.\n\nDosya eski yerinde artık olmayacak. App klasöründen alarak geri getirebilirsiniz.\n\nDevam edilsin mi?
+311	Portabilizer (R): kaynak dosya silinecek
+312	Bu dosyayı radikal modda taşınabilir yapmak istediğinizden emin misiniz?\n\nBaşarılı derlemeden sonra KALICI olarak SİLİNECEK (Geri Dönüşüm Kutusu'na gitmeden):\n{0}\ntoplam {1}, ayrıca geçici kopyalar.\n\nKaynak dosya sonradan geri getirilemez. Bir şey ters giderse (örneğin oyun başlamazsa) platformdan yeniden indirmeniz veya kurmanız gerekir.\n\nSilme yalnızca derleme başarılıysa ve her şey doğrulandıysa yapılır; hata veya iptal durumunda dosya kalır. Sonuç, kaynak dosyanın yanında oluşturulur.\n\nDevam edilsin mi?
+313	Hazır. Dosya kopyalanmadan taşındı: ek alan kullanılmadı.
+314	diskte boş alan: {0}
+315	 (diskte yok)
+316	Kaynak dosya artık yok
+317	Baştan başlansın mı?
+318	Klasör zaten var (önceki denemeden kalıntı):\n{0}\nBoyut: {1}\n\nSilinip baştan başlansın mı?
+319	CPU/RAM yükü kullanılamıyor: psutil kurun (pip install psutil). Derlenmiş Portabilizer.exe içinde zaten var.
+320	Bellek neredeyse bitti. Tarayıcıyı ve gereksiz programları kapatın, aksi halde çıkarma çok yavaşlayabilir.
+321	Disk: okuma {0}/sn, yazma {1}/sn
+322	yük kullanılamıyor
+323	Şu an:
+324	DirectX olmadan devam etmek seçildi.
+325	Bunlar olmadan devam etmek seçildi.
+326	{0} klasörü doğrulamadan sonra silinebilir: yalnızca yükleyicinin kaynağı olarak gerekliydi.
+327	Çıkarmadan sonra ana exe bulunamadı.
+328	Alan yetmeyecek
+329	Tahmine göre alan yetmeyecek. Alan biterse çıkarma hatayla duracak.\n\nYine de devam edilsin mi?
+330	Birkaç uygun program bulundu ve hangisinin ana program olduğundan emin değilim. İstediğiniz uygulamayı başlatanı seçin (daha sonra «Yalnızca Launch.bat» modunda değiştirilebilir).
+331	Otomatik seç
+332	Alan yeter mi?
+333	Hazır. Kaynak dosya silindi, {0} boşaltıldı.
+334	 (radikal mod sildi)
+335	  <- kaydedilecek yer
+336	Kaydettiğiniz {0} sürücüsünde az alan var ({1}). «Hedef» alanında başka bir disk seçin.
+337	Çıkarılan arşiv taşınamadı: {0}
+338	{0} çıkarıldı, .bin içinde ise {1} var: verileri yükleyicinin kendisinin kurduğu bir repack'e benziyor.
+339	Çıkarılanlar taşınamadı: {0}
+340	Kurulum başarısız oldu - çıkarılan dosyalar App içine geri konuldu.
+341	Çıkarılanlar App içine geri konulamadı: {0}
+342	\n\nYine de başlansın mı?
+343	Uyarı: yanında .bin dosyaları var. Program başlamazsa veya verileri eksikse 'Yalnızca kurulum (App içine)' modunda yineleyin.
+344	Yükleyiciler, paketler, arşivler
+345	Tümü
+346	Programlar
+347	Hazır. Sonuç «Geçmiş» sekmesinde.
+348	Olmadı. Ayrıntılar günlükte ve önerilerde.
+349	Hazır, ancak kaynak dosya silinmedi:
+350	Dil
+351	Arayüz dili:
+352	Dil hemen değişir: pencere kendiliğinden yeniden başlar, ayarlar korunur.
+353	Önce görevin bitmesini bekleyin veya iptal edin: dil değişince pencere yeniden başlar.

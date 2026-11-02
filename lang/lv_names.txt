@@ -1,0 +1,34 @@
+ru	krievu
+en	angļu
+et	igauņu
+fr	franču
+es	spāņu
+de	vācu
+it	itāļu
+pt	portugāļu
+nl	holandiešu
+pl	poļu
+uk	ukraiņu
+sv	zviedru
+fi	somu
+tr	turku
+zh	ķīniešu (vienkāršotā)
+ja	japāņu
+ko	korejiešu
+ar	arābu
+cs	čehu
+ro	rumāņu
+hu	ungāru
+el	grieķu
+he	ivrits
+hi	hindi
+id	indonēziešu
+vi	vjetnamiešu
+th	taju
+bg	bulgāru
+sr	serbu (kirilica)
+hr	horvātu
+lv	latviešu
+lt	lietuviešu
+no	norvēģu (bokmāls)
+da	dāņu

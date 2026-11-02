@@ -1,0 +1,353 @@
+1	Il faut {0} {1}, {2} libres sur le disque {3}.{4}
+2	en cours
+3	en pause
+4	terminé
+5	erreur
+6	interrompu
+7	interrompu (l'application a été fermée)
+8	Auto (comme Windows)
+9	Clair
+10	Sombre
+11	Classique (système)
+12	Ma couleur
+13	o
+14	Ko
+15	Mo
+16	Go
+17	 Si l'archive contient un installateur, il faudra à peu près autant d'espace en plus.
+18	d'après le contenu de l'archive
+19	approximativement
+20	Un jeu Unreal Engine peut avoir besoin des bibliothèques DirectX (June 2010). Si une erreur concernant xinput1_3.dll, X3DAudio1_7.dll ou XAPOFX1_5.dll apparaît au lancement, exécutez DX_fix.bat dans le dossier résultat : les droits d'administrateur ne sont pas nécessaires.
+21	Le mode radical n'a pas supprimé le fichier source, car tout n'a pas pu être vérifié (raison dans le journal). Le dossier portable a été créé et le fichier source est toujours là : vérifiez le dossier, puis supprimez le fichier source vous-même.
+22	Le programme a besoin de .NET, qui n'est pas installé sur cet ordinateur. Exécutez Install_dotnet.bat dans le dossier résultat (il télécharge le runtime dans la copie portable, sans droits d'administrateur).
+23	Le fichier demande un mot de passe. Portabilizer ne saisit pas de mots de passe : extrayez-le manuellement avec 7-Zip (il demandera le mot de passe), puis sélectionnez l'installateur ou le dossier obtenu.
+24	7z.exe est introuvable (ni à côté du programme, ni dans une installation de 7-Zip). Installez 7-Zip depuis 7-zip.org ou placez 7z.exe et 7z.dll à côté de Portabilizer ou dans le dossier tools.
+25	innoextract.exe est introuvable. Placez-le à côté de Portabilizer ou dans le dossier tools.
+26	Espace disque insuffisant. Libérez de l'espace ou choisissez un autre disque dans le champ « Destination », puis cliquez sur « Réessayer » dans l'onglet « Historique ».
+27	L'installateur exige les droits d'administrateur. Si vous ne les avez pas, essayez le mode « Extraction seule » ou cherchez une version portable chez l'éditeur.
+28	Exe principal introuvable. Le journal ci-dessus liste les exe trouvés et la raison de leur exclusion : copiez le bon nom dans le champ « Exe principal » et lancez le mode « Launch.bat seul ».
+29	Cela ressemble à une application UWP : hors du paquet installé, elle ne démarrera très probablement pas. Cherchez un installateur exe.
+30	Vérifiez que le fichier a été entièrement téléchargé (comparez la taille ou téléchargez-le à nouveau) et que 7z.exe se trouve à côté du programme.
+31	Ce dossier a déjà été créé auparavant. Ouvrez-le dans l'onglet « Historique » ou supprimez-le pour recommencer.
+32	Les données se trouvent dans des fichiers .bin externes, que l'installateur installe lui-même. Une installation peut donc être nécessaire, et elle exige les droits d'administrateur.
+33	Des fichiers partiellement créés sont restés sur le disque. Vous pouvez les supprimer dans l'onglet « Historique ».
+34	n/d
+35	Extraction
+36	Extracteur : {0}
+37	Installation
+38	Installation silencieuse dans le dossier App (peut durer de nombreuses minutes, ne fermez pas la fenêtre)...
+39	Échec sans administrateur - nouvelle tentative avec une demande UAC (cliquez sur « Oui »). Un installateur lancé avec les droits d'administrateur ne peut pas être arrêté d'ici.
+40	nom technique (setup/update/redist, etc.)
+41	utilitaire de repack
+42	dossier temporaire de l'installateur
+43	programme console
+44	Exe trouvés : {0}. Voici les {1} premiers et pourquoi ils n'ont pas convenu :
+45	Copiez le bon nom dans le champ « Exe principal » et lancez le mode « Launch.bat seul ».
+46	Le fichier '{0}' est introuvable dans App.
+47	.NET ({0}) est nécessaire pour {1}, mais il est introuvable sur cet ordinateur. Exécutez Install_dotnet.bat dans le dossier résultat : il télécharge le runtime dans le dossier dotnet de la copie portable (sans droits d'administrateur), et Launch.bat l'utilisera automatiquement.
+48	Lancement : normal, aucune élévation de droits requise.
+49	Le programme a besoin de bibliothèques absentes du système :\n{0}\n\nLes placer dans le dossier du programme ? Aucun droit d'administrateur n'est requis, le système n'est pas modifié, tout reste dans le dossier portable.\n\nOui - les placer.\nNon - continuer sans elles (le programme risque de ne pas démarrer).\nAnnuler - interrompre.
+50	Terminé : {0}
+51	Exe principal : {0}
+52	Lancez via Launch.bat. Le dossier peut être déplacé sur une clé USB.
+53	Mode radical : {0} libérés.
+54	Mode : {0}
+55	Type : {0}
+56	Rouge clair (R)
+57	Anthracite à accent rouge
+58	Bordeaux
+59	Cerise
+60	Fichier : exe, msi, msix/appx, archive (rar, zip, 7z...). L'exe principal est facultatif : un nom (App.exe), un chemin dans App ou un fichier du dossier App. Le journal est enregistré dans portabilizer.log.
+61	MODE (R) : un exe ordinaire est simplement DÉPLACÉ dans le dossier App (pas de copie, pas d'espace supplémentaire). Les archives et installateurs sont d'abord extraits, et ce n'est qu'ensuite que la source est supprimée : pendant l'opération, il faut de la place pour les fichiers extraits. Une confirmation sera demandée avant le démarrage.
+62	Je ne supprime pas {0} : le dossier ne ressemble pas à un dossier créé par Portabilizer.
+63	7z.exe est requis : introuvable à côté du programme et dans une installation de 7-Zip. Installez 7-Zip (7-zip.org) ou placez 7z.exe et 7z.dll à côté du programme ou dans tools/.
+64	7-Zip, code 1
+65	Le fichier est protégé par mot de passe. Portabilizer ne saisit pas de mots de passe : extrayez-le manuellement (7-Zip demandera le mot de passe), puis sélectionnez le dossier extrait ou l'installateur.
+66	L'installateur s'est terminé avec une erreur. Vérifiez que les fichiers .bin se trouvent à côté de setup.exe.
+67	Il n'y a aucun fichier exe dans {0}. Vérifiez que le programme a bien été extrait ou installé à cet endroit.
+68	MSIX : noms avec encodage %XX corrigés : {0}
+69	MSIX : AppxManifest.xml introuvable - recherche de l'exe de la manière habituelle.
+70	MSIX : le manifeste ne contient pas runFullTrust - il s'agit très probablement d'une application UWP. Hors du paquet installé, elle ne démarrera probablement pas.
+71	, manifeste : {0}.
+72	Il s'agit apparemment d'un installateur en ligne : il contient un lien de téléchargement ({0}). Le programme lui-même sera téléchargé au lancement et installé dans le système, ce qui n'en fera pas une copie portable. Pour une vraie portabilité, téléchargez l'installateur hors ligne complet et rendez-le portable.
+73	Le fichier est protégé par un packer : il ne peut être ni extrait ni analysé, seulement lancé.
+74	Lancement : avec une demande UAC (choix manuel). Launch.bat ne modifie pas les droits.
+75	Lancement : sans demande UAC (RunAsInvoker, choix manuel).
+76	{0} demande les droits d'administrateur. Launch.bat le lance sans demande UAC (RunAsInvoker), sans mot de passe. Si le programme écrit réellement dans Program Files ou HKLM, ou installe des services ou des pilotes, il risque de ne pas fonctionner sans ces droits. Utilisez alors Launch_admin.bat (lancement normal avec demande UAC).
+77	pas un cab
+78	cab multivolume
+79	Autre
+80	Jeu Unreal Engine : Launch.bat lance {0} directement. Le {1} racine demande au premier lancement d'installer DirectX et Visual C++ dans le système, et se ferme si vous refusez. Pour lancer via lui, utilisez Launch_stub.bat.
+81	Unreal : lancement de {0}
+82	l'exe exige les droits d'administrateur : Launch.bat passe par RunAsInvoker
+83	Mode radical : le fichier source a été déplacé et non copié - aucun gigaoctet superflu utilisé.
+84	l'opération a été interrompue
+85	Launch.bat n'a pas été créé
+86	le dossier App est vide
+87	Les fichiers se trouvent dans : {0}
+88	Les dossiers de fichiers sont vides.
+89	Mode inconnu : {0}
+90	Aucun fichier indiqué.
+91	Fichier introuvable.
+92	Le dossier existe déjà : {0}
+93	Supprimez-le ou choisissez le mode 'Launch.bat seul'.
+94	Exe principal introuvable.
+95	Indiquez l'exe dans le champ 'Exe principal' et lancez le mode 'Launch.bat seul'.
+96	la couleur doit être de la forme #rrggbb
+97	Auto
+98	Extraction seule
+99	Installation seule (dans App)
+100	Launch.bat seul
+101	Auto (sans UAC si l'exe demande l'admin)
+102	Toujours sans UAC
+103	Toujours avec UAC (comme l'original)
+104	Fichier :
+105	Destination :
+106	Exe principal :
+107	Processeur
+108	Mémoire
+109	Carte graphique
+110	--run accepte : auto, noadmin, admin
+111	Le mode radical SUPPRIME le fichier source après une construction réussie (impossible de le récupérer).\nSi vous êtes sûr, ajoutez --yes. Rien n'a été fait.
+112	--dx accepte : install, skip, cancel
+113	Il ne reste que {1} sur le disque {0}.
+114	innoextract.exe est requis (placez-le à côté du programme ou dans tools/).
+115	Échec du lancement sans admin : {0}
+116	Aucun programme graphique trouvé, je prends un programme console : {0}. Si ce n'est pas un jeu, indiquez l'exe manuellement.
+117	Choisi : {0} (exe possibles : {1}). Autres options : {2}. Si le mauvais programme s'est lancé, indiquez l'exe manuellement.
+118	convient
+119	écarté :
+120	MSIX : impossible de lire le manifeste : {0}
+121	Impossible de créer Install_dotnet.bat : {0}
+122	Analyse de {0} : {1}, {2}
+123	\n\nCertains fichiers ne sont pas intégrés à Portabilizer :
+124	. DX_fix.bat sera créé pour DirectX (il télécharge le paquet DirectX complet).
+125	. Il faudra les installer manuellement.
+126	DX_fix.bat est nécessaire
+127	{0} extraits sur {1}
+128	le fichier source se trouve dans le dossier résultat
+129	Fichier source supprimé : {0} ({1})
+130	. S'il s'agit de données du même repack, supprimez-les vous-même.
+131	Enregistré dans : {0}
+132	Le dossier {0} n'existe pas. Effectuez d'abord l'extraction ou l'installation.
+133	Exe principal introuvable - indiquez-le dans le champ 'Exe principal'.
+134	C'est un exe ordinaire - copie telle quelle.
+135	Attention : MSIX a été extrait comme un dossier ordinaire, sans enregistrement du paquet. Les programmes classiques (full trust) fonctionnent généralement ainsi, mais les applications UWP et tout ce qui exige un identifiant de paquet risquent de ne pas démarrer.
+136	Mode radical non confirmé : je ne fais rien.
+137	Interrompu par l'utilisateur. Des fichiers partiellement créés sont restés sur le disque : vous pouvez les supprimer dans l'onglet « Historique ».
+138	Erreur : {0}
+139	Convertisseur
+140	Historique
+141	Diagnostic
+142	Versions
+143	Apparence
+144	Prêt.
+145	Rendre portable
+146	Pause
+147	Reprendre
+148	Interrompre
+149	Recommandations
+150	DirectX requis
+151	Le téléchargement est en pause, rien n'est perdu. Annuler arrêtera définitivement le travail : ensuite, on ne peut que recommencer (« Réessayer » dans l'onglet « Historique »).
+152	L'espace disque s'épuise
+153	Pause : le processus est gelé, la progression est conservée.
+154	Reprise au même endroit.
+155	Date
+156	Source
+157	Version
+158	Type
+159	Statut
+160	Taille
+161	Résultat
+162	Notes
+163	Suppression de {0} ...
+164	\n... et {0} de plus
+165	Ouvrir le dossier
+166	Lancer
+167	Réessayer
+168	Supprimer la copie
+169	Supprimer le fichier source
+170	Retirer de la liste
+171	Actualiser
+172	Collecte des informations système...
+173	Disque : n/d
+174	Disque
+175	Capacité
+176	Libre
+177	Utilisé
+178	Portabilizer (R) - radical
+179	Activer la version ordinaire
+180	Activer la version (R)
+181	Thème :
+182	Rouge sombre (R) :
+183	Rouge clair (R) :
+184	Couleur personnalisée
+185	Teinter aussi le fond de la fenêtre avec cette couleur ?\n\nOui - le fond prend une légère teinte de la couleur choisie.\nNon - le fond reste neutre, seuls les boutons et les accents utilisent la couleur.
+186	L'espace ne suffira probablement pas.
+187	illisible
+188	 (priorité basse)
+189	L'exe indiqué se trouve hors du dossier App - choisissez un fichier dans App.
+190	{0} : ce cab utilise la compression LZX et ne peut être extrait que sous Windows (expand.exe).
+191	expand.exe n'a pas pu extraire {0} : {1}
+192	Les bibliothèques ({0}) ont été placées à côté de {1} : {2}.
+193	. Si le programme s'en plaint, exécutez DX_fix.bat dans le dossier résultat (les droits d'administrateur ne sont pas nécessaires).
+194	 ({0}). Elles ne sont pas intégrées à Portabilizer ou ne correspondent pas à l'architecture : si le programme s'en plaint, installez le paquet correspondant dans le système.
+195	manquant :
+196	Fichier source NON supprimé :
+197	l'extracteur a signalé des avertissements (
+198	Impossible de supprimer {0} : {1}
+199	Copie temporaire supprimée : {0} ({1})
+200	Les fichiers .bin à côté de l'installateur n'ont pas été supprimés (d'autres programmes pouvaient en avoir besoin) :
+201	Mode R : le fichier a été déplacé dans App sans copie ({0}).
+202	Le mode installation ne s'applique pas à MSIX/APPX : le paquet est seulement extrait.
+203	Impossible d'extraire le paquet.
+204	C'est un bundle. Paquet principal : {0}. L'extraction du bundle est enregistrée dans {1}.
+205	Tout est calme pour l'instant. Les conseils sur le manque d'espace et les erreurs courantes apparaîtront ici.
+206	Il est impossible de dire exactement ce qu'il reste à écrire.
+207	Quel programme lancer ?
+208	Sélectionnez un fichier.
+209	\n  ... et {0} de plus
+210	Préparation
+211	Annulé avant le démarrage : espace disque insuffisant.
+212	Impossible de mettre en pause pour le moment (psutil est requis : pip install psutil).
+213	Interrompre ?
+214	Arrêter le travail ? Il sera impossible de reprendre là où il s'est arrêté : l'onglet « Historique » proposera « Réessayer » (recommence depuis le début).
+215	{0} écoulé(s)
+216	Sélectionnez d'abord une entrée dans la liste.
+217	Attendez la fin de la tâche en cours (ou interrompez-la).
+218	Le dossier résultat n'existe pas sur le disque.
+219	Ouvrez manuellement :\n{0}
+220	Launch.bat introuvable : la conversion n'est pas terminée.
+221	Suppression
+222	Ce dossier ne ressemble pas à un dossier créé par Portabilizer (il faut un nom *_portable et un Launch.bat avec un dossier App). Par prudence, je ne le supprime pas.
+223	Dossier supprimé.
+224	Tout n'a pas pu être supprimé : certains fichiers sont utilisés par un programme.
+225	Fichier source introuvable (peut-être déjà supprimé).
+226	Supprimer le fichier source ?
+227	Seront supprimés DÉFINITIVEMENT (sans passer par la corbeille), {0} au total :\n\n{1}\n\nDossier : {2}\n\nC'est votre fichier source, il sera impossible de le récupérer. Supprimer ?
+228	Fichier supprimé : {0}
+229	Retirer l'entrée de la liste ? Les fichiers sur le disque ne sont pas touchés.
+230	détection...
+231	Système : {0}\nProcesseur : {1}\nMémoire vive : {2}\nCarte graphique : {3}
+232	Une nouvelle version de Portabilizer est disponible : {0}. Vous pouvez la télécharger dans Portabilizer Launcher ou sur la page {1}.
+233	_exemple.json
+234	Mon thème
+235	Couleur principale (boutons, progression)
+236	Portabilizer (R) - mode radical
+237	Actuellement activée : Portabilizer (R) - radical
+238	Actuellement activée : Portabilizer (version ordinaire)
+239	Vous pourrez changer de version à la fin de la tâche en cours.
+240	Arrêté. Libérez de l'espace, choisissez un autre disque ou ajoutez --force.
+241	L'espace est très juste : presque aucune marge, la tâche risque de se mettre en pause.
+242	Vous avez choisi : {0}
+243	aucun
+244	adresse de téléchargement trouvée par indices indirects
+245	Annulé : des bibliothèques sont nécessaires (
+246	Bibliothèques :
+247	Impossible de déplacer le fichier ({0}), copie classique.
+248	Impossible d'extraire le paquet imbriqué.
+249	Le mode installation ne s'applique pas à une archive : elle est seulement extraite.
+250	Impossible d'extraire l'archive.
+251	Le mode installation n'est disponible que pour les installateurs Inno/NSIS sous Windows.
+252	Mode :
+253	   Lancement :
+254	Il reste environ {0} à écrire, {1} libres : cela devrait suffire, on peut aller jusqu'au bout.
+255	Il reste environ {0} à écrire, mais seulement {1} libres : il manque environ {2}.
+256	Je reste en pause. Libérez de l'espace et cliquez sur « Reprendre ».
+257	Je continue à vos risques : je ne m'arrêterai que si l'espace libre passe sous {0}.
+258	Pause. Libérez de l'espace disque et cliquez sur « Reprendre ».
+259	 La tâche est en pause : choisissez dans la fenêtre quoi faire.
+260	Estimation de l'espace nécessaire
+261	Interrompu. Les restes peuvent être supprimés dans l'onglet « Historique ».
+262	L'espace disque est toujours faible : {0}.
+263	Travail
+264	reste ~{0}
+265	PAUSE
+266	Lancez manuellement :\n{0}\n\n{1}
+267	, il est donc impossible de réessayer. Téléchargez-le ou installez-le à nouveau.
+268	Impossible de supprimer tout le dossier. Fermez les programmes qui l'utilisent et réessayez.
+269	Supprimer la copie portable ?
+270	{0}\n\nTaille : {1}\n\nLe dossier sera supprimé définitivement. Le fichier source (installateur ou archive) n'est pas touché.
+271	{0} cœurs / {1} threads
+272	{0:.0f} %  ({1} sur {2})
+273	, mémoire {0} sur {1}, {2:.0f} °C
+274	 (estimation d'après la 3D)
+275	Choisissez comment Portabilizer crée les copies portables. Vous pouvez changer à tout moment (cela ne modifie que le mode de fonctionnement). À chaque démarrage, le programme démarre dans la version ordinaire.
+276	Version sûre.\n\nLe fichier source (installateur, paquet ou archive) reste intact, et un dossier portable est créé à côté.\n\nInconvénient : les deux copies restent sur le disque : la source et le dossier portable.\n\nConvient à presque tout, surtout si vous n'êtes pas sûr que le programme fonctionnera.
+277	Version radicale (risquée).\n\nAprès une construction réussie, elle SUPPRIME le fichier source (tous les volumes de l'archive) et les copies temporaires ; le résultat occupe donc moins de place. Le dossier portable est créé à côté de la source.\n\nImportant : pendant le travail, il faut autant d'espace que dans la version ordinaire : la source n'est supprimée qu'à la toute fin, après vérification. Un fichier supprimé ne peut pas être récupéré : si un problème survient plus tard, il faudra le télécharger ou l'installer à nouveau depuis la plateforme.\n\nLe programme demande une confirmation avant chaque lancement.
+278	Une nouvelle version est disponible : {0}.
+279	Vous avez la dernière version ({0}) ou il n'y a pas de connexion à GitHub.
+280	Version du programme : {0}
+281	Rechercher les nouvelles versions au démarrage (requête vers GitHub, aucune donnée n'est envoyée)
+282	Vérifier maintenant
+283	Apparence de la fenêtre. Les changements s'appliquent immédiatement et sont mémorisés. Les thèmes rouges s'activent automatiquement dans la version (R) et s'adaptent au thème clair ou sombre.
+284	 (personnalisé)
+285	Apparence classique : les couleurs sont définies par Windows.
+286	. Couleurs : fond, champs, boutons, texte, secondaire, accent, succès, avertissement, erreur.
+287	Impossible d'ouvrir le dossier : {0}
+288	Impossible d'enregistrer le thème : {0}
+289	Choisir une couleur personnalisée...
+290	Ouvrir le dossier themes
+291	Actualiser la liste des thèmes
+292	Thèmes personnalisés : placez un fichier .json dans le dossier themes à côté du programme (l'exemple _exemple.json est créé par le bouton ci-dessus). Il contient les couleurs au format #rrggbb, un nom, "kind" : "light" ou "dark", et "r" : true pour les thèmes rouges du mode R. Les couleurs manquantes sont reprises du thème intégré. Les fenêtres de confirmation (messages Windows) restent celles du système.
+293	Rendre portable (R)
+294	Travail en cours
+295	La tâche est toujours en cours. L'interrompre et quitter ?
+296	ATTENTION :
+297	DANGER :
+298	 Le travail a été arrêté pour ne pas saturer le disque.
+299	bloc MSZIP corrompu
+300	Manquant :
+301	Impossible de déplacer le bundle : {0}
+302	L'archive ne contient pas de programme prêt à l'emploi, mais contient un installateur : {0}. Je continue avec lui. Le contenu de l'archive est enregistré dans {1}.
+303	Fichiers .bin trouvés à côté de l'installateur : {0} ({1}) :
+304	Extraction impossible. L'installateur n'est peut-être pas standard (il faut alors un virtualiseur comme Cameyo / Turbo Studio).
+305	J'essaie l'installation silencieuse. Les fichiers extraits seront enregistrés dans {0}.
+306	Le téléchargement est annulé à votre demande.
+307	Arrêter : nettoyer le disque
+308	Annuler le téléchargement
+309	Portabilizer (R) : le fichier sera déplacé
+310	{0} ({1}) sera DÉPLACÉ dans le dossier App à côté de lui-même : aucune copie n'est créée, aucun espace supplémentaire n'est nécessaire.\n\nLe fichier ne sera plus à son emplacement d'origine. Vous pourrez le récupérer dans le dossier App.\n\nContinuer ?
+311	Portabilizer (R) : le fichier source sera supprimé
+312	Voulez-vous vraiment rendre ce fichier portable en mode radical ?\n\nAprès une construction réussie, seront SUPPRIMÉS DÉFINITIVEMENT (sans passer par la corbeille) :\n{0}\n{1} au total, ainsi que les copies temporaires.\n\nIl sera ensuite impossible de récupérer le fichier source. Si un problème survient (par exemple, le jeu ne démarre pas), il faudra le télécharger ou l'installer à nouveau depuis la plateforme.\n\nLa suppression n'a lieu que si la construction a réussi et que tout a été vérifié ; en cas d'erreur ou d'annulation, le fichier reste. Le résultat sera créé à côté du fichier source.\n\nContinuer ?
+313	Terminé. Le fichier a été déplacé sans copie : aucun espace supplémentaire utilisé.
+314	{0} libres sur le disque
+315	 (absent du disque)
+316	Le fichier source n'existe plus
+317	Recommencer ?
+318	Le dossier existe déjà (reste d'une tentative précédente) :\n{0}\nTaille : {1}\n\nLe supprimer et recommencer ?
+319	La charge CPU/RAM n'est pas disponible : installez psutil (pip install psutil). Il est déjà inclus dans Portabilizer.exe compilé.
+320	Il ne reste presque plus de mémoire vive. Fermez le navigateur et les programmes inutiles, sinon l'extraction risque de ralentir fortement.
+321	Disque : lecture {0}/s, écriture {1}/s
+322	charge indisponible
+323	Actuellement :
+324	Vous avez choisi de continuer sans DirectX.
+325	Vous avez choisi de continuer sans elles.
+326	Le dossier {0} peut être supprimé après vérification : il ne sert que de source pour l'installateur.
+327	Exe principal introuvable après l'extraction.
+328	Espace insuffisant
+329	D'après l'estimation, l'espace ne suffira pas. Si l'espace est épuisé, l'extraction s'arrêtera avec une erreur.\n\nContinuer quand même ?
+330	Plusieurs programmes conviennent et je ne sais pas lequel est le principal. Choisissez celui qui lance l'application voulue (vous pourrez le changer plus tard dans le mode « Launch.bat seul »).
+331	Choisir automatiquement
+332	L'espace suffira-t-il ?
+333	Terminé. Le fichier source a été supprimé, {0} libérés.
+334	 (supprimé par le mode radical)
+335	  <- où l'on enregistre
+336	Le disque {0}, sur lequel vous enregistrez, manque d'espace ({1}). Choisissez un autre disque dans le champ « Destination ».
+337	Impossible de déplacer l'archive extraite : {0}
+338	{0} extraits, alors que le .bin contient {1} : on dirait un repack dont les données sont installées par l'installateur lui-même.
+339	Impossible de déplacer les fichiers extraits : {0}
+340	L'installation a échoué - les fichiers extraits ont été remis dans App.
+341	Impossible de remettre les fichiers extraits dans App : {0}
+342	\n\nCommencer quand même ?
+343	Attention : il y a des fichiers .bin à proximité. Si le programme ne démarre pas ou manque de données, recommencez en mode 'Installation seule (dans App)'.
+344	Installateurs, paquets, archives
+345	Tous
+346	Programmes
+347	Terminé. Le résultat se trouve dans l'onglet « Historique ».
+348	Échec. Détails dans le journal et dans les recommandations.
+349	Terminé, mais le fichier source n'a pas été supprimé :
+350	Langue
+351	Langue de l'interface :
+352	La langue change tout de suite : la fenêtre redémarre seule, les réglages sont conservés.
+353	Attendez la fin de la tâche ou annulez-la : la fenêtre redémarre après le changement de langue.

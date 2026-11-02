@@ -1,0 +1,34 @@
+ru	ruština
+en	angličtina
+et	estonština
+fr	francouzština
+es	španělština
+de	němčina
+it	italština
+pt	portugalština
+nl	nizozemština
+pl	polština
+uk	ukrajinština
+sv	švédština
+fi	finština
+tr	turečtina
+zh	čínština (zjednodušená)
+ja	japonština
+ko	korejština
+ar	arabština
+cs	čeština
+ro	rumunština
+hu	maďarština
+el	řečtina
+he	hebrejština
+hi	hindština
+id	indonéština
+vi	vietnamština
+th	thajština
+bg	bulharština
+sr	srbština (cyrilice)
+hr	chorvatština
+lv	lotyština
+lt	litevština
+no	norština (bokmål)
+da	dánština

@@ -1,0 +1,34 @@
+ru	venäjä
+en	englanti
+et	viro
+fr	ranska
+es	espanja
+de	saksa
+it	italia
+pt	portugali
+nl	hollanti
+pl	puola
+uk	ukraina
+sv	ruotsi
+fi	suomi
+tr	turkki
+zh	kiina (yksinkertaistettu)
+ja	japani
+ko	korea
+ar	arabia
+cs	tšekki
+ro	romania
+hu	unkari
+el	kreikka
+he	heprea
+hi	hindi
+id	indonesia
+vi	vietnam
+th	thai
+bg	bulgaria
+sr	serbia (kyrillinen)
+hr	kroatia
+lv	latvia
+lt	liettua
+no	norja (bokmål)
+da	tanska

@@ -1,0 +1,34 @@
+ru	Tiếng Nga
+en	Tiếng Anh
+et	Tiếng Estonia
+fr	Tiếng Pháp
+es	Tiếng Tây Ban Nha
+de	Tiếng Đức
+it	Tiếng Ý
+pt	Tiếng Bồ Đào Nha
+nl	Tiếng Hà Lan
+pl	Tiếng Ba Lan
+uk	Tiếng Ukraina
+sv	Tiếng Thụy Điển
+fi	Tiếng Phần Lan
+tr	Tiếng Thổ Nhĩ Kỳ
+zh	Tiếng Trung (giản thể)
+ja	Tiếng Nhật
+ko	Tiếng Hàn
+ar	Tiếng Ả Rập
+cs	Tiếng Séc
+ro	Tiếng Romania
+hu	Tiếng Hungary
+el	Tiếng Hy Lạp
+he	Tiếng Do Thái
+hi	Tiếng Hindi
+id	Tiếng Indonesia
+vi	Tiếng Việt
+th	Tiếng Thái
+bg	Tiếng Bulgaria
+sr	Tiếng Serbia (Kirin)
+hr	Tiếng Croatia
+lv	Tiếng Latvia
+lt	Tiếng Litva
+no	Tiếng Na Uy (Bokmål)
+da	Tiếng Đan Mạch

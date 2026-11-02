@@ -1,0 +1,34 @@
+ru	ryska
+en	engelska
+et	estniska
+fr	franska
+es	spanska
+de	tyska
+it	italienska
+pt	portugisiska
+nl	nederländska
+pl	polska
+uk	ukrainska
+sv	svenska
+fi	finska
+tr	turkiska
+zh	kinesiska (förenklad)
+ja	japanska
+ko	koreanska
+ar	arabiska
+cs	tjeckiska
+ro	rumänska
+hu	ungerska
+el	grekiska
+he	hebreiska
+hi	hindi
+id	indonesiska
+vi	vietnamesiska
+th	thailändska
+bg	bulgariska
+sr	serbiska (kyrilliska)
+hr	kroatiska
+lv	lettiska
+lt	litauiska
+no	norska (bokmål)
+da	danska

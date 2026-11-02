@@ -1,0 +1,34 @@
+ru	orosz
+en	angol
+et	észt
+fr	francia
+es	spanyol
+de	német
+it	olasz
+pt	portugál
+nl	holland
+pl	lengyel
+uk	ukrán
+sv	svéd
+fi	finn
+tr	török
+zh	kínai (egyszerűsített)
+ja	japán
+ko	koreai
+ar	arab
+cs	cseh
+ro	román
+hu	magyar
+el	görög
+he	héber
+hi	hindi
+id	indonéz
+vi	vietnami
+th	thai
+bg	bolgár
+sr	szerb (cirill)
+hr	horvát
+lv	lett
+lt	litván
+no	norvég (bokmål)
+da	dán

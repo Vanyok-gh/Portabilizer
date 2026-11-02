@@ -1,0 +1,353 @@
+1	Need {0} {1}, {2} free on drive {3}.{4}
+2	running
+3	paused
+4	done
+5	error
+6	aborted
+7	aborted (app was closed)
+8	Auto (follow Windows)
+9	Light
+10	Dark
+11	Classic (system)
+12	My color
+13	B
+14	KB
+15	MB
+16	GB
+17	 If the archive contains an installer, about the same amount again will be needed.
+18	based on archive contents
+19	approximately
+20	Unreal Engine games may need DirectX (June 2010) libraries. If you get an error about xinput1_3.dll, X3DAudio1_7.dll or XAPOFX1_5.dll at launch, run DX_fix.bat in the result folder: administrator rights are not required.
+21	Radical mode did not delete the source file because not everything could be verified (see the reason in the log). The portable folder was created and the source file is still in place: check the folder and delete the source file yourself.
+22	The program needs .NET, which is not installed on this computer. Run Install_dotnet.bat in the result folder (it downloads the runtime into the portable copy, no administrator rights needed).
+23	The file asks for a password. Portabilizer does not enter passwords: extract it manually with 7-Zip (it will ask for the password) and then select the installer or folder from the result.
+24	7z.exe not found (neither next to the program nor in an installed 7-Zip). Install 7-Zip from 7-zip.org or put 7z.exe and 7z.dll next to Portabilizer or in the tools folder.
+25	innoextract.exe not found. Put it next to Portabilizer or in the tools folder.
+26	Not enough disk space. Free up space or choose another drive in the "Destination" field, then click "Retry" on the "History" tab.
+27	The installer requires administrator rights. If you do not have them, try the "Extract only" mode or look for a portable version from the developer.
+28	Main exe not found. The log above lists the exe files found and why they were rejected: copy the right name into the "Main exe" field and run the "Launch.bat only" mode.
+29	This looks like a UWP app: outside the installed package it most likely will not run. Look for an exe installer.
+30	Check that the file was downloaded completely (compare the size or download it again) and that 7z.exe is next to the program.
+31	This folder was already created earlier. Open it on the "History" tab or delete it to start over.
+32	The data is in external .bin files, which the installer itself installs. This may require installation, and that requires administrator rights.
+33	Partially created files remain on the disk. You can delete them on the "History" tab.
+34	n/a
+35	Extraction
+36	Extractor: {0}
+37	Installation
+38	Silent installation into the App folder (may take many minutes, do not close the window)...
+39	Did not work without admin - trying with a UAC prompt (click "Yes"). An installer running with administrator rights cannot be stopped from here.
+40	system name (setup/update/redist etc.)
+41	repack helper utility
+42	installer temporary folder
+43	console program
+44	Exe files found: {0}. Here are the first {1} and why they were not chosen:
+45	Copy the right name into the "Main exe" field and run the "Launch.bat only" mode.
+46	File '{0}' not found in App.
+47	.NET ({0}) is required for {1}, but it was not found on this computer. Run Install_dotnet.bat in the result folder: it downloads the runtime into the dotnet folder inside the portable copy (no administrator rights needed), and Launch.bat will pick it up automatically.
+48	Launch: normal, no elevation required.
+49	The program needs libraries that are missing from the system:\n{0}\n\nPut them in the program folder? No administrator rights are needed, the system is not changed, and everything stays inside the portable folder.\n\nYes - put them there.\nNo - continue without them (the program may not start).\nCancel - abort.
+50	Done: {0}
+51	Main exe: {0}
+52	Run it via Launch.bat. The folder can be moved to a USB drive.
+53	Radical mode: {0} freed.
+54	Mode: {0}
+55	Type: {0}
+56	Light red (R)
+57	Charcoal with red accent
+58	Burgundy
+59	Cherry
+60	File: exe, msi, msix/appx, archive (rar, zip, 7z...). Main exe is optional: a name (App.exe), a path inside App, or a file from the App folder. The log is saved to portabilizer.log.
+61	MODE (R): a regular exe is simply MOVED into the App folder (no copy, no extra space needed). Archives and installers are extracted first, and only then is the source deleted: space for the extracted files is needed while it runs. You will be asked to confirm before it starts.
+62	Not deleting {0}: the folder does not look like one created by Portabilizer.
+63	7z.exe is required: not found next to the program or in an installed 7-Zip. Install 7-Zip (7-zip.org) or put 7z.exe and 7z.dll next to the program or in tools/.
+64	7-Zip, code 1
+65	The file is password-protected. Portabilizer does not enter passwords: extract it manually (7-Zip will ask for the password), then select the extracted folder or installer.
+66	The installer finished with an error. Check that the .bin files are next to setup.exe.
+67	There are no exe files at all in {0}. Check that the program was extracted or installed exactly there.
+68	MSIX: names with %XX encoding fixed: {0}
+69	MSIX: AppxManifest.xml not found - looking for the exe the usual way.
+70	MSIX: the manifest has no runFullTrust - this is most likely a UWP app. Outside the installed package it probably will not run.
+71	, manifest: {0}.
+72	This looks like an online stub: it contains a download link ({0}). The program itself will be downloaded at launch and installed into the system, so this will not become a portable copy. For real portability, download the full offline installer and make that portable.
+73	The file is protected by a packer: it cannot be extracted or analyzed, only launched.
+74	Launch: with a UAC prompt (chosen manually). Launch.bat does not change rights.
+75	Launch: without a UAC prompt (RunAsInvoker, chosen manually).
+76	{0} asks for administrator rights. Launch.bat runs it without a UAC prompt (RunAsInvoker), no password needed. If the program really writes to Program Files or HKLM, or installs services or drivers, it may not work without those rights. In that case use Launch_admin.bat (normal launch with a UAC prompt).
+77	not a cab
+78	multi-volume cab
+79	Other
+80	Unreal Engine game: Launch.bat runs {0} directly. The root {1} asks on first launch to install DirectX and Visual C++ into the system, and closes if you decline. To launch through it, use Launch_stub.bat.
+81	Unreal: launching {0}
+82	exe requires admin: Launch.bat goes through RunAsInvoker
+83	Radical mode: the source file was moved, not copied - no extra gigabytes used.
+84	the operation was aborted
+85	Launch.bat was not created
+86	the App folder is empty
+87	Files are in: {0}
+88	The folders with files are empty.
+89	Unknown mode: {0}
+90	No file specified.
+91	File not found.
+92	The folder already exists: {0}
+93	Delete it, or choose the 'Launch.bat only' mode.
+94	Main exe not found.
+95	Specify the exe in the 'Main exe' field and run the 'Launch.bat only' mode.
+96	color must be in the form #rrggbb
+97	Auto
+98	Extract only
+99	Install only (into App)
+100	Launch.bat only
+101	Auto (no UAC if the exe asks for admin)
+102	Always without UAC
+103	Always with UAC (as in the original)
+104	File:
+105	Destination:
+106	Main exe:
+107	Processor
+108	Memory
+109	Graphics card
+110	--run accepts: auto, noadmin, admin
+111	Radical mode DELETES the source file after a successful build (it cannot be restored).\nIf you are sure, add --yes. Nothing was done.
+112	--dx accepts: install, skip, cancel
+113	Only {1} left on drive {0}.
+114	innoextract.exe is required (put it next to the program or in tools/).
+115	Launch without admin failed: {0}
+116	No graphical programs found, taking a console one: {0}. If this is not a game, specify the exe manually.
+117	Selected: {0} (matching exe files: {1}). Other options: {2}. If the wrong program started, specify the exe manually.
+118	suitable
+119	rejected:
+120	MSIX: could not read the manifest: {0}
+121	Could not create Install_dotnet.bat: {0}
+122	Analysis of {0}: {1}, {2}
+123	\n\nSome files are not built into Portabilizer:
+124	. DX_fix.bat will be created for DirectX (it downloads the full DirectX package).
+125	. They will have to be installed manually.
+126	DX_fix.bat is needed
+127	extracted {0} of {1}
+128	the source file is inside the result folder
+129	Source file deleted: {0} ({1})
+130	. If this is data from the same repack, delete it yourself.
+131	Saved to: {0}
+132	Folder {0} does not exist. Extract or install first.
+133	Main exe not found - specify it in the 'Main exe' field.
+134	This is a regular exe - copying it as is.
+135	Warning: MSIX was extracted as a regular folder, without package registration. Classic (full trust) programs usually work this way, but UWP apps and anything that needs a package identity may not start.
+136	Radical mode not confirmed: doing nothing.
+137	Aborted by the user. Partially created files remain on the disk: you can delete them on the "History" tab.
+138	Error: {0}
+139	Converter
+140	History
+141	Diagnostics
+142	Versions
+143	Appearance
+144	Ready.
+145	Make portable
+146	Pause
+147	Resume
+148	Abort
+149	Recommendations
+150	DirectX needed
+151	The download is paused, nothing is lost. Cancel will stop the work for good: afterwards you can only start over ("Retry" on the "History" tab).
+152	Disk space is running out
+153	Paused: the process is frozen, progress is saved.
+154	Resuming from the same point.
+155	Date
+156	Source
+157	Version
+158	Type
+159	Status
+160	Size
+161	Result
+162	Notes
+163	Deleting {0} ...
+164	\n... and {0} more
+165	Open folder
+166	Launch
+167	Retry
+168	Delete copy
+169	Delete source file
+170	Remove from list
+171	Refresh
+172	Collecting system information...
+173	Disk: n/a
+174	Disk
+175	Capacity
+176	Free
+177	Used
+178	Portabilizer (R) - radical
+179	Switch to the regular version
+180	Switch to version (R)
+181	Theme:
+182	Dark red (R):
+183	Light red (R):
+184	Custom color
+185	Tint the window background with this color too?\n\nYes - the background gets a light tint of the chosen color.\nNo - the background stays neutral, only buttons and accents use the color.
+186	There will most likely not be enough space.
+187	unreadable
+188	 (low priority)
+189	The specified exe is outside the App folder - choose a file inside App.
+190	{0}: this cab uses LZX compression and can only be extracted on Windows (expand.exe).
+191	expand.exe could not extract {0}: {1}
+192	Libraries ({0}) were placed next to {1}: {2}.
+193	. If the program complains about them, run DX_fix.bat in the result folder (administrator rights are not required).
+194	 ({0}). They are not built into Portabilizer or do not match the architecture: if the program complains, install the corresponding package on the system.
+195	missing:
+196	Source file NOT deleted:
+197	the extractor reported warnings (
+198	Could not delete {0}: {1}
+199	Temporary copy deleted: {0} ({1})
+200	The .bin files next to the installer were not deleted (other programs may need them):
+201	R mode: the file was moved into App without a copy ({0}).
+202	Install mode does not apply to MSIX/APPX: the package is only extracted.
+203	Could not extract the package.
+204	This is a bundle. Main package: {0}. The bundle extraction is saved in {1}.
+205	All quiet for now. Tips about low disk space and common errors will appear here.
+206	It is impossible to say exactly how much is still left to write.
+207	Which program should be launched?
+208	Select a file.
+209	\n  ... and {0} more
+210	Preparation
+211	Canceled before start: not enough disk space.
+212	Cannot pause right now (psutil is required: pip install psutil).
+213	Abort?
+214	Stop the work? It cannot be resumed from where it stopped: the "History" tab will show "Retry" (it starts over).
+215	{0} elapsed
+216	Select an entry in the list first.
+217	Wait for the current task to finish (or abort it).
+218	The result folder does not exist on the disk.
+219	Open manually:\n{0}
+220	Launch.bat not found: the conversion did not finish.
+221	Deletion
+222	This folder does not look like one created by Portabilizer (it needs a *_portable name and a Launch.bat with an App folder). Not deleting, to be safe.
+223	Folder deleted.
+224	Not everything could be deleted: some files are in use by a program.
+225	Source file not found (it may already be deleted).
+226	Delete the source file?
+227	The following will be deleted PERMANENTLY (bypassing the Recycle Bin), {0} in total:\n\n{1}\n\nFolder: {2}\n\nThis is your source file and it cannot be restored. Delete?
+228	File deleted: {0}
+229	Remove the entry from the list? Files on disk are not affected.
+230	detecting...
+231	System: {0}\nProcessor: {1}\nRAM: {2}\nGraphics card: {3}
+232	A new version of Portabilizer is available: {0}. You can download it in Portabilizer Launcher or on the {1} page.
+233	_example.json
+234	My theme
+235	Main color (buttons, progress)
+236	Portabilizer (R) - radical mode
+237	Currently active: Portabilizer (R) - radical
+238	Currently active: Portabilizer (regular version)
+239	You can switch the version after the current task finishes.
+240	Stopped. Free up space, choose another drive or add --force.
+241	Space is very tight: there is almost no margin, and the task may pause.
+242	You selected: {0}
+243	none
+244	download address found by indirect signs
+245	Canceled: libraries are needed (
+246	Libraries:
+247	Could not move the file ({0}), copying as usual.
+248	Could not extract the nested package.
+249	Install mode does not apply to an archive: it is only extracted.
+250	Could not extract the archive.
+251	Install mode is available only for Inno/NSIS installers on Windows.
+252	Mode:
+253	   Launch:
+254	About {0} left to write, {1} free: this should be enough, it can be finished.
+255	About {0} left to write, but only {1} free: short by about {2}.
+256	Staying paused. Free up space and click "Resume".
+257	Continuing at your own risk: I will stop only if free space drops below {0}.
+258	Paused. Free up disk space and click "Resume".
+259	 The task is paused: choose in the window what to do.
+260	Space requirement estimate
+261	Aborted. Leftovers can be deleted on the "History" tab.
+262	Disk space is still low: {0}.
+263	Work
+264	~{0} left
+265	PAUSED
+266	Launch manually:\n{0}\n\n{1}
+267	, so it cannot be retried. Download or install it again.
+268	Could not delete the whole folder. Close the programs that are using it and try again.
+269	Delete the portable copy?
+270	{0}\n\nSize: {1}\n\nThe folder will be deleted permanently. The source file (installer or archive) is not affected.
+271	{0} cores / {1} threads
+272	{0:.0f}%  ({1} of {2})
+273	, memory {0} of {1}, {2:.0f} °C
+274	 (estimated from 3D)
+275	Choose how Portabilizer makes portable copies. You can switch at any time (this only changes the working mode). Each time it starts, the program uses the regular version.
+276	Safe version.\n\nThe source file (installer, package or archive) stays untouched, and a portable folder is created next to it.\n\nDownside: both copies stay on the disk: the source and the portable folder.\n\nSuitable for almost everything, especially if you are not sure the program will work.
+277	Radical version (risky).\n\nAfter a successful build it DELETES the source file (all archive volumes) and temporary copies, so the result takes less space. The portable folder is created next to the source.\n\nImportant: while it works, the same amount of space is needed as in the regular version: the source is deleted only at the very end, after verification. A deleted file cannot be restored: if something goes wrong later, you will have to download or install it from the platform again.\n\nThe program asks for confirmation before every run.
+278	A new version is available: {0}.
+279	You have the latest version ({0}) or there is no connection to GitHub.
+280	Program version: {0}
+281	Check for new versions at startup (a request to GitHub, no data is sent)
+282	Check now
+283	Window appearance. Changes apply immediately and are remembered. Red themes are enabled automatically in the (R) version and are matched to the light or dark theme.
+284	 (custom)
+285	Classic look: colors are set by Windows.
+286	. Colors: background, fields, buttons, text, secondary, accent, success, warning, error.
+287	Could not open the folder: {0}
+288	Could not save the theme: {0}
+289	Choose a custom color...
+290	Open themes folder
+291	Refresh theme list
+292	Custom themes: put a .json file into the themes folder next to the program (the sample _example.json is created by the button above). It holds colors as #rrggbb, a name, "kind": "light" or "dark", and "r": true for the red themes of R mode. Missing colors are taken from the built-in theme. Confirmation windows (Windows messages) remain system ones.
+293	Make portable (R)
+294	Work in progress
+295	The task is still running. Abort it and exit?
+296	WARNING:
+297	DANGER:
+298	 The work was stopped to avoid filling up the disk.
+299	corrupted MSZIP block
+300	Missing:
+301	Could not move the bundle: {0}
+302	The archive has no ready-made program, but has an installer: {0}. Continuing with it. The archive contents are saved in {1}.
+303	.bin files found next to the installer: {0} ({1}):
+304	Could not extract. The installer may be non-standard (then a virtualizer such as Cameyo / Turbo Studio is needed).
+305	Trying silent installation. The extracted files will be saved in {0}.
+306	The download is being canceled at your choice.
+307	Stop: clean up the disk
+308	Cancel download
+309	Portabilizer (R): the file will be moved
+310	{0} ({1}) will be MOVED into the App folder next to itself: no copy is created and no extra space is needed.\n\nThe file will no longer be in its original place. You can get it back from the App folder.\n\nContinue?
+311	Portabilizer (R): the source file will be deleted
+312	Do you really want to make this file portable in radical mode?\n\nAfter a successful build the following will be DELETED PERMANENTLY (bypassing the Recycle Bin):\n{0}\n{1} in total, plus temporary copies.\n\nThe source file cannot be restored afterwards. If something goes wrong (for example, the game does not start), you will have to download or install it from the platform again.\n\nDeletion happens only if the build succeeded and everything was verified; on error or cancel the file stays. The result will be created next to the source file.\n\nContinue?
+313	Done. The file was moved without a copy: no extra space used.
+314	{0} free on the disk
+315	 (not on disk)
+316	The source file no longer exists
+317	Start over?
+318	The folder already exists (leftover from a previous attempt):\n{0}\nSize: {1}\n\nDelete it and start over?
+319	CPU/RAM load is unavailable: install psutil (pip install psutil). It is already included in the built Portabilizer.exe.
+320	Almost no RAM left. Close the browser and unnecessary programs, otherwise extraction may slow down a lot.
+321	Disk: read {0}/s, write {1}/s
+322	load unavailable
+323	Now:
+324	Continuing without DirectX was chosen.
+325	Continuing without them was chosen.
+326	The {0} folder can be deleted after checking: it is needed only as the source of the installer.
+327	Main exe not found after extraction.
+328	Not enough space
+329	According to the estimate there will not be enough space. If space runs out, extraction will stop with an error.\n\nContinue anyway?
+330	Several suitable programs were found and I am not sure which one is the main one. Choose the one that launches the app you need (you can change it later in the "Launch.bat only" mode).
+331	Choose automatically
+332	Is there enough space?
+333	Done. The source file was deleted, {0} freed.
+334	 (deleted by radical mode)
+335	  <- where we save
+336	Drive {0}, where you are saving, is low on space ({1}). Choose another drive in the "Destination" field.
+337	Could not move the extracted archive: {0}
+338	Extracted {0}, while the .bin holds {1}: looks like a repack whose data is installed by the installer itself.
+339	Could not move the extracted files: {0}
+340	Installation failed - the extracted files were returned to App.
+341	Could not return the extracted files to App: {0}
+342	\n\nStart anyway?
+343	Warning: there are .bin files nearby. If the program does not start or lacks data, repeat in the 'Install only (into App)' mode.
+344	Installers, packages, archives
+345	All
+346	Programs
+347	Done. The result is on the "History" tab.
+348	Failed. See the log and the recommendations for details.
+349	Done, but the source file was not deleted:
+350	Language
+351	Interface language:
+352	The language changes at once: the window restarts by itself, settings are kept.
+353	Wait for the current task to finish or cancel it first: the window restarts after the language changes.

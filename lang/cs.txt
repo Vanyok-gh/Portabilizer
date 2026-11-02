@@ -1,0 +1,353 @@
+1	Je potřeba {0} {1}, volno je {2} na disku {3}.{4}
+2	probíhá
+3	pozastaveno
+4	hotovo
+5	chyba
+6	přerušeno
+7	přerušeno (aplikace byla zavřena)
+8	Auto (podle Windows)
+9	Světlé
+10	Tmavé
+11	Klasické (systémové)
+12	Vlastní barva
+13	B
+14	KB
+15	MB
+16	GB
+17	 Pokud je uvnitř archivu instalátor, bude potřeba přibližně stejně místa navíc.
+18	podle obsahu archivu
+19	orientačně
+20	Hra na Unreal Engine může potřebovat knihovny DirectX (June 2010). Pokud se při spuštění objeví chyba o xinput1_3.dll, X3DAudio1_7.dll nebo XAPOFX1_5.dll, spusťte DX_fix.bat ve složce s výsledkem: práva správce nejsou potřeba.
+21	Radikální režim nesmazal zdrojový soubor, protože se nepodařilo ověřit vše (důvod je v logu). Portativní složka byla vytvořena, zdroj zůstal na místě: zkontrolujte ji a zdroj smažte sami.
+22	Program potřebuje .NET, který na tomto počítači chybí. Spusťte Install_dotnet.bat ve složce s výsledkem (stáhne runtime do portativní kopie, bez práv správce).
+23	Soubor vyžaduje heslo. Portabilizer hesla nezadává: rozbalte jej ručně v 7-Zip (zeptá se na heslo) a vyberte instalátor nebo složku z výsledku.
+24	Nebyl nalezen 7z.exe (ani vedle programu, ani v nainstalovaném 7-Zip). Nainstalujte 7-Zip z 7-zip.org nebo dejte 7z.exe a 7z.dll vedle Portabilizer nebo do složky tools.
+25	Nebyl nalezen innoextract.exe. Dejte jej vedle Portabilizer nebo do složky tools.
+26	Na disku došlo místo. Uvolněte místo nebo vyberte jiný disk v poli «Kam» a poté na kartě «Historie» klikněte na «Opakovat».
+27	Instalátor vyžaduje práva správce. Pokud je nemáte, zkuste režim «Pouze rozbalení» nebo u vývojáře hledejte portativní verzi.
+28	Hlavní exe nebylo nalezeno. Výše v logu jsou uvedeny nalezené soubory exe a důvod vyřazení: zkopírujte požadovaný název do pole «Hlavní exe» a spusťte režim «Pouze Launch.bat».
+29	Vypadá to na aplikaci UWP: mimo nainstalovaný balíček se pravděpodobně nespustí. Hledejte instalátor exe.
+30	Zkontrolujte, zda je soubor stažen celý (porovnejte velikost nebo jej stáhněte znovu) a zda je 7z.exe vedle programu.
+31	Tato složka už byla vytvořena dříve. Otevřete ji na kartě «Historie» nebo ji smažte, pokud chcete začít znovu.
+32	Data jsou ve vnějších souborech .bin, které instaluje sám instalátor. K tomu může být potřeba instalace a k ní práva správce.
+33	Částečně vytvořené soubory zůstaly na disku. Smazat je můžete na kartě «Historie».
+34	n/a
+35	Rozbalení
+36	Rozbalovač: {0}
+37	Instalace
+38	Tichá instalace do složky App (může trvat mnoho minut, nezavírejte okno)...
+39	Bez správce to nešlo - zkouším s dotazem UAC (klikněte na 'Ano'). Instalátor spuštěný s právy správce odsud zastavit nelze.
+40	servisní název (setup/update/redist apod.)
+41	servisní nástroj repacku
+42	dočasná složka instalátoru
+43	konzolový program
+44	Nalezeno exe: {0}. Zde je prvních {1} a proč nevyhověly:
+45	Zkopírujte požadovaný název do pole «Hlavní exe» a spusťte režim «Pouze Launch.bat».
+46	Soubor '{0}' nebyl v App nalezen.
+47	Je potřeba .NET ({0}) pro {1}, ale na tomto počítači nebyl nalezen. Spusťte Install_dotnet.bat ve složce s výsledkem: stáhne runtime do složky dotnet uvnitř portativní kopie (práva správce nejsou potřeba), Launch.bat jej převezme sám.
+48	Spuštění: běžné, zvýšená práva nejsou potřeba.
+49	Program potřebuje knihovny, které v systému chybí:\n{0}\n\nVložit je do složky programu? Práva správce nejsou potřeba, systém se nemění, vše zůstane uvnitř portativní složky.\n\nAno - vložit.\nNe - pokračovat bez nich (program se nemusí spustit).\nZrušit - přerušit.
+50	Hotovo: {0}
+51	Hlavní exe: {0}
+52	Spouštějte přes Launch.bat. Složku lze přenášet na flash disk.
+53	Radikální režim: uvolněno {0}.
+54	Režim: {0}
+55	Typ: {0}
+56	Světle červená (R)
+57	Uhlová s červeným akcentem
+58	Vínová
+59	Višňová
+60	Soubor: exe, msi, msix/appx, archiv (rar, zip, 7z...). Hlavní exe není povinné: název (App.exe), cesta uvnitř App nebo soubor ze složky App. Log se ukládá do portabilizer.log.
+61	REŽIM (R): běžné exe se pouze PŘESUNE do složky App (kopie nevzniká, místo není potřeba). Archivy a instalátory se nejprve rozbalí a teprve potom se zdroj smaže: po dobu práce je potřeba místo na rozbalená data. Před startem proběhne potvrzení.
+62	Nemažu {0}: složka nevypadá jako vytvořená programem Portabilizer.
+63	Je potřeba 7z.exe: nebyl nalezen ani vedle programu, ani v nainstalovaném 7-Zip. Nainstalujte 7-Zip (7-zip.org) nebo dejte 7z.exe a 7z.dll vedle programu nebo do tools/.
+64	7-Zip, kód 1
+65	Soubor je chráněn heslem. Portabilizer hesla nezadává: rozbalte jej ručně (7-Zip se na heslo zeptá) a poté vyberte rozbalenou složku nebo instalátor.
+66	Instalátor skončil s chybou. Zkontrolujte, zda jsou soubory .bin vedle setup.exe.
+67	Ve složce {0} nejsou vůbec žádné soubory exe. Zkontrolujte, zda se program rozbalil nebo nainstaloval právě sem.
+68	MSIX: opraveno názvů s kódováním %XX: {0}
+69	MSIX: AppxManifest.xml nebyl nalezen - hledám exe běžným způsobem.
+70	MSIX: v manifestu chybí runFullTrust - nejspíš jde o aplikaci UWP. Mimo nainstalovaný balíček se pravděpodobně nespustí.
+71	, manifest: {0}.
+72	Vypadá to na online zavaděč: uvnitř je odkaz ke stažení ({0}). Samotný program se stáhne při spuštění a nainstaluje se do systému, takže portativní kopií nebude. Pro skutečnou přenosnost stáhněte úplný offline instalátor a udělejte portativním ten.
+73	Soubor je chráněn packerem: nelze jej rozbalit ani analyzovat, jen spustit.
+74	Spuštění: s dotazem UAC (zvoleno ručně). Launch.bat práva nemění.
+75	Spuštění: bez dotazu UAC (RunAsInvoker, zvoleno ručně).
+76	{0} vyžaduje práva správce. Launch.bat jej spouští bez dotazu UAC (RunAsInvoker), heslo není potřeba. Pokud program opravdu zapisuje do Program Files, HKLM, instaluje služby nebo ovladače, bez práv nemusí fungovat. Pak použijte Launch_admin.bat (běžné spuštění s dotazem UAC).
+77	není cab
+78	vícedílný cab
+79	Ostatní
+80	Hra na Unreal Engine: Launch.bat spouští {0} přímo. Kořenový {1} při prvním spuštění žádá o instalaci DirectX a Visual C++ do systému a při odmítnutí se zavře. Spuštění přes něj: Launch_stub.bat.
+81	Unreal: spuštění {0}
+82	exe vyžaduje správce: Launch.bat jde přes RunAsInvoker
+83	Radikální režim: zdrojový soubor byl přesunut, nikoli zkopírován - zbytečné gigabajty nejsou obsazeny.
+84	práce byla přerušena
+85	Launch.bat nebyl vytvořen
+86	složka App je prázdná
+87	Soubory jsou v: {0}
+88	Složky se soubory jsou prázdné.
+89	Neznámý režim: {0}
+90	Soubor není zadán.
+91	Soubor nebyl nalezen.
+92	Složka už existuje: {0}
+93	Smažte ji nebo vyberte režim 'Pouze Launch.bat'.
+94	Hlavní exe nebylo nalezeno.
+95	Zadejte exe do pole 'Hlavní exe' a spusťte režim 'Pouze Launch.bat'.
+96	barva musí mít tvar #rrggbb
+97	Auto
+98	Pouze rozbalení
+99	Pouze instalace (do App)
+100	Pouze Launch.bat
+101	Auto (bez UAC, pokud exe žádá správce)
+102	Vždy bez UAC
+103	Vždy s UAC (jako v originále)
+104	Soubor:
+105	Kam:
+106	Hlavní exe:
+107	Procesor
+108	Paměť
+109	Grafická karta
+110	--run přijímá: auto, noadmin, admin
+111	Radikální režim po úspěšném sestavení SMAŽE zdrojový soubor (nelze jej vrátit).\nPokud jste si jisti, přidejte --yes. Nic nebylo provedeno.
+112	--dx přijímá: install, skip, cancel
+113	Na disku {0} zbývá jen {1}.
+114	Je potřeba innoextract.exe (dejte jej vedle programu nebo do tools/).
+115	Spuštění bez správce se nezdařilo: {0}
+116	Grafické programy nebyly nalezeny, beru konzolový: {0}. Pokud to není hra, zadejte exe ručně.
+117	Vybráno: {0} (vhodných exe: {1}). Další možnosti: {2}. Pokud se spustilo něco jiného, zadejte exe ručně.
+118	vyhovuje
+119	vyřazeno: 
+120	MSIX: nepodařilo se přečíst manifest: {0}
+121	Nepodařilo se vytvořit Install_dotnet.bat: {0}
+122	Analýza {0}: {1}, {2}
+123	\n\nNěkteré soubory nejsou v Portabilizer zabudovány: 
+124	. Pro DirectX bude vytvořen DX_fix.bat (stáhne úplný balíček DirectX).
+125	. Bude je nutné nainstalovat ručně.
+126	je potřeba DX_fix.bat
+127	rozbaleno {0} z {1}
+128	zdrojový soubor leží uvnitř složky s výsledkem
+129	Zdrojový soubor smazán: {0} ({1})
+130	. Pokud jde o data téhož repacku, smažte je sami.
+131	Uloženo do: {0}
+132	Složka {0} neexistuje. Nejprve proveďte rozbalení nebo instalaci.
+133	Hlavní exe nebylo nalezeno - zadejte jej do pole 'Hlavní exe'.
+134	Jde o běžné exe - kopíruji tak, jak je.
+135	Pozor: MSIX byl rozbalen jako běžná složka, bez registrace balíčku. Klasické (full trust) programy takto obvykle fungují, ale aplikace UWP a vše, co vyžaduje identifikátor balíčku, se nemusí spustit.
+136	Radikální režim nebyl potvrzen: nic neprovádím.
+137	Přerušeno uživatelem. Částečně vytvořené soubory zůstaly na disku: smazat je můžete na kartě «Historie».
+138	Chyba: {0}
+139	Konvertor
+140	Historie
+141	Diagnostika
+142	Verze
+143	Vzhled
+144	Připraveno k práci.
+145	Vytvořit portativní
+146	Pozastavit
+147	Pokračovat
+148	Přerušit
+149	Doporučení
+150	Je potřeba DirectX
+151	Stahování je pozastaveno, nic se neztratilo. Zrušení zastaví práci nadobro: pak lze jen začít znovu («Opakovat» na kartě «Historie»).
+152	Dochází místo na disku
+153	Pozastaveno: proces je zmrazen, průběh je uložen.
+154	Pokračuji od stejného místa.
+155	Datum
+156	Zdroj
+157	Verze
+158	Typ
+159	Stav
+160	Velikost
+161	Výsledek
+162	Poznámky
+163	Mažu {0} ...
+164	\n... a dalších {0}
+165	Otevřít složku
+166	Spustit
+167	Opakovat
+168	Smazat kopii
+169	Smazat zdrojový soubor
+170	Odebrat ze seznamu
+171	Obnovit
+172	Shromažďuji informace o systému...
+173	Disk: n/a
+174	Disk
+175	Kapacita
+176	Volno
+177	Obsazeno
+178	Portabilizer (R) - radikální
+179	Zapnout běžnou verzi
+180	Zapnout verzi (R)
+181	Motiv:
+182	Tmavá červená (R):
+183	Světlá červená (R):
+184	Vlastní barva
+185	Přebarvit do této barvy i pozadí okna?\n\nAno - pozadí dostane lehký odstín vybrané barvy.\nNe - pozadí zůstane neutrální, barvu budou mít jen tlačítka a akcenty.
+186	Místa nejspíš nebude dost. 
+187	nelze přečíst
+188	 (nízká priorita)
+189	Zadané exe leží mimo složku App - vyberte soubor uvnitř App.
+190	{0}: tento cab používá kompresi LZX, rozbalit jej lze jen ve Windows (expand.exe).
+191	expand.exe nedokázal získat {0}: {1}
+192	Knihovny ({0}) byly umístěny vedle {1}: {2}.
+193	. Pokud si na ně program bude stěžovat, spusťte DX_fix.bat ve složce s výsledkem (práva správce nejsou potřeba).
+194	 ({0}). V Portabilizer nejsou zabudovány nebo nevyhovují bitovostí: pokud si program bude stěžovat, nainstalujte do systému příslušný balíček.
+195	chybí: 
+196	Zdrojový soubor NEBYL smazán: 
+197	rozbalovač hlásil varování (
+198	Nepodařilo se smazat {0}: {1}
+199	Dočasná kopie smazána: {0} ({1})
+200	Soubory .bin vedle instalátoru nebyly mazány (mohly být potřeba jiným programům): 
+201	Režim R: soubor byl přesunut do App bez kopie ({0}).
+202	Režim instalace se na MSIX/APPX nevztahuje: balíček se pouze rozbaluje.
+203	Balíček se nepodařilo rozbalit.
+204	Toto je bundle. Hlavní balíček: {0}. Rozbalený bundle je uložen v {1}.
+205	Zatím je klid. Zde se objeví tipy při nedostatku místa a typických chybách.
+206	Kolik zbývá zapsat, nelze přesně říci.
+207	Který program spustit?
+208	Vyberte soubor.
+209	\n  ... a dalších {0}
+210	Příprava
+211	Zrušeno před startem: málo místa na disku.
+212	Nyní nelze pozastavit (je potřeba psutil: pip install psutil).
+213	Přerušit?
+214	Zastavit práci? Poté nelze pokračovat od místa zastavení: na kartě «Historie» bude «Opakovat» (začne znovu).
+215	uplynulo {0}
+216	Nejprve vyberte záznam v seznamu.
+217	Počkejte na dokončení aktuální úlohy (nebo ji přerušte).
+218	Složka s výsledkem na disku není.
+219	Otevřete ručně:\n{0}
+220	Launch.bat nebyl nalezen: převod nebyl dokončen.
+221	Mazání
+222	Tato složka nevypadá jako vytvořená programem Portabilizer (je potřeba název *_portable a Launch.bat se složkou App). Z opatrnosti nemažu.
+223	Složka byla smazána.
+224	Smazat se nepodařilo vše: část souborů používá program.
+225	Zdrojový soubor nebyl nalezen (možná už byl smazán).
+226	Smazat zdrojový soubor?
+227	NAVŽDY (mimo koš) budou smazány, celkem {0}:\n\n{1}\n\nSložka: {2}\n\nJe to váš zdrojový soubor, nelze jej obnovit. Smazat?
+228	Soubor smazán: {0}
+229	Odebrat záznam ze seznamu? Soubory na disku se nezmění.
+230	zjišťuji...
+231	Systém: {0}\nProcesor: {1}\nOperační paměť: {2}\nGrafická karta: {3}
+232	Je dostupná nová verze Portabilizer: {0}. Stáhnout ji můžete v Portabilizer Launcher nebo na stránce {1}.
+233	_пример.json
+234	Moje téma
+235	Hlavní barva (tlačítka, průběh)
+236	Portabilizer (R) - radikální režim
+237	Nyní je zapnuto: Portabilizer (R) - radikální
+238	Nyní je zapnuto: Portabilizer (běžná verze)
+239	Verzi lze přepnout po dokončení aktuální úlohy.
+240	Zastaveno. Uvolněte místo, vyberte jiný disk nebo přidejte --force.
+241	Místa je tak akorát: rezerva je téměř nulová, úloha se může pozastavit. 
+242	Vybrali jste: {0}
+243	ne
+244	adresa ke stažení nalezena podle nepřímých znaků
+245	Zrušeno: jsou potřeba knihovny (
+246	Knihovny: 
+247	Soubor se nepodařilo přesunout ({0}), kopíruji běžným způsobem.
+248	Vložený balíček se nepodařilo rozbalit.
+249	Režim instalace se na archiv nevztahuje: pouze se rozbaluje.
+250	Archiv se nepodařilo rozbalit.
+251	Režim instalace je dostupný jen pro instalátory Inno/NSIS ve Windows.
+252	Režim:
+253	   Spuštění:
+254	Zbývá zapsat přibližně {0}, volno je {1}: mělo by to stačit, lze dojít do konce.
+255	Zbývá zapsat přibližně {0}, a volno je {1}: bude chybět přibližně {2}.
+256	Zůstávám pozastaven. Uvolněte místo a klikněte na «Pokračovat».
+257	Pokračuji na vlastní riziko: zastavím se, jen když volno klesne pod {0}.
+258	Pozastaveno. Uvolněte místo na disku a klikněte na «Pokračovat».
+259	 Úloha je pozastavena: v okně vyberte, co dělat.
+260	Odhad potřebného místa
+261	Přerušeno. Zbytky lze smazat na kartě «Historie».
+262	Na disku je stále málo místa: {0}.
+263	Práce
+264	zbývá ~{0}
+265	PAUZA
+266	Spusťte ručně:\n{0}\n\n{1}
+267	, proto nelze opakovat. Stáhněte nebo nainstalujte jej znovu.
+268	Složku se nepodařilo smazat celou. Zavřete programy, které ji používají, a opakujte.
+269	Smazat portativní kopii?
+270	{0}\n\nVelikost: {1}\n\nSložka bude smazána nenávratně. Zdrojový soubor (instalátor nebo archiv) zůstane nedotčen.
+271	{0} jader / {1} vláken
+272	{0:.0f}%  ({1} z {2})
+273	, paměť {0} z {1}, {2:.0f} °C
+274	 (odhad podle 3D)
+275	Vyberte, jak Portabilizer vytváří portativní kopie. Přepínat lze kdykoli (mění se jen režim práce). Při každém spuštění program startuje v běžné verzi.
+276	Bezpečná verze.\n\nZdrojový soubor (instalátor, balíček nebo archiv) zůstane nedotčen, vedle vznikne portativní složka.\n\nNevýhoda: na disku zůstanou obě kopie: zdroj i portativní složka.\n\nHodí se téměř na vše, zvlášť pokud si nejste jisti, že program bude fungovat.
+277	Radikální verze (riziko).\n\nPo úspěšném sestavení SMAŽE zdrojový soubor (všechny díly archivu) a dočasné kopie, takže výsledek zabírá méně místa. Portativní složka vznikne vedle zdroje.\n\nDůležité: během práce je potřeba stejně místa jako v běžné verzi: zdroj se maže až na úplném konci, po kontrole. Smazaný soubor nelze vrátit: pokud se později něco pokazí, bude nutné jej znovu stáhnout nebo nainstalovat z platformy.\n\nPřed každým spuštěním program žádá o potvrzení.
+278	Je dostupná nová verze: {0}.
+279	Máte nejnovější verzi ({0}) nebo není spojení s GitHub.
+280	Verze programu: {0}
+281	Při spuštění kontrolovat nové verze (dotaz na GitHub, nejsou odesílána žádná data)
+282	Zkontrolovat nyní
+283	Vzhled okna. Změny se použijí okamžitě a zapamatují se. Červené motivy se automaticky zapínají ve verzích (R) a přizpůsobují se světlému nebo tmavému motivu.
+284	 (vlastní)
+285	Klasický vzhled: barvy určuje Windows.
+286	. Barvy: pozadí, pole, tlačítka, text, vedlejší, akcent, úspěch, varování, chyba.
+287	Složku se nepodařilo otevřít: {0}
+288	Motiv se nepodařilo uložit: {0}
+289	Vybrat vlastní barvu...
+290	Otevřít složku themes
+291	Obnovit seznam motivů
+292	Vlastní motivy: dejte soubor .json do složky themes vedle programu (vzor _пример.json vytvoří tlačítko výše). Obsahuje barvy ve tvaru #rrggbb, název, "kind": "light" nebo "dark" a "r": true pro červené motivy režimu R. Chybějící barvy se berou z vestavěného motivu. Potvrzovací okna (zprávy Windows) zůstávají systémová.
+293	Vytvořit portativní (R)
+294	Probíhá práce
+295	Úloha stále běží. Přerušit ji a ukončit program?
+296	POZOR: 
+297	NEBEZPEČÍ: 
+298	 Práce byla zastavena, aby se nezaplnil disk.
+299	poškozený blok MSZIP
+300	Chybí: 
+301	Bundle se nepodařilo přesunout: {0}
+302	V archivu není hotový program, ale je tam instalátor: {0}. Pokračuji s ním. Obsah archivu je uložen v {1}.
+303	Vedle instalátoru nalezeno souborů .bin: {0} ({1}): 
+304	Nepodařilo se rozbalit. Instalátor je možná nestandardní (pak je potřeba virtualizátor jako Cameyo / Turbo Studio).
+305	Zkouším tichou instalaci. Rozbalené soubory uložím do {0}.
+306	Stahování se ruší podle vaší volby.
+307	Zastavit: uklidím disk
+308	Zrušit stahování
+309	Portabilizer (R): soubor bude přesunut
+310	{0} ({1}) bude PŘESUNUT do složky App vedle sebe: kopie nevzniká, další místo není potřeba.\n\nNa původním místě už soubor nebude. Vrátit jej lze vyjmutím ze složky App.\n\nPokračovat?
+311	Portabilizer (R): zdrojový soubor bude smazán
+312	Opravdu chcete tento soubor v radikálním režimu udělat portativním?\n\nPo úspěšném sestavení budou NAVŽDY SMAZÁNY (mimo koš):\n{0}\ncelkem {1}, a také dočasné kopie.\n\nZdrojový soubor pak nepůjde vrátit. Pokud se něco pokazí (například se hra nespustí), bude nutné jej znovu stáhnout nebo nainstalovat z platformy.\n\nSmazání proběhne jen tehdy, když sestavení uspěje a vše je ověřeno; při chybě nebo zrušení soubor zůstane. Výsledek vznikne vedle zdrojového souboru.\n\nPokračovat?
+313	Hotovo. Soubor byl přesunut bez kopie: další místo nebylo obsazeno.
+314	volno na disku {0}
+315	 (na disku není)
+316	Zdrojový soubor už neexistuje
+317	Začít znovu?
+318	Složka už existuje (zbytek předchozího pokusu):\n{0}\nVelikost: {1}\n\nSmazat ji a začít znovu?
+319	Zatížení CPU/RAM není dostupné: nainstalujte psutil (pip install psutil). V sestaveném Portabilizer.exe už je zabudován.
+320	Operační paměti zbývá málo. Zavřete prohlížeč a nepotřebné programy, jinak se rozbalování může výrazně zpomalit.
+321	Disk: čtení {0}/s, zápis {1}/s
+322	zatížení nedostupné
+323	Nyní: 
+324	Bez DirectX bylo zvoleno pokračovat. 
+325	Bylo zvoleno pokračovat bez nich. 
+326	Složku {0} lze po kontrole smazat: je potřeba jen jako zdroj instalátoru.
+327	Po rozbalení nebylo hlavní exe nalezeno.
+328	Nebude dost místa
+329	Podle odhadu nebude dost místa. Pokud místo dojde, rozbalování skončí chybou.\n\nPřesto pokračovat?
+330	Bylo nalezeno několik vhodných programů a nejsem si jist, který je hlavní. Vyberte ten, který spouští požadovanou aplikaci (později jej lze změnit v režimu «Pouze Launch.bat»).
+331	Vybrat automaticky
+332	Bude dost místa?
+333	Hotovo. Zdrojový soubor smazán, uvolněno {0}.
+334	 (smazal jej radikální režim)
+335	  <- kam ukládáme
+336	Na disku {0}, kam ukládáte, je málo místa ({1}). Vyberte jiný disk v poli «Kam».
+337	Rozbalený archiv se nepodařilo přesunout: {0}
+338	Rozbaleno {0}, a v .bin je {1}: vypadá to na repack, jehož data instaluje sám instalátor.
+339	Rozbalené soubory se nepodařilo přesunout: {0}
+340	Instalace se nezdařila - rozbalené soubory byly vráceny do App.
+341	Rozbalené soubory se nepodařilo vrátit do App: {0}
+342	\n\nPřesto začít?
+343	Upozornění: vedle jsou soubory .bin. Pokud se program nespustí nebo mu chybí data, opakujte v režimu 'Pouze instalace (do App)'.
+344	Instalátory, balíčky, archivy
+345	Vše
+346	Programy
+347	Hotovo. Výsledek je na kartě «Historie».
+348	Nepodařilo se. Podrobnosti jsou v logu a v doporučeních.
+349	Hotovo, ale zdrojový soubor nebyl smazán: 
+350	Jazyk
+351	Jazyk rozhraní:
+352	Jazyk se změní okamžitě: okno se samo restartuje a nastavení zůstanou zachována.
+353	Počkejte, až úloha skončí, nebo ji zrušte: po změně jazyka se okno restartuje.
