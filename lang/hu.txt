@@ -1,0 +1,353 @@
+1	Szükséges: {0} {1}, szabad hely: {2} a(z) {3} meghajtón.{4}
+2	fut
+3	szünet
+4	kész
+5	hiba
+6	megszakítva
+7	megszakítva (az alkalmazást bezárták)
+8	Automatikus (mint a Windows)
+9	Világos
+10	Sötét
+11	Klasszikus (rendszer)
+12	Saját szín
+13	B
+14	KB
+15	MB
+16	GB
+17	 Ha az archívumban telepítő van, nagyjából ugyanennyi további hely kell.
+18	az archívum tartalma alapján
+19	becsült érték
+20	Az Unreal Engine játékokhoz DirectX (June 2010) könyvtárak kellhetnek. Ha indításkor xinput1_3.dll, X3DAudio1_7.dll vagy XAPOFX1_5.dll hibát kap, futtassa a DX_fix.bat fájlt az eredmény mappájában: nem kell rendszergazdai jog.
+21	A radikális mód nem törölte a forrásfájlt, mert nem sikerült mindent ellenőrizni (az ok a naplóban van). A portábilis mappa elkészült, a forrásfájl a helyén van: ellenőrizze a mappát, majd a forrásfájlt törölje saját kezűleg.
+22	A programhoz .NET szükséges, amely nincs a számítógépen. Futtassa az Install_dotnet.bat fájlt az eredmény mappájában (a futtatókörnyezetet a portábilis másolaton belülre tölti le, rendszergazdai jog nélkül).
+23	A fájl jelszót kér. A Portabilizer nem ad meg jelszavakat: csomagolja ki kézzel a 7-Zip programmal (az rákérdez a jelszóra), majd válassza ki az eredményből a telepítőt vagy a mappát.
+24	A 7z.exe nem található (sem a program mellett, sem a telepített 7-Zipben). Telepítse a 7-Zipet a 7-zip.org oldalról, vagy tegye a 7z.exe és 7z.dll fájlt a Portabilizer mellé vagy a tools mappába.
+25	Az innoextract.exe nem található. Tegye a Portabilizer mellé vagy a tools mappába.
+26	Nincs elég szabad hely a meghajtón. Szabadítson fel helyet, vagy válasszon másik meghajtót a „Hová” mezőben, majd az „Előzmények” lapon kattintson az „Ismétlés” gombra.
+27	A telepítő rendszergazdai jogot kér. Ha nincs ilyen jogosultsága, próbálja a „Csak kicsomagolás” módot, vagy keressen a fejlesztőnél portábilis verziót.
+28	A fő exe nem található. A fenti naplóban szerepel a talált exe-k listája és az elvetés oka: másolja a kívánt nevet a „Fő exe” mezőbe, és indítsa a „Csak Launch.bat” módot.
+29	Valószínűleg UWP-alkalmazás: a telepített csomagon kívül nagy eséllyel nem indul el. Keressen exe telepítőt.
+30	Ellenőrizze, hogy a fájl teljesen letöltődött-e (vesse össze a méretet, vagy töltse le újra), és hogy a 7z.exe a program mellett van-e.
+31	Ez a mappa már korábban létrejött. Nyissa meg az „Előzmények” lapon, vagy törölje, ha elölről szeretné kezdeni.
+32	Az adatok külső .bin fájlokban vannak, a telepítő maga telepíti őket. Ehhez telepítés kellhet, ahhoz pedig rendszergazdai jog.
+33	A részben létrehozott fájlok a lemezen maradtak. Az „Előzmények” lapon törölheti őket.
+34	n/a
+35	Kicsomagolás
+36	Kicsomagoló: {0}
+37	Telepítés
+38	Csendes telepítés az App mappába (több percig is eltarthat, ne zárja be az ablakot)...
+39	Rendszergazda nélkül nem sikerült - UAC-kéréssel próbálom (kattintson az „Igen” gombra). A rendszergazdai joggal futó telepítőt innen nem lehet leállítani.
+40	szolgáltatási név (setup/update/redist stb.)
+41	a repack segédprogramja
+42	a telepítő ideiglenes mappája
+43	konzolprogram
+44	Talált exe-k: {0}. Itt az első {1}, és hogy miért nem megfelelők:
+45	Másolja a kívánt nevet a „Fő exe” mezőbe, és indítsa a „Csak Launch.bat” módot.
+46	A(z) '{0}' fájl nem található az App mappában.
+47	.NET ({0}) szükséges a(z) {1} programhoz, de ezen a számítógépen nincs. Futtassa az Install_dotnet.bat fájlt az eredmény mappájában: a futtatókörnyezetet a portábilis másolaton belüli dotnet mappába tölti le (nem kell rendszergazdai jog), a Launch.bat magától megtalálja.
+48	Indítás: normál, emelt jogosultság nem szükséges.
+49	A programhoz hiányzó könyvtárak kellenek:\n{0}\n\nBeletegyük őket a program mappájába? Nem kell rendszergazdai jog, a rendszer nem változik, minden a portábilis mappán belül marad.\n\nIgen - betesszük.\nNem - folytatás nélkülük (a program lehet, hogy nem indul el).\nMégse - megszakítás.
+50	Kész: {0}
+51	Fő exe: {0}
+52	Indítsa a Launch.bat fájllal. A mappa pendrive-ra is átvihető.
+53	Radikális mód: felszabadult {0}.
+54	Mód: {0}
+55	Típus: {0}
+56	Világospiros (R)
+57	Szén piros kiemeléssel
+58	Bordó
+59	Meggypiros
+60	Fájl: exe, msi, msix/appx, archívum (rar, zip, 7z...). A fő exe megadása nem kötelező: név (App.exe), útvonal az App mappán belül, vagy az App mappából egy fájl. A napló a portabilizer.log fájlba kerül.
+61	R MÓD: a sima exe-t egyszerűen ÁTHELYEZI az App mappába (nincs másolat, nem kell hely). Az archívumokat és telepítőket előbb kicsomagolja, és csak utána törli a forrásfájlt: munka közben a kicsomagolt tartalomnak hely kell. Indítás előtt megerősítést kér.
+62	Nem törlöm a(z) {0} mappát: nem tűnik a Portabilizer által létrehozottnak.
+63	7z.exe szükséges: nem található sem a program mellett, sem a telepített 7-Zipben. Telepítse a 7-Zipet (7-zip.org), vagy tegye a 7z.exe és 7z.dll fájlt mellé vagy a tools/ mappába.
+64	7-Zip, 1. kód
+65	A fájl jelszóval védett. A Portabilizer nem ad meg jelszavakat: csomagolja ki kézzel (a 7-Zip rákérdez a jelszóra), majd válassza ki a kicsomagolt mappát vagy a telepítőt.
+66	A telepítő hibával fejeződött be. Ellenőrizze, hogy a .bin fájlok a setup.exe mellett vannak-e.
+67	A(z) {0} mappában egyáltalán nincs exe fájl. Ellenőrizze, hogy a program valóban ide csomagolódott ki vagy települt.
+68	MSIX: %XX kódolású nevek javítva: {0}
+69	MSIX: az AppxManifest.xml nem található - az exe-t a megszokott módon keresem.
+70	MSIX: a jegyzékben nincs runFullTrust - valószínűleg UWP-alkalmazás. A telepített csomagon kívül valószínűleg nem indul el.
+71	, jegyzék: {0}.
+72	Ez online előtelepítőnek tűnik: belül letöltési hivatkozás van ({0}). A program a futtatáskor töltődik le és települ a rendszerbe, így ebből nem lesz portábilis másolat. A valódi hordozhatósághoz töltse le a teljes offline telepítőt, és azt tegye portábilissá.
+73	A fájlt csomagoló védi: nem lehet kicsomagolni és elemezni, csak futtatni.
+74	Indítás: UAC-kéréssel (kézzel kiválasztva). A Launch.bat nem módosítja a jogosultságokat.
+75	Indítás: UAC-kérés nélkül (RunAsInvoker, kézzel kiválasztva).
+76	A(z) {0} rendszergazdai jogot kér. A Launch.bat UAC-kérés nélkül indítja (RunAsInvoker), jelszó nem kell. Ha a program valóban a Program Files mappába, a HKLM-be ír, szolgáltatásokat vagy illesztőprogramokat telepít, jog nélkül nem biztos, hogy működik. Ilyenkor használja a Launch_admin.bat fájlt (normál indítás UAC-kéréssel).
+77	nem cab
+78	többkötetes cab
+79	Egyéb
+80	Unreal Engine játék: a Launch.bat közvetlenül a(z) {0} fájlt indítja. A gyökérben lévő {1} az első indításkor DirectX és Visual C++ telepítését kéri a rendszerbe, és kilép, ha elutasítja. Indítás ezen keresztül: Launch_stub.bat.
+81	Unreal: indítás: {0}
+82	az exe rendszergazdai jogot kér: a Launch.bat RunAsInvoker módon indít
+83	Radikális mód: a forrásfájl áthelyezésre került, nem másolásra - nem foglalt fölösleges gigabájtokat.
+84	a munka megszakadt
+85	a Launch.bat nem jött létre
+86	az App mappa üres
+87	A fájlok helye: {0}
+88	A fájlmappák üresek.
+89	Ismeretlen mód: {0}
+90	Nincs fájl megadva.
+91	A fájl nem található.
+92	A mappa már létezik: {0}
+93	Törölje, vagy válassza a „Csak Launch.bat” módot.
+94	A fő exe nem található.
+95	Adja meg az exe-t a „Fő exe” mezőben, és indítsa a „Csak Launch.bat” módot.
+96	a színnek #rrggbb formátumúnak kell lennie
+97	Automatikus
+98	Csak kicsomagolás
+99	Csak telepítés (az App mappába)
+100	Csak Launch.bat
+101	Automatikus (UAC nélkül, ha az exe rendszergazdát kér)
+102	Mindig UAC nélkül
+103	Mindig UAC-vel (mint az eredetiben)
+104	Fájl:
+105	Hová:
+106	Fő exe:
+107	Processzor
+108	Memória
+109	Videokártya
+110	A --run értékei: auto, noadmin, admin
+111	A radikális mód a sikeres összeállítás után TÖRLI a forrásfájlt (visszaállítani nem lehet).\nHa biztos benne, adja hozzá a --yes kapcsolót. Nem történt semmi.
+112	A --dx értékei: install, skip, cancel
+113	A(z) {0} meghajtón már csak {1} szabad.
+114	Az innoextract.exe szükséges (tegye mellé vagy a tools/ mappába).
+115	Az indítás rendszergazda nélkül nem sikerült: {0}
+116	Grafikus program nem található, a konzolosat választom: {0}. Ha ez nem játék, adja meg az exe-t kézzel.
+117	Kiválasztva: {0} (megfelelő exe-k: {1}). Más lehetőségek: {2}. Ha nem a megfelelő indult el, adja meg az exe-t kézzel.
+118	megfelel
+119	elvetve:
+120	MSIX: a jegyzék nem olvasható: {0}
+121	Az Install_dotnet.bat nem hozható létre: {0}
+122	{0} elemzése: {1}, {2}
+123	\n\nA következő fájlok nincsenek beépítve a Portabilizerbe:
+124	. A DirectX-hez DX_fix.bat jön létre (letölti a teljes DirectX csomagot).
+125	. Kézzel kell telepíteni őket.
+126	DX_fix.bat szükséges
+127	kicsomagolva {0} / {1}
+128	a forrásfájl az eredmény mappáján belül van
+129	Forrásfájl törölve: {0} ({1})
+130	. Ha ezek ugyanannak a repacknek az adatai, törölje őket saját kezűleg.
+131	Mentve ide: {0}
+132	A(z) {0} mappa nincs meg. Előbb végezze el a kicsomagolást vagy a telepítést.
+133	A fő exe nem található - adja meg a „Fő exe” mezőben.
+134	Ez sima exe - úgy másolom, ahogy van.
+135	Figyelem: az MSIX sima mappaként lett kicsomagolva, a csomag regisztrálása nélkül. A klasszikus (full trust) programok általában így is működnek, de az UWP-alkalmazások és mindaz, ami csomagazonosítót igényel, nem biztos, hogy elindul.
+136	A radikális mód nincs megerősítve: nem teszek semmit.
+137	A felhasználó megszakította. A részben létrehozott fájlok a lemezen maradtak: az „Előzmények” lapon törölheti őket.
+138	Hiba: {0}
+139	Átalakító
+140	Előzmények
+141	Diagnosztika
+142	Verziók
+143	Megjelenés
+144	Készen áll.
+145	Portábilissá tétel
+146	Szünet
+147	Folytatás
+148	Megszakítás
+149	Javaslatok
+150	DirectX szükséges
+151	A letöltés szünetel, semmi nem veszett el. A megszakítás végleg leállítja a munkát: utána csak elölről lehet kezdeni („Ismétlés” az „Előzmények” lapon).
+152	Fogyóban a lemezterület
+153	Szünet: a folyamat befagyasztva, az előrehaladás megmarad.
+154	Folytatás onnan, ahol abbahagyta.
+155	Dátum
+156	Forrás
+157	Verzió
+158	Típus
+159	Állapot
+160	Méret
+161	Eredmény
+162	Megjegyzések
+163	{0} törlése ...
+164	\n... és még {0}
+165	Mappa megnyitása
+166	Indítás
+167	Ismétlés
+168	Másolat törlése
+169	Forrásfájl törlése
+170	Eltávolítás a listából
+171	Frissítés
+172	Rendszeradatok gyűjtése...
+173	Lemez: n/a
+174	Lemez
+175	Kapacitás
+176	Szabad
+177	Foglalt
+178	Portabilizer (R) - radikális
+179	Normál verzió bekapcsolása
+180	(R) verzió bekapcsolása
+181	Téma:
+182	Sötétpiros (R):
+183	Világospiros (R):
+184	Saját szín
+185	Az ablak hátterét is ebbe a színbe árnyaljuk?\n\nIgen - a háttér enyhe árnyalatot kap a kiválasztott színből.\nNem - a háttér semleges marad, a szín csak a gombokon és a kiemeléseken jelenik meg.
+186	A hely valószínűleg nem lesz elég.
+187	nem olvasható
+188	 (alacsony prioritás)
+189	A megadott exe az App mappán kívül van - válasszon fájlt az App mappán belül.
+190	{0}: ez a cab LZX tömörítésű, csak Windows alatt csomagolható ki (expand.exe).
+191	Az expand.exe nem tudta kinyerni: {0}: {1}
+192	A könyvtárak ({0}) a(z) {1} mellé kerültek: {2}.
+193	. Ha a program panaszkodik rájuk, futtassa a DX_fix.bat fájlt az eredmény mappájában (nem kell rendszergazdai jog).
+194	 ({0}). Nincsenek beépítve a Portabilizerbe, vagy nem egyezik a bitszámuk: ha a program panaszkodik, telepítse a megfelelő csomagot a rendszerbe.
+195	hiányzik:
+196	A forrásfájl NEM lett törölve:
+197	a kicsomagoló figyelmeztetéseket jelzett (
+198	Nem sikerült törölni: {0}: {1}
+199	Ideiglenes másolat törölve: {0} ({1})
+200	A telepítő melletti .bin fájlokat nem töröltük (más programoknak még kellhetnek):
+201	R mód: a fájl másolat nélkül az App mappába került ({0}).
+202	A telepítési mód MSIX/APPX esetén nem alkalmazható: a csomagot csak kicsomagolja.
+203	A csomag kicsomagolása nem sikerült.
+204	Ez egy bundle. Fő csomag: {0}. A bundle kicsomagolt tartalma ide mentve: {1}.
+205	Egyelőre minden rendben. Itt jelennek meg a tippek, ha fogy a hely vagy gyakori hiba történik.
+206	Pontosan nem megmondható, mennyit kell még kiírni.
+207	Melyik programot indítsam?
+208	Válasszon fájlt.
+209	\n  ... és még {0}
+210	Előkészítés
+211	Indítás előtt megszakítva: kevés a szabad hely a lemezen.
+212	Most nem lehet szüneteltetni (psutil szükséges: pip install psutil).
+213	Megszakítja?
+214	Leállítja a munkát? Utána nem lehet onnan folytatni, ahol abbamaradt: az „Előzmények” lapon az „Ismétlés” elölről indítja.
+215	eltelt: {0}
+216	Előbb válasszon egy elemet a listából.
+217	Várja meg a jelenlegi feladat végét (vagy szakítsa meg).
+218	Az eredmény mappája nincs a lemezen.
+219	Nyissa meg kézzel:\n{0}
+220	A Launch.bat nem található: az átalakítás nem fejeződött be.
+221	Törlés
+222	Ez a mappa nem tűnik a Portabilizer által létrehozottnak (a névnek *_portable alakúnak kell lennie, és kell hozzá Launch.bat az App mappával). Óvatosságból nem törlöm.
+223	A mappa törölve.
+224	Nem sikerült mindent törölni: néhány fájlt egy program használ.
+225	A forrásfájl nem található (lehet, hogy már törölték).
+226	Törli a forrásfájlt?
+227	VÉGLEG törlődnek (a Lomtár megkerülésével), összesen {0}:\n\n{1}\n\nMappa: {2}\n\nEz az Ön eredeti fájlja, nem állítható vissza. Törli?
+228	Fájl törölve: {0}
+229	Eltávolítja az elemet a listából? A lemezen lévő fájlokhoz nem nyúlunk.
+230	megállapítás...
+231	Rendszer: {0}\nProcesszor: {1}\nMemória: {2}\nVideokártya: {3}
+232	Új Portabilizer verzió érhető el: {0}. Letöltheti a Portabilizer Launcherben vagy a(z) {1} oldalon.
+233	_minta.json
+234	Saját témám
+235	Fő szín (gombok, folyamatjelző)
+236	Portabilizer (R) - radikális mód
+237	Jelenleg bekapcsolva: Portabilizer (R) - radikális
+238	Jelenleg bekapcsolva: Portabilizer (normál verzió)
+239	A verzió az aktuális feladat befejezése után váltható.
+240	Leállítva. Szabadítson fel helyet, válasszon másik meghajtót, vagy adja hozzá a --force kapcsolót.
+241	Éppen hogy elég a hely: alig van tartalék, a feladat szüneteltetve leállhat.
+242	Az Ön választása: {0}
+243	nincs
+244	a letöltési cím közvetett jelekből derült ki
+245	Megszakítva: könyvtárak szükségesek (
+246	Könyvtárak:
+247	A fájlt nem sikerült áthelyezni ({0}), a szokásos módon másolom.
+248	A beágyazott csomag kicsomagolása nem sikerült.
+249	A telepítési mód archívumra nem alkalmazható: azt csak kicsomagolja.
+250	Az archívum kicsomagolása nem sikerült.
+251	A telepítési mód csak Windowson, Inno/NSIS telepítőknél érhető el.
+252	Mód:
+253	   Indítás:
+254	Még kb. {0} kiírása van hátra, szabad hely: {1}: ennek elégnek kell lennie, a végére lehet érni.
+255	Még kb. {0} kiírása van hátra, szabad hely pedig {1}: kb. {2} hiányzik.
+256	Szünetelve maradok. Szabadítson fel helyet, és kattintson a „Folytatás” gombra.
+257	Saját felelősségre folytatom: csak akkor állok le, ha a szabad hely {0} alá csökken.
+258	Szünet. Szabadítson fel helyet a lemezen, és kattintson a „Folytatás” gombra.
+259	 A feladat szünetel: az ablakban válassza ki, mi legyen.
+260	A szükséges hely becslése
+261	Megszakítva. A maradékot törölheti az „Előzmények” lapon.
+262	A lemezen még mindig kevés a hely: {0}.
+263	Munka
+264	hátra ~{0}
+265	SZÜNET
+266	Indítsa kézzel:\n{0}\n\n{1}
+267	, ezért nem ismételhető. Töltse le vagy telepítse újra.
+268	A mappát nem sikerült teljesen törölni. Zárja be a használó programokat, és próbálja újra.
+269	Törli a portábilis másolatot?
+270	{0}\n\nMéret: {1}\n\nA mappa véglegesen törlődik. A forrásfájlhoz (telepítő vagy archívum) nem nyúlunk.
+271	{0} mag / {1} szál
+272	{0:.0f}%  ({1} / {2})
+273	, memória {0} / {1}, {2:.0f} °C
+274	 (3D alapján becsülve)
+275	Válassza ki, hogyan készítsen a Portabilizer portábilis másolatokat. Bármikor válthat (ez csak a működési módot módosítja). A program minden indításkor a normál verzióban indul.
+276	Biztonságos verzió.\n\nA forrásfájl (telepítő, csomag vagy archívum) érintetlen marad, mellé egy portábilis mappa készül.\n\nHátrány: a lemezen mindkét példány megmarad: a forrásfájl és a portábilis mappa is.\n\nGyakorlatilag mindenhez jó, főleg ha nem biztos benne, hogy a program működni fog.
+277	Radikális verzió (kockázatos).\n\nA sikeres összeállítás után TÖRLI a forrásfájlt (az archívum minden kötetét) és az ideiglenes másolatokat, így a végeredmény kevesebb helyet foglal. A portábilis mappa a forrásfájl mellett jön létre.\n\nFontos: munka közben ugyanannyi hely kell, mint a normál verziónál: a forrásfájl csak a legvégén, az ellenőrzés után törlődik. A törölt fájl nem állítható vissza: ha később valami elromlik, újra le kell tölteni vagy telepíteni a platformról.\n\nMinden indítás előtt megerősítést kér.
+278	Új verzió érhető el: {0}.
+279	A legújabb verziót használja ({0}), vagy nincs kapcsolat a GitHubbal.
+280	A program verziója: {0}
+281	Induláskor új verziók keresése (kérés a GitHubra, adatot nem küld)
+282	Ellenőrzés most
+283	Az ablak megjelenése. A módosítások azonnal érvénybe lépnek, és megmaradnak. A piros témák az (R) verziókban automatikusan bekapcsolnak, és igazodnak a világos vagy sötét témához.
+284	 (saját)
+285	Klasszikus megjelenés: a színeket a Windows adja.
+286	. Színek: háttér, mezők, gombok, szöveg, másodlagos, kiemelés, siker, figyelmeztetés, hiba.
+287	A mappa nem nyitható meg: {0}
+288	A téma nem menthető: {0}
+289	Saját szín választása...
+290	A themes mappa megnyitása
+291	Témalista frissítése
+292	Saját témák: tegyen egy .json fájlt a program melletti themes mappába (a _minta.json mintát a fenti gomb hozza létre). Ebben a színek #rrggbb formátumban, a név, a "kind": "light" vagy "dark", és "r": true az R mód piros témáihoz. A hiányzó színek a beépített témából jönnek. A megerősítő ablakok (Windows-üzenetek) rendszerszínűek maradnak.
+293	Portábilissá tétel (R)
+294	Munka folyik
+295	A feladat még fut. Megszakítja és kilép?
+296	FIGYELEM:
+297	VESZÉLY:
+298	 A munka leállt, hogy ne teljen meg a lemez.
+299	sérült MSZIP blokk
+300	Hiányzik:
+301	A bundle áthelyezése nem sikerült: {0}
+302	Az archívumban nincs kész program, de van telepítő: {0}. Azzal folytatom. Az archívum tartalma ide mentve: {1}.
+303	A telepítő mellett talált .bin fájlok: {0} ({1}):
+304	A kicsomagolás nem sikerült. Lehet, hogy a telepítő nem szabványos (ilyenkor Cameyo / Turbo Studio típusú virtualizáló kell).
+305	Csendes telepítést próbálok. A kicsomagolt fájlokat ide mentem: {0}.
+306	A letöltés az Ön választása szerint megszakad.
+307	Leállítás: lemez takarítása
+308	Letöltés megszakítása
+309	Portabilizer (R): a fájl áthelyezésre kerül
+310	A(z) {0} ({1}) ÁTHELYEZÉSRE kerül a mellette lévő App mappába: másolat nem készül, extra hely nem kell.\n\nA fájl a régi helyén többé nem lesz. Visszaállíthatja az App mappából kivéve.\n\nFolytatja?
+311	Portabilizer (R): a forrásfájl törlődik
+312	Biztosan portábilissá teszi ezt a fájlt radikális módban?\n\nA sikeres összeállítás után VÉGLEG TÖRLŐDNEK (a Lomtár megkerülésével):\n{0}\nösszesen {1}, valamint az ideiglenes másolatok.\n\nA forrásfájlt utána nem lehet visszaállítani. Ha valami elromlik (például a játék nem indul el), újra le kell tölteni vagy telepíteni a platformról.\n\nA törlés csak akkor történik meg, ha az összeállítás sikerült és minden ellenőrzés rendben volt; hiba vagy megszakítás esetén a fájl megmarad. Az eredmény a forrásfájl mellett jön létre.\n\nFolytatja?
+313	Kész. A fájl másolat nélkül áthelyezve: nem foglalt extra helyet.
+314	szabad hely a lemezen: {0}
+315	 (nincs a lemezen)
+316	A forrásfájl már nincs meg
+317	Elölről kezdi?
+318	A mappa már létezik (egy korábbi próbálkozás maradéka):\n{0}\nMéret: {1}\n\nTörli, és elölről kezdi?
+319	A CPU/RAM terhelés nem érhető el: telepítse a psutil csomagot (pip install psutil). Az elkészített Portabilizer.exe-ben már benne van.
+320	Szinte nem maradt szabad memória. Zárja be a böngészőt és a fölösleges programokat, különben a kicsomagolás nagyon lelassulhat.
+321	Lemez: olvasás {0}/s, írás {1}/s
+322	a terhelés nem elérhető
+323	Jelenleg:
+324	DirectX nélküli folytatást választotta.
+325	A folytatást választotta nélkülük.
+326	A(z) {0} mappa az ellenőrzés után törölhető: csak a telepítő forrásaként kellett.
+327	A kicsomagolás után a fő exe nem található.
+328	Nem lesz elég hely
+329	A becslés szerint nem lesz elég hely. Ha elfogy a hely, a kicsomagolás hibával leáll.\n\nMégis folytatja?
+330	Több megfelelő program is van, és nem biztos, melyik a fő. Válassza azt, amelyik a kívánt alkalmazást indítja (később a „Csak Launch.bat” módban módosítható).
+331	Automatikus választás
+332	Elég lesz a hely?
+333	Kész. A forrásfájl törölve, felszabadult {0}.
+334	 (a radikális mód törölte)
+335	  <- ide mentünk
+336	A(z) {0} meghajtón, ahová ment, kevés a hely ({1}). Válasszon másik meghajtót a „Hová” mezőben.
+337	A kicsomagolt archívum áthelyezése nem sikerült: {0}
+338	Kicsomagolva {0}, a .bin fájlokban viszont {1} van: úgy tűnik, ez egy repack, amelynek adatait maga a telepítő telepíti.
+339	A kicsomagolt tartalom áthelyezése nem sikerült: {0}
+340	A telepítés nem sikerült - a kicsomagolt fájlok visszakerültek az App mappába.
+341	A kicsomagolt tartalom visszahelyezése az App mappába nem sikerült: {0}
+342	\n\nMégis elkezdi?
+343	Figyelmeztetés: mellette .bin fájlok vannak. Ha a program nem indul el, vagy hiányzik valamilyen adata, ismételje meg a „Csak telepítés (az App mappába)” módban.
+344	Telepítők, csomagok, archívumok
+345	Mind
+346	Programok
+347	Kész. Az eredmény az „Előzmények” lapon van.
+348	Nem sikerült. A részletek a naplóban és a javaslatokban vannak.
+349	Kész, de a forrásfájl nincs törölve:
+350	Nyelv
+351	Felület nyelve:
+352	A nyelv azonnal változik: az ablak magától újraindul, a beállítások megmaradnak.
+353	Előbb várja meg a feladat végét, vagy szakítsa meg: a nyelv váltása után az ablak újraindul.

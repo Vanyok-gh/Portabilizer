@@ -1,0 +1,353 @@
+1	Nepieciešams {0} {1}, brīvs {2} diskā {3}.{4}
+2	notiek
+3	pauze
+4	gatavs
+5	kļūda
+6	pārtraukts
+7	pārtraukts (lietojumprogramma aizvērta)
+8	Auto (kā Windows)
+9	Gaišā
+10	Tumšā
+11	Klasiskā (sistēmas)
+12	Mana krāsa
+13	B
+14	KB
+15	MB
+16	GB
+17	 Ja arhīva iekšpusē ir instalētājs, būs vajadzīgs vēl apmēram tikpat.
+18	pēc arhīva satura
+19	aptuveni
+20	Unreal Engine spēlei var būt vajadzīgas DirectX (June 2010) bibliotēkas. Ja palaišanas laikā parādās kļūda par xinput1_3.dll, X3DAudio1_7.dll vai XAPOFX1_5.dll, palaidiet DX_fix.bat rezultāta mapē: administratora tiesības nav vajadzīgas.
+21	Radikālais režīms neizdzēsa avota failu, jo ne viss tika pārbaudīts (iemesls ir žurnālā). Portatīvā mape ir izveidota, avots ir savā vietā: pārbaudiet to un izdzēsiet avotu pats.
+22	Programmai ir vajadzīgs .NET, kura šajā datorā nav. Palaidiet Install_dotnet.bat rezultāta mapē (tas lejupielādēs izpildlaiku portatīvās kopijas iekšpusē, bez administratora tiesībām).
+23	Failam ir parole. Portabilizer paroles neievada: izpakojiet to manuāli ar 7-Zip (tas pieprasīs paroli) un izvēlieties instalētāju vai mapi no rezultāta.
+24	7z.exe nav atrasts (ne blakus programmai, ne instalētajā 7-Zip). Instalējiet 7-Zip no 7-zip.org vai ievietojiet 7z.exe un 7z.dll blakus Portabilizer vai mapē tools.
+25	innoextract.exe nav atrasts. Ievietojiet to blakus Portabilizer vai mapē tools.
+26	Diskā pietrūka vietas. Atbrīvojiet vietu vai izvēlieties citu disku laukā «Kur», pēc tam cilnē «Vēsture» nospiediet «Atkārtot».
+27	Instalētājam ir vajadzīgas administratora tiesības. Ja to nav, izmēģiniet režīmu «Tikai izpakošana» vai meklējiet pie izstrādātāja portatīvo versiju.
+28	Galvenais exe nav atrasts. Žurnālā iepriekš ir uzskaitīti atrastie exe un atlases iemesls: nokopējiet vajadzīgo nosaukumu laukā «Galvenais exe» un palaidiet režīmu «Tikai Launch.bat».
+29	Izskatās pēc UWP lietojumprogrammas: ārpus instalētās pakotnes tā, visticamāk, nepalaidīsies. Meklējiet exe instalētāju.
+30	Pārbaudiet, vai fails ir lejupielādēts pilnībā (salīdziniet izmēru vai lejupielādējiet vēlreiz) un vai 7z.exe atrodas blakus programmai.
+31	Šī mape jau ir izveidota agrāk. Atveriet to cilnē «Vēsture» vai izdzēsiet, ja vēlaties sākt no jauna.
+32	Dati atrodas ārējos .bin failos, tos instalē pats instalētājs. Tam var būt nepieciešama instalēšana, bet tai - administratora tiesības.
+33	Daļēji izveidotie faili ir palikuši diskā. Tos var izdzēst cilnē «Vēsture».
+34	n/a
+35	Izpakošana
+36	Izpakotājs: {0}
+37	Instalēšana
+38	Klusā instalēšana mapē App (var ilgt daudzas minūtes, neaizveriet logu)...
+39	Bez administratora neizdevās - mēģinu ar UAC pieprasījumu (nospiediet 'Jā'). Instalētāju, kas palaists ar administratora tiesībām, no šejienes apturēt nevar.
+40	pakalpojuma nosaukums (setup/update/redist u.tml.)
+41	repaka pakalpojumprogramma
+42	instalētāja pagaidu mape
+43	konsoles programma
+44	Atrasti exe: {0}. Lūk, pirmie {1} un kāpēc tie nederēja:
+45	Nokopējiet vajadzīgo nosaukumu laukā «Galvenais exe» un palaidiet režīmu «Tikai Launch.bat».
+46	Fails '{0}' mapē App nav atrasts.
+47	Ir vajadzīgs .NET ({0}) programmai {1}, bet šajā datorā tā nav. Palaidiet Install_dotnet.bat rezultāta mapē: tas lejupielādēs izpildlaiku mapē dotnet portatīvās kopijas iekšpusē (administratora tiesības nav vajadzīgas), Launch.bat to paņems pats.
+48	Palaišana: parasta, tiesību paaugstināšana nav vajadzīga.
+49	Programmai ir vajadzīgas bibliotēkas, kuru sistēmā nav:\n{0}\n\nIevietot tās programmas mapē? Administratora tiesības nav vajadzīgas, sistēma netiek mainīta, viss paliek portatīvās mapes iekšpusē.\n\nJā - ievietot.\nNē - turpināt bez tām (programma var nepalaisties).\nAtcelt - pārtraukt.
+50	Gatavs: {0}
+51	Galvenais exe: {0}
+52	Palaidiet ar Launch.bat. Mapi var pārnest uz zibatmiņu.
+53	Radikālais režīms: atbrīvots {0}.
+54	Režīms: {0}
+55	Tips: {0}
+56	Gaiši sarkanā (R)
+57	Ogle ar sarkanu akcentu
+58	Bordo
+59	Ķiršu
+60	Fails: exe, msi, msix/appx, arhīvs (rar, zip, 7z...). Galvenais exe nav obligāts: nosaukums (App.exe), ceļš mapes App iekšpusē vai fails no mapes App. Žurnāls tiek saglabāts failā portabilizer.log.
+61	REŽĪMS (R): parasts exe vienkārši tiek PĀRVIETOTS uz mapi App (kopijas nav, vieta nav vajadzīga). Arhīvi un instalētāji vispirms tiek izpakoti, un tikai pēc tam avots tiek izdzēsts: darba laikā ir vajadzīga vieta izpakotajam saturam. Pirms sākšanas tiks pieprasīts apstiprinājums.
+62	Neizdzēšu {0}: mape neizskatās pēc Portabilizer izveidotas.
+63	Ir vajadzīgs 7z.exe: nav atrasts ne blakus programmai, ne instalētajā 7-Zip. Instalējiet 7-Zip (7-zip.org) vai ievietojiet 7z.exe un 7z.dll blakus vai mapē tools/.
+64	7-Zip, kods 1
+65	Fails ir aizsargāts ar paroli. Portabilizer paroles neievada: izpakojiet to manuāli (7-Zip pats pieprasīs paroli), pēc tam izvēlieties izpakoto mapi vai instalētāju.
+66	Instalētājs beidzās ar kļūdu. Pārbaudiet, vai .bin faili atrodas blakus setup.exe.
+67	Mapē {0} nav neviena exe faila. Pārbaudiet, vai programma ir izpakota vai instalēta tieši šeit.
+68	MSIX: izlaboti nosaukumi ar %XX kodējumu: {0}
+69	MSIX: AppxManifest.xml nav atrasts - meklēju exe parastajā veidā.
+70	MSIX: manifestā nav runFullTrust - tā, visticamāk, ir UWP lietojumprogramma. Ārpus instalētās pakotnes tā, iespējams, nepalaidīsies.
+71	, manifests: {0}.
+72	Izskatās pēc tiešsaistes aizvietotāja: iekšpusē ir lejupielādes saite ({0}). Pati programma tiks lejupielādēta palaišanas laikā un instalēta sistēmā, tāpēc portatīva kopija no tā nesanāks. Lai iegūtu īstu pārnesamību, lejupielādējiet pilnu bezsaistes instalētāju un padariet portatīvu to.
+73	Fails ir aizsargāts ar pakotāju: izpakot un analizēt to nevar, iespējama tikai palaišana.
+74	Palaišana: ar UAC pieprasījumu (izvēlēts manuāli). Launch.bat tiesības nemaina.
+75	Palaišana: bez UAC pieprasījuma (RunAsInvoker, izvēlēts manuāli).
+76	{0} pieprasa administratora tiesības. Launch.bat palaiž to bez UAC pieprasījuma (RunAsInvoker), parole nav vajadzīga. Ja programma patiešām raksta mapē Program Files, HKLM, instalē pakalpojumus vai draiverus, bez tiesībām tā var nedarboties. Tādā gadījumā izmantojiet Launch_admin.bat (parasta palaišana ar UAC pieprasījumu).
+77	nav cab
+78	vairāku sējumu cab
+79	Citi
+80	Unreal Engine spēle: Launch.bat palaiž {0} tieši. Saknes {1} pirmajā palaišanā prasa instalēt DirectX un Visual C++ sistēmā un aizveras, ja atsakās. Palaišana caur to: Launch_stub.bat.
+81	Unreal: palaišana {0}
+82	exe prasa administratoru: Launch.bat darbojas ar RunAsInvoker
+83	Radikālais režīms: avota fails pārvietots, nevis nokopēts - lieki gigabaiti nav aizņemti.
+84	darbs tika pārtraukts
+85	Launch.bat nav izveidots
+86	mape App ir tukša
+87	Faili atrodas: {0}
+88	Mapes ar failiem ir tukšas.
+89	Nezināms režīms: {0}
+90	Fails nav norādīts.
+91	Fails nav atrasts.
+92	Mape jau pastāv: {0}
+93	Izdzēsiet to vai izvēlieties režīmu 'Tikai Launch.bat'.
+94	Galvenais exe nav atrasts.
+95	Norādiet exe laukā 'Galvenais exe' un palaidiet režīmu 'Tikai Launch.bat'.
+96	krāsai jābūt formā #rrggbb
+97	Auto
+98	Tikai izpakošana
+99	Tikai instalēšana (mapē App)
+100	Tikai Launch.bat
+101	Auto (bez UAC, ja exe prasa administratoru)
+102	Vienmēr bez UAC
+103	Vienmēr ar UAC (kā oriģinālā)
+104	Fails:
+105	Kur:
+106	Galvenais exe:
+107	Procesors
+108	Atmiņa
+109	Videokarte
+110	--run pieņem: auto, noadmin, admin
+111	Radikālais režīms DZĒŠ avota failu pēc sekmīgas izveides (atjaunot to nevar).\nJa esat pārliecināts, pievienojiet --yes. Nekas nav darīts.
+112	--dx pieņem: install, skip, cancel
+113	Diskā {0} ir palicis tikai {1}.
+114	Ir vajadzīgs innoextract.exe (ievietojiet blakus vai mapē tools/).
+115	Palaišana bez administratora neizdevās: {0}
+116	Grafisko programmu nav, ņemu konsoles programmu: {0}. Ja tā nav spēle, norādiet exe manuāli.
+117	Izvēlēts: {0} (piemērotu exe: {1}). Citi varianti: {2}. Ja palaidās nepareizais, norādiet exe manuāli.
+118	piemērots
+119	atlasīts ārā:
+120	MSIX: neizdevās nolasīt manifestu: {0}
+121	Neizdevās izveidot Install_dotnet.bat: {0}
+122	Analīze {0}: {1}, {2}
+123	\n\nDaļa failu Portabilizer nav iebūvēta:
+124	. DirectX vajadzībām tiks izveidots DX_fix.bat (tas lejupielādēs pilno DirectX pakotni).
+125	. Tās būs jāinstalē manuāli.
+126	nepieciešams DX_fix.bat
+127	izpakots {0} no {1}
+128	avota fails atrodas rezultāta mapes iekšpusē
+129	Avota fails izdzēsts: {0} ({1})
+130	. Ja tie ir tā paša repaka dati, izdzēsiet tos pats.
+131	Saglabāts: {0}
+132	Mapes {0} nav. Vispirms veiciet izpakošanu vai instalēšanu.
+133	Galvenais exe nav atrasts - norādiet to laukā 'Galvenais exe'.
+134	Šis ir parasts exe - kopēju kā ir.
+135	Uzmanību: MSIX izpakots kā parasta mape, bez pakotnes reģistrēšanas. Klasiskās (full trust) programmas šādi parasti darbojas, bet UWP lietojumprogrammas un viss, kam vajadzīgs pakotnes identifikators, var nepalaisties.
+136	Radikālais režīms nav apstiprināts: neko nedaru.
+137	Lietotājs pārtrauca. Daļēji izveidotie faili ir palikuši diskā: tos var izdzēst cilnē «Vēsture».
+138	Kļūda: {0}
+139	Pārveidotājs
+140	Vēsture
+141	Diagnostika
+142	Versijas
+143	Izskats
+144	Gatavs darbam.
+145	Padarīt portatīvu
+146	Pauze
+147	Turpināt
+148	Pārtraukt
+149	Ieteikumi
+150	Nepieciešams DirectX
+151	Lejupielāde ir apturēta, nekas nav zaudēts. Atcelšana apturēs darbu pavisam: pēc tam var tikai sākt no jauna («Atkārtot» cilnē «Vēsture»).
+152	Diskā beidzas vieta
+153	Pauze: process iesaldēts, progress saglabāts.
+154	Turpinu no tās pašas vietas.
+155	Datums
+156	Avots
+157	Versija
+158	Tips
+159	Statuss
+160	Izmērs
+161	Rezultāts
+162	Piezīmes
+163	Dzēšu {0} ...
+164	\n... un vēl {0}
+165	Atvērt mapi
+166	Palaist
+167	Atkārtot
+168	Izdzēst kopiju
+169	Izdzēst avota failu
+170	Noņemt no saraksta
+171	Atjaunot
+172	Apkopoju informāciju par sistēmu...
+173	Disks: n/a
+174	Disks
+175	Ietilpība
+176	Brīvs
+177	Aizņemts
+178	Portabilizer (R) - radikālais
+179	Ieslēgt parasto versiju
+180	Ieslēgt versiju (R)
+181	Motīvs:
+182	Tumši sarkanā (R):
+183	Gaiši sarkanā (R):
+184	Sava krāsa
+185	Vai ar šo krāsu nokrāsot arī loga fonu?\n\nJā - fons iegūs vieglu izvēlētās krāsas nokrāsu.\nNē - fons paliks neitrāls, krāsa būs tikai pogām un akcentiem.
+186	Vietas, visticamāk, nepietiks.
+187	nav nolasāms
+188	 (zema prioritāte)
+189	Norādītais exe atrodas ārpus mapes App - izvēlieties failu mapes App iekšpusē.
+190	{0}: šajā cab ir LZX saspiešana, izpakot var tikai sistēmā Windows (expand.exe).
+191	expand.exe neizdevās izvilkt {0}: {1}
+192	Bibliotēkas ({0}) ievietotas blakus {1}: {2}.
+193	. Ja programma par tām sūdzēsies, palaidiet DX_fix.bat rezultāta mapē (administratora tiesības nav vajadzīgas).
+194	 ({0}). Portabilizer tās nav iebūvētas vai neatbilda bitu skaitam: ja programma sūdzēsies, instalējiet attiecīgo pakotni sistēmā.
+195	trūkst:
+196	Avota fails NAV izdzēsts:
+197	izpakotājs ziņoja par brīdinājumiem (
+198	Neizdevās izdzēst {0}: {1}
+199	Izdzēsta pagaidu kopija: {0} ({1})
+200	.bin faili blakus instalētājam netika dzēsti (tie varēja būt vajadzīgi citām programmām):
+201	Režīms R: fails pārvietots uz App bez kopijas ({0}).
+202	Instalēšanas režīms nav piemērojams MSIX/APPX: pakotne tikai tiek izpakota.
+203	Neizdevās izpakot pakotni.
+204	Šis ir komplekts. Galvenā pakotne: {0}. Komplekta izpakojums saglabāts {1}.
+205	Pagaidām viss mierīgi. Šeit parādīsies ieteikumi, ja trūks vietas vai radīsies tipiskas kļūdas.
+206	Cik vēl atlicis ierakstīt, precīzi pateikt nevar.
+207	Kuru programmu palaist?
+208	Izvēlieties failu.
+209	\n  ... un vēl {0}
+210	Sagatavošana
+211	Atcelts pirms sākuma: diskā maz vietas.
+212	Pašlaik pauzēt nevar (vajadzīgs psutil: pip install psutil).
+213	Pārtraukt?
+214	Apturēt darbu? Vēlāk turpināt no apturēšanas vietas nevarēs: cilnē «Vēsture» būs «Atkārtot» (sāks no jauna).
+215	pagājis {0}
+216	Vispirms izvēlieties ierakstu sarakstā.
+217	Gaidiet pašreizējā uzdevuma beigas (vai pārtrauciet to).
+218	Rezultāta mapes diskā nav.
+219	Atveriet manuāli:\n{0}
+220	Launch.bat nav atrasts: pārveidošana nav pabeigta.
+221	Dzēšana
+222	Šī mape neizskatās pēc Portabilizer izveidotas (vajadzīgs nosaukums *_portable un Launch.bat ar mapi App). Piesardzības dēļ neizdzēšu.
+223	Mape izdzēsta.
+224	Izdzēst izdevās ne visu: daļu failu izmanto programma.
+225	Avota fails nav atrasts (iespējams, jau izdzēsts).
+226	Izdzēst avota failu?
+227	Tiks IZDZĒSTI PAVISAM (apejot atkritni), kopā {0}:\n\n{1}\n\nMape: {2}\n\nTas ir jūsu avota fails, atjaunot to nevarēs. Dzēst?
+228	Izdzēsts fails: {0}
+229	Noņemt ierakstu no saraksta? Faili diskā netiek skarti.
+230	nosaku...
+231	Sistēma: {0}\nProcesors: {1}\nOperatīvā atmiņa: {2}\nVideokarte: {3}
+232	Pieejama jauna Portabilizer versija: {0}. Lejupielādēt to var Portabilizer Launcher vai lapā {1}.
+233	_пример.json
+234	Mans motīvs
+235	Galvenā krāsa (pogas, progress)
+236	Portabilizer (R) - radikālais režīms
+237	Pašlaik ieslēgta: Portabilizer (R) - radikālais
+238	Pašlaik ieslēgta: Portabilizer (parastā versija)
+239	Versiju var pārslēgt pēc pašreizējā uzdevuma beigām.
+240	Apturēts. Atbrīvojiet vietu, izvēlieties citu disku vai pievienojiet --force.
+241	Vietas ir tikko tik, cik vajag: rezerves gandrīz nav, uzdevums var apstāties pauzē.
+242	Jūs izvēlējāties: {0}
+243	nē
+244	lejupielādes adrese atrasta pēc netiešām pazīmēm
+245	Atcelts: ir vajadzīgas bibliotēkas (
+246	Bibliotēkas:
+247	Neizdevās pārvietot failu ({0}), kopēju kā parasti.
+248	Neizdevās izpakot iegulto pakotni.
+249	Instalēšanas režīms nav piemērojams arhīvam: tas tikai tiek izpakots.
+250	Neizdevās izpakot arhīvu.
+251	Instalēšanas režīms pieejams tikai Inno/NSIS instalētājiem sistēmā Windows.
+252	Režīms:
+253	   Palaišana:
+254	Atlicis ierakstīt apmēram {0}, brīvs {1}: tam vajadzētu pietikt, var tikt līdz galam.
+255	Atlicis ierakstīt apmēram {0}, bet brīvs {1}: pietrūks apmēram {2}.
+256	Paliekam pauzē. Atbrīvojiet vietu un nospiediet «Turpināt».
+257	Turpinu uz savu atbildību: apstāšos tikai tad, ja brīvs paliks mazāk nekā {0}.
+258	Pauze. Atbrīvojiet vietu diskā un nospiediet «Turpināt».
+259	 Uzdevums ir pauzē: izvēlieties logā, ko darīt.
+260	Nepieciešamās vietas novērtējums
+261	Pārtraukts. Atlikumus var izdzēst cilnē «Vēsture».
+262	Diskā joprojām maz vietas: {0}.
+263	Darbs
+264	atlicis ~{0}
+265	PAUZE
+266	Palaidiet manuāli:\n{0}\n\n{1}
+267	, tāpēc atkārtot nevar. Lejupielādējiet vai instalējiet to no jauna.
+268	Neizdevās izdzēst visu mapi. Aizveriet programmas, kas to izmanto, un mēģiniet vēlreiz.
+269	Izdzēst portatīvo kopiju?
+270	{0}\n\nIzmērs: {1}\n\nMape tiks izdzēsta neatgriezeniski. Avota fails (instalētājs vai arhīvs) netiek skarts.
+271	{0} kodoli / {1} pavedieni
+272	{0:.0f}%  ({1} no {2})
+273	, atmiņa {0} no {1}, {2:.0f} °C
+274	 (novērtējums pēc 3D)
+275	Izvēlieties, kā Portabilizer izveido portatīvās kopijas. Pārslēgties var jebkurā brīdī (tas tikai maina darba režīmu). Katrā palaišanas reizē programma sākas parastajā versijā.
+276	Drošā versija.\n\nAvota fails (instalētājs, pakotne vai arhīvs) paliek neskarts, blakus tiek izveidota portatīvā mape.\n\nMīnuss: diskā paliek abas kopijas: gan avots, gan portatīvā mape.\n\nPiemērota gandrīz visam, it īpaši, ja neesat pārliecināts, ka programma darbosies.
+277	Radikālā versija (risks).\n\nPēc sekmīgas izveides DZĒŠ avota failu (visus arhīva sējumus) un pagaidu kopijas, tāpēc rezultāts aizņem mazāk vietas. Portatīvā mape tiek izveidota blakus avotam.\n\nSvarīgi: kamēr notiek darbs, vietas vajag tikpat, cik parastajā versijā: avots tiek izdzēsts tikai pašās beigās, pēc pārbaudes. Izdzēstu failu atjaunot nevar: ja vēlāk kaut kas noies greizi, tas būs jālejupielādē vai jāinstalē no platformas no jauna.\n\nPirms katras palaišanas programma pieprasa apstiprinājumu.
+278	Pieejama jauna versija: {0}.
+279	Jums ir jaunākā versija ({0}) vai nav savienojuma ar GitHub.
+280	Programmas versija: {0}
+281	Palaišanas laikā pārbaudīt jaunas versijas (pieprasījums GitHub, nekādi dati netiek sūtīti)
+282	Pārbaudīt tagad
+283	Loga izskats. Izmaiņas tiek piemērotas uzreiz un tiek atcerētas. Sarkanie motīvi automātiski tiek ieslēgti versijās (R) un tiek pielāgoti gaišajam vai tumšajam motīvam.
+284	 (sava)
+285	Klasiskais izskats: krāsas nosaka Windows.
+286	. Krāsas: fons, lauki, pogas, teksts, sekundārā, akcents, panākumi, brīdinājums, kļūda.
+287	Neizdevās atvērt mapi: {0}
+288	Neizdevās saglabāt motīvu: {0}
+289	Izvēlēties savu krāsu...
+290	Atvērt mapi themes
+291	Atjaunot motīvu sarakstu
+292	Savi motīvi: ievietojiet .json failu mapē themes blakus programmai (paraugs _пример.json tiek izveidots ar pogu augstāk). Tajā ir krāsas formā #rrggbb, nosaukums, "kind": "light" vai "dark" un "r": true sarkanajiem R režīma motīviem. Trūkstošās krāsas tiek ņemtas no iebūvētā motīva. Apstiprinājuma logi (Windows ziņojumi) paliek sistēmas.
+293	Padarīt portatīvu (R)
+294	Notiek darbs
+295	Uzdevums vēl tiek izpildīts. Pārtraukt to un iziet?
+296	UZMANĪBU:
+297	BĪSTAMI:
+298	 Darbs apturēts, lai neaizpildītu disku.
+299	bojāts MSZIP bloks
+300	Trūkst:
+301	Neizdevās pārvietot komplektu: {0}
+302	Arhīvā nav gatavas programmas, bet ir instalētājs: {0}. Turpinu ar to. Arhīva saturs saglabāts {1}.
+303	Blakus instalētājam atrasti .bin faili: {0} ({1}):
+304	Neizdevās izpakot. Iespējams, instalētājs nestandarta (tad vajadzīgs virtualizators, piemēram, Cameyo / Turbo Studio).
+305	Mēģinu kluso instalēšanu. Izpakotos failus saglabāšu {0}.
+306	Lejupielāde tiek atcelta pēc jūsu izvēles.
+307	Apturēt: iztīrīšu disku
+308	Atcelt lejupielādi
+309	Portabilizer (R): fails tiks pārvietots
+310	{0} ({1}) tiks PĀRVIETOTS uz mapi App blakus sev: kopija netiek veidota, papildu vieta nav vajadzīga.\n\nVecajā vietā faila vairs nebūs. Atgūt to var, izņemot no mapes App.\n\nTurpināt?
+311	Portabilizer (R): avota fails tiks izdzēsts
+312	Vai tiešām vēlaties šo failu padarīt portatīvu radikālajā režīmā?\n\nPēc sekmīgas izveides tiks IZDZĒSTS PAVISAM (apejot atkritni):\n{0}\nkopā {1}, kā arī pagaidu kopijas.\n\nAvota failu vēlāk atjaunot nevarēs. Ja kaut kas noies greizi (piemēram, spēle nepalaidīsies), tas būs jālejupielādē vai jāinstalē no platformas no jauna.\n\nDzēšana notiks tikai tad, ja izveide izdevās un viss pārbaudīts; kļūdas vai atcelšanas gadījumā fails paliks. Rezultāts tiks izveidots blakus avota failam.\n\nTurpināt?
+313	Gatavs. Fails pārvietots bez kopijas: papildu vieta nav aizņemta.
+314	brīvs diskā {0}
+315	 (nav diskā)
+316	Avota faila vairs nav
+317	Sākt no jauna?
+318	Mape jau pastāv (iepriekšējā mēģinājuma atlikums):\n{0}\nIzmērs: {1}\n\nIzdzēst to un sākt no jauna?
+319	CPU/RAM slodze nav pieejama: instalējiet psutil (pip install psutil). Gatavajā Portabilizer.exe tas jau ir iekšā.
+320	Operatīvās atmiņas gandrīz nav palicis. Aizveriet pārlūku un liekās programmas, citādi izpakošana var ievērojami palēnināties.
+321	Disks: lasīšana {0}/s, rakstīšana {1}/s
+322	slodze nav pieejama
+323	Pašlaik:
+324	Bez DirectX izvēlēts turpināt.
+325	Izvēlēts turpināt bez tām.
+326	Mapi {0} var izdzēst pēc pārbaudes: tā vajadzīga tikai kā instalētāja avots.
+327	Pēc izpakošanas galvenais exe nav atrasts.
+328	Vietas nepietiks
+329	Pēc novērtējuma vietas nepietiks. Ja vieta beigsies, izpakošana apstāsies ar kļūdu.\n\nTomēr turpināt?
+330	Atrastas vairākas piemērotas programmas, un neesmu pārliecināts, kura ir galvenā. Izvēlieties to, kas palaiž vajadzīgo lietojumprogrammu (vēlāk to varēs mainīt režīmā «Tikai Launch.bat»).
+331	Izvēlēties automātiski
+332	Vai pietiks vietas?
+333	Gatavs. Avota fails izdzēsts, atbrīvots {0}.
+334	 (to izdzēsa radikālais režīms)
+335	  <- kur saglabājam
+336	Diskā {0}, kurā saglabājat, ir maz vietas ({1}). Izvēlieties citu disku laukā «Kur».
+337	Neizdevās pārvietot izpakoto arhīvu: {0}
+338	Izpakots {0}, bet .bin ir {1}: izskatās pēc repaka, kura datus instalē pats instalētājs.
+339	Neizdevās pārvietot izpakoto: {0}
+340	Instalēšana neizdevās - izpakotie faili atgriezti mapē App.
+341	Neizdevās atgriezt izpakoto mapē App: {0}
+342	\n\nTik un tā sākt?
+343	Brīdinājums: blakus ir .bin faili. Ja programma nepalaižas vai tai trūkst datu, atkārtojiet režīmā 'Tikai instalēšana (mapē App)'.
+344	Instalētāji, pakotnes, arhīvi
+345	Visi
+346	Programmas
+347	Gatavs. Rezultāts ir cilnē «Vēsture».
+348	Neizdevās. Sīkāka informācija ir žurnālā un ieteikumos.
+349	Gatavs, bet avota fails nav izdzēsts:
+350	Valoda
+351	Interfeisa valoda:
+352	Valoda mainās uzreiz: logs pārstartēsies pats, iestatījumi tiks saglabāti.
+353	Vispirms gaidiet uzdevuma beigas vai pārtrauciet to: pēc valodas maiņas logs tiek pārstartēts.

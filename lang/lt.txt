@@ -1,0 +1,353 @@
+1	Reikia {0} {1}, laisva {2} diske {3}.{4}
+2	vykdoma
+3	pauzė
+4	paruošta
+5	klaida
+6	nutraukta
+7	nutraukta (programa uždaryta)
+8	Auto (kaip Windows)
+9	Šviesi
+10	Tamsi
+11	Klasikinė (sistemos)
+12	Mano spalva
+13	B
+14	KB
+15	MB
+16	GB
+17	 Jei archyve yra diegimo programa, prireiks dar maždaug tiek pat.
+18	pagal archyvo turinį
+19	apytiksliai
+20	Unreal Engine žaidimui gali prireikti DirectX (June 2010) bibliotekų. Jei paleidžiant atsiranda klaida dėl xinput1_3.dll, X3DAudio1_7.dll arba XAPOFX1_5.dll, paleiskite DX_fix.bat rezultato aplanke: administratoriaus teisių nereikia.
+21	Radikalusis režimas neištrynė šaltinio failo, nes ne viskas buvo patikrinta (priežastis žurnale). Nešiojamasis aplankas sukurtas, šaltinis vietoje: patikrinkite jį ir šaltinį ištrinkite patys.
+22	Programai reikia .NET, kurio šiame kompiuteryje nėra. Paleiskite Install_dotnet.bat rezultato aplanke (jis atsisiųs vykdymo aplinką į nešiojamosios kopijos vidų, be administratoriaus teisių).
+23	Failas prašo slaptažodžio. Portabilizer slaptažodžių neįveda: išpakuokite jį rankiniu būdu su 7-Zip (jis paprašys slaptažodžio) ir pasirinkite diegimo programą ar aplanką iš rezultato.
+24	Nerastas 7z.exe (nei šalia programos, nei įdiegtame 7-Zip). Įdiekite 7-Zip iš 7-zip.org arba padėkite 7z.exe ir 7z.dll šalia Portabilizer arba į aplanką tools.
+25	Nerastas innoextract.exe. Padėkite jį šalia Portabilizer arba į aplanką tools.
+26	Diske pritrūko vietos. Atlaisvinkite vietos arba lauke «Kur» pasirinkite kitą diską, tada skirtuke «Istorija» spustelėkite «Kartoti».
+27	Diegimo programai reikalingos administratoriaus teisės. Jei jų nėra, išbandykite režimą «Tik išpakavimas» arba paieškokite nešiojamosios versijos pas kūrėją.
+28	Pagrindinis exe nerastas. Aukščiau žurnale išvardyti rasti exe ir atmetimo priežastis: nukopijuokite reikiamą pavadinimą į lauką «Pagrindinis exe» ir paleiskite režimą «Tik Launch.bat».
+29	Panašu į UWP programą: be įdiegto paketo ji greičiausiai nepasileis. Ieškokite exe diegimo programos.
+30	Patikrinkite, ar failas atsisiųstas visas (palyginkite dydį arba atsisiųskite iš naujo) ir ar 7z.exe yra šalia programos.
+31	Šis aplankas jau buvo sukurtas anksčiau. Atidarykite jį skirtuke «Istorija» arba ištrinkite, jei norite pradėti iš naujo.
+32	Duomenys yra išoriniuose .bin failuose, juos diegia pati diegimo programa. Tam gali prireikti diegimo, o jam - administratoriaus teisių.
+33	Dalinai sukurti failai liko diske. Juos galima ištrinti skirtuke «Istorija».
+34	n/a
+35	Išpakavimas
+36	Išpakuotojas: {0}
+37	Diegimas
+38	Tylusis diegimas į aplanką App (gali trukti daug minučių, neuždarykite lango)...
+39	Be administratoriaus nepavyko - bandau su UAC užklausa (spustelėkite 'Taip'). Sustabdyti su administratoriaus teisėmis paleistos diegimo programos iš čia negalima.
+40	tarnybinis pavadinimas (setup/update/redist ir pan.)
+41	repako tarnybinė programa
+42	laikinasis diegimo programos aplankas
+43	konsolinė programa
+44	Rasta exe: {0}. Štai pirmieji {1} ir kodėl jie netiko:
+45	Nukopijuokite reikiamą pavadinimą į lauką «Pagrindinis exe» ir paleiskite režimą «Tik Launch.bat».
+46	Failas '{0}' aplanke App nerastas.
+47	Reikia .NET ({0}) programai {1}, bet šiame kompiuteryje jo nerasta. Paleiskite Install_dotnet.bat rezultato aplanke: jis atsisiųs vykdymo aplinką į aplanką dotnet nešiojamosios kopijos viduje (administratoriaus teisių nereikia), Launch.bat ją pasiims pats.
+48	Paleidimas: įprastas, teisių pakėlimo nereikia.
+49	Programai reikia bibliotekų, kurių sistemoje nėra:\n{0}\n\nPadėti jas į programos aplanką? Administratoriaus teisių nereikia, sistema nekeičiama, viskas lieka nešiojamojo aplanko viduje.\n\nTaip - padėti.\nNe - tęsti be jų (programa gali nepasileisti).\nAtšaukti - nutraukti.
+50	Paruošta: {0}
+51	Pagrindinis exe: {0}
+52	Paleiskite per Launch.bat. Aplanką galima perkelti į atmintinę.
+53	Radikalusis režimas: atlaisvinta {0}.
+54	Režimas: {0}
+55	Tipas: {0}
+56	Šviesiai raudona (R)
+57	Anglis su raudonu akcentu
+58	Bordo
+59	Vyšninė
+60	Failas: exe, msi, msix/appx, archyvas (rar, zip, 7z...). Pagrindinis exe nebūtinas: pavadinimas (App.exe), kelias App viduje arba failas iš aplanko App. Žurnalas išsaugomas portabilizer.log.
+61	REŽIMAS (R): įprastas exe tiesiog PERKELIAMAS į aplanką App (kopijos nėra, vietos nereikia). Archyvai ir diegimo programos pirmiausia išpakuojami ir tik tada šaltinis ištrinamas: darbo metu reikia vietos išpakuotam turiniui. Prieš pradedant bus paprašyta patvirtinti.
+62	Netrinu {0}: aplankas neatrodo sukurtas Portabilizer.
+63	Reikia 7z.exe: nerastas nei šalia programos, nei įdiegtame 7-Zip. Įdiekite 7-Zip (7-zip.org) arba padėkite 7z.exe ir 7z.dll šalia arba į tools/.
+64	7-Zip, kodas 1
+65	Failas apsaugotas slaptažodžiu. Portabilizer slaptažodžių neįveda: išpakuokite jį rankiniu būdu (7-Zip pats paklaus slaptažodžio), tada pasirinkite išpakuotą aplanką arba diegimo programą.
+66	Diegimo programa baigėsi klaida. Patikrinkite, ar .bin failai yra šalia setup.exe.
+67	Aplanke {0} apskritai nėra exe failų. Patikrinkite, ar programa išpakuota arba įdiegta būtent čia.
+68	MSIX: ištaisyta pavadinimų su %XX kodavimu: {0}
+69	MSIX: AppxManifest.xml nerastas - ieškau exe įprastu būdu.
+70	MSIX: manifeste nėra runFullTrust - tai greičiausiai UWP programa. Be įdiegto paketo ji tikriausiai nepasileis.
+71	, manifestas: {0}.
+72	Atrodo kaip internetinė kamštis: viduje yra atsisiuntimo nuoroda ({0}). Pati programa bus atsisiųsta paleidžiant ir įsidiegs į sistemą, todėl nešiojamąja kopija ji netaps. Kad būtų tikras perkeliamumas, atsisiųskite pilną neprisijungus veikiančią diegimo programą ir nešiojamąja padarykite ją.
+73	Failas apsaugotas pakuotuvu: išpakuoti ir analizuoti jo negalima, galima tik paleisti.
+74	Paleidimas: su UAC užklausa (pasirinkta rankiniu būdu). Launch.bat teisių nekeičia.
+75	Paleidimas: be UAC užklausos (RunAsInvoker, pasirinkta rankiniu būdu).
+76	{0} prašo administratoriaus teisių. Launch.bat paleidžia ją be UAC užklausos (RunAsInvoker), slaptažodžio nereikia. Jei programa tikrai rašo į Program Files, HKLM, diegia tarnybas ar tvarkykles, be teisių ji gali neveikti. Tada naudokite Launch_admin.bat (įprastas paleidimas su UAC užklausa).
+77	ne cab
+78	kelių tomų cab
+79	Kita
+80	Unreal Engine žaidimas: Launch.bat paleidžia {0} tiesiogiai. Šakninis {1} pirmą kartą paleistas prašo įdiegti DirectX ir Visual C++ į sistemą ir užsidaro, jei atsisakoma. Paleidimas per jį: Launch_stub.bat.
+81	Unreal: paleidimas {0}
+82	exe reikalauja administratoriaus: Launch.bat veikia per RunAsInvoker
+83	Radikalusis režimas: šaltinio failas perkeltas, o ne nukopijuotas - nereikalingų gigabaitų neužimta.
+84	darbas buvo nutrauktas
+85	Launch.bat nesukurtas
+86	aplankas App tuščias
+87	Failai yra: {0}
+88	Aplankai su failais tušti.
+89	Nežinomas režimas: {0}
+90	Failas nenurodytas.
+91	Failas nerastas.
+92	Aplankas jau yra: {0}
+93	Ištrinkite jį arba pasirinkite režimą 'Tik Launch.bat'.
+94	Pagrindinis exe nerastas.
+95	Nurodykite exe lauke 'Pagrindinis exe' ir paleiskite režimą 'Tik Launch.bat'.
+96	spalva turi būti pavidalo #rrggbb
+97	Auto
+98	Tik išpakavimas
+99	Tik diegimas (į App)
+100	Tik Launch.bat
+101	Auto (be UAC, jei exe prašo administratoriaus)
+102	Visada be UAC
+103	Visada su UAC (kaip originale)
+104	Failas:
+105	Kur:
+106	Pagrindinis exe:
+107	Procesorius
+108	Atmintis
+109	Vaizdo plokštė
+110	--run priima: auto, noadmin, admin
+111	Radikalusis režimas IŠTRINA šaltinio failą po sėkmingo surinkimo (atkurti jo negalima).\nJei esate tikri, pridėkite --yes. Nieko nepadaryta.
+112	--dx priima: install, skip, cancel
+113	Diske {0} liko tik {1}.
+114	Reikia innoextract.exe (padėkite šalia arba į tools/).
+115	Paleisti be administratoriaus nepavyko: {0}
+116	Grafinių programų nerasta, imu konsolinę: {0}. Jei tai ne žaidimas, nurodykite exe rankiniu būdu.
+117	Pasirinkta: {0} (tinkamų exe: {1}). Kiti variantai: {2}. Jei pasileido ne tas, nurodykite exe rankiniu būdu.
+118	tinka
+119	atmesta:
+120	MSIX: nepavyko perskaityti manifesto: {0}
+121	Nepavyko sukurti Install_dotnet.bat: {0}
+122	Analizė {0}: {1}, {2}
+123	\n\nDalis failų į Portabilizer neįtraukta:
+124	. DirectX bus sukurtas DX_fix.bat (jis atsisiųs pilną DirectX paketą).
+125	. Juos teks įdiegti rankiniu būdu.
+126	reikia DX_fix.bat
+127	išpakuota {0} iš {1}
+128	šaltinio failas yra rezultato aplanko viduje
+129	Šaltinio failas ištrintas: {0} ({1})
+130	. Jei tai to paties repako duomenys, ištrinkite juos patys.
+131	Išsaugota: {0}
+132	Nėra aplanko {0}. Pirmiausia atlikite išpakavimą arba diegimą.
+133	Pagrindinis exe nerastas - nurodykite jį lauke 'Pagrindinis exe'.
+134	Tai įprastas exe - kopijuoju kaip yra.
+135	Dėmesio: MSIX išpakuotas kaip įprastas aplankas, be paketo registracijos. Klasikinės (full trust) programos šitaip paprastai veikia, bet UWP programos ir viskas, kam reikia paketo identifikatoriaus, gali nepasileisti.
+136	Radikalusis režimas nepatvirtintas: nieko nedarau.
+137	Nutraukė naudotojas. Dalinai sukurti failai liko diske: juos galima ištrinti skirtuke «Istorija».
+138	Klaida: {0}
+139	Keitiklis
+140	Istorija
+141	Diagnostika
+142	Versijos
+143	Išvaizda
+144	Pasirengta darbui.
+145	Padaryti nešiojamą
+146	Pauzė
+147	Tęsti
+148	Nutraukti
+149	Rekomendacijos
+150	Reikia DirectX
+151	Atsisiuntimas pristabdytas, nieko nepraradote. Atšaukimas sustabdys darbą visam laikui: vėliau galima tik pradėti iš naujo («Kartoti» skirtuke «Istorija»).
+152	Diske baigiasi vieta
+153	Pauzė: procesas sustabdytas, eiga išsaugota.
+154	Tęsiu nuo tos pačios vietos.
+155	Data
+156	Šaltinis
+157	Versija
+158	Tipas
+159	Būsena
+160	Dydis
+161	Rezultatas
+162	Pastabos
+163	Trinu {0} ...
+164	\n... ir dar {0}
+165	Atidaryti aplanką
+166	Paleisti
+167	Kartoti
+168	Ištrinti kopiją
+169	Ištrinti šaltinio failą
+170	Pašalinti iš sąrašo
+171	Atnaujinti
+172	Renku informaciją apie sistemą...
+173	Diskas: n/a
+174	Diskas
+175	Talpa
+176	Laisva
+177	Užimta
+178	Portabilizer (R) - radikalusis
+179	Įjungti įprastą versiją
+180	Įjungti versiją (R)
+181	Tema:
+182	Tamsiai raudona (R):
+183	Šviesiai raudona (R):
+184	Sava spalva
+185	Šia spalva nuspalvinti ir lango foną?\n\nTaip - fonas įgaus lengvą pasirinktos spalvos atspalvį.\nNe - fonas liks neutralus, spalva bus tik mygtukams ir akcentams.
+186	Vietos, greičiausiai, nepakaks.
+187	neskaitoma
+188	 (žemas prioritetas)
+189	Nurodytas exe yra už aplanko App ribų - pasirinkite failą aplanko App viduje.
+190	{0}: šiame cab yra LZX glaudinimas, išpakuoti galima tik sistemoje Windows (expand.exe).
+191	expand.exe nepavyko ištraukti {0}: {1}
+192	Bibliotekos ({0}) padėtos šalia {1}: {2}.
+193	. Jei programa dėl jų skųsis, paleiskite DX_fix.bat rezultato aplanke (administratoriaus teisių nereikia).
+194	 ({0}). Į Portabilizer jos neįtrauktos arba netiko pagal skiriamąją gebą (bitų skaičių): jei programa skųsis, įdiekite atitinkamą paketą į sistemą.
+195	trūksta:
+196	Šaltinio failas NEIŠTRINTAS:
+197	išpakuotojas pranešė apie įspėjimus (
+198	Nepavyko ištrinti {0}: {1}
+199	Ištrinta laikinoji kopija: {0} ({1})
+200	.bin failai šalia diegimo programos nebuvo trinami (jų galėjo prireikti kitoms programoms):
+201	Režimas R: failas perkeltas į App be kopijos ({0}).
+202	Diegimo režimas netaikomas MSIX/APPX: paketas tik išpakuojamas.
+203	Nepavyko išpakuoti paketo.
+204	Tai rinkinys. Pagrindinis paketas: {0}. Rinkinio išpakavimas išsaugotas {1}.
+205	Kol kas ramu. Čia atsiras patarimai, kai trūks vietos ir dėl tipinių klaidų.
+206	Kiek dar liko įrašyti, tiksliai pasakyti negalima.
+207	Kurią programą paleisti?
+208	Pasirinkite failą.
+209	\n  ... ir dar {0}
+210	Paruošimas
+211	Atšaukta prieš pradedant: diske mažai vietos.
+212	Dabar pristabdyti negalima (reikia psutil: pip install psutil).
+213	Nutraukti?
+214	Sustabdyti darbą? Vėliau tęsti nuo sustojimo vietos nebus galima: skirtuke «Istorija» bus «Kartoti» (pradės iš naujo).
+215	praėjo {0}
+216	Pirmiausia pasirinkite įrašą sąraše.
+217	Palaukite, kol baigsis dabartinė užduotis (arba nutraukite ją).
+218	Rezultato aplanko diske nėra.
+219	Atidarykite rankiniu būdu:\n{0}
+220	Launch.bat nerastas: konvertavimas nebaigtas.
+221	Trynimas
+222	Šis aplankas neatrodo sukurtas Portabilizer (reikia pavadinimo *_portable ir Launch.bat su aplanku App). Atsargumo dėlei netrinu.
+223	Aplankas ištrintas.
+224	Ištrinti pavyko ne viską: dalį failų naudoja programa.
+225	Šaltinio failas nerastas (galbūt jau ištrintas).
+226	Ištrinti šaltinio failą?
+227	Bus IŠTRINTA NUOSEKLIAI (apeinant šiukšlinę), iš viso {0}:\n\n{1}\n\nAplankas: {2}\n\nTai jūsų šaltinio failas, atkurti jo nebus galima. Trinti?
+228	Failas ištrintas: {0}
+229	Pašalinti įrašą iš sąrašo? Failai diske neliečiami.
+230	nustatau...
+231	Sistema: {0}\nProcesorius: {1}\nOperatyvioji atmintis: {2}\nVaizdo plokštė: {3}
+232	Yra nauja Portabilizer versija: {0}. Atsisiųsti ją galima Portabilizer Launcher arba puslapyje {1}.
+233	_пример.json
+234	Mano tema
+235	Pagrindinė spalva (mygtukai, eiga)
+236	Portabilizer (R) - radikalusis režimas
+237	Dabar įjungta: Portabilizer (R) - radikalusis
+238	Dabar įjungta: Portabilizer (įprasta versija)
+239	Versiją galima perjungti pasibaigus dabartinei užduočiai.
+240	Sustabdyta. Atlaisvinkite vietos, pasirinkite kitą diską arba pridėkite --force.
+241	Vietos vos pakanka: atsargos beveik nėra, užduotis gali sustoti pauzei.
+242	Jūs pasirinkote: {0}
+243	ne
+244	atsisiuntimo adresas rastas pagal netiesioginius požymius
+245	Atšaukta: reikia bibliotekų (
+246	Bibliotekos:
+247	Nepavyko perkelti failo ({0}), kopijuoju kaip įprasta.
+248	Nepavyko išpakuoti įterpto paketo.
+249	Diegimo režimas netaikomas archyvui: jis tik išpakuojamas.
+250	Nepavyko išpakuoti archyvo.
+251	Diegimo režimas prieinamas tik Inno/NSIS diegimo programoms sistemoje Windows.
+252	Režimas:
+253	   Paleidimas:
+254	Liko įrašyti apie {0}, laisva {1}: to turėtų pakakti, galima pabaigti.
+255	Liko įrašyti apie {0}, o laisva {1}: pritrūks apie {2}.
+256	Likstu pauzėje. Atlaisvinkite vietos ir spustelėkite «Tęsti».
+257	Tęsiu savo rizika: sustosiu tik tada, kai laisvos vietos liks mažiau nei {0}.
+258	Pauzė. Atlaisvinkite vietos diske ir spustelėkite «Tęsti».
+259	 Užduotis pristabdyta: lange pasirinkite, ką daryti.
+260	Reikiamos vietos įvertinimas
+261	Nutraukta. Likučius galima ištrinti skirtuke «Istorija».
+262	Diske vis dar mažai vietos: {0}.
+263	Darbas
+264	liko ~{0}
+265	PAUZĖ
+266	Paleiskite rankiniu būdu:\n{0}\n\n{1}
+267	, todėl kartoti negalima. Atsisiųskite arba įdiekite jį iš naujo.
+268	Nepavyko ištrinti viso aplanko. Uždarykite jį naudojančias programas ir bandykite dar kartą.
+269	Ištrinti nešiojamąją kopiją?
+270	{0}\n\nDydis: {1}\n\nAplankas bus ištrintas negrįžtamai. Šaltinio failas (diegimo programa ar archyvas) neliečiamas.
+271	{0} branduolių / {1} gijų
+272	{0:.0f}%  ({1} iš {2})
+273	, atmintis {0} iš {1}, {2:.0f} °C
+274	 (įvertis pagal 3D)
+275	Pasirinkite, kaip Portabilizer kuria nešiojamąsias kopijas. Perjungti galima bet kada (tai tik pakeičia darbo režimą). Kiekvieną kartą paleidus programa startuoja įprastoje versijoje.
+276	Saugi versija.\n\nŠaltinio failas (diegimo programa, paketas ar archyvas) lieka nepaliestas, šalia sukuriamas nešiojamasis aplankas.\n\nMinusas: diske lieka abi kopijos: ir šaltinis, ir nešiojamasis aplankas.\n\nTinka beveik viskam, ypač jei nesate tikri, ar programa veiks.
+277	Radikalioji versija (rizika).\n\nPo sėkmingo surinkimo IŠTRINA šaltinio failą (visus archyvo tomus) ir laikinas kopijas, todėl rezultatas užima mažiau vietos. Nešiojamasis aplankas sukuriamas šalia šaltinio.\n\nSvarbu: kol vyksta darbas, vietos reikia tiek pat, kiek įprastoje versijoje: šaltinis ištrinamas tik pačioje pabaigoje, po patikrinimo. Ištrinto failo atkurti negalima: jei vėliau kas nors nepavyks, jį teks atsisiųsti arba įdiegti iš platformos iš naujo.\n\nPrieš kiekvieną paleidimą programa prašo patvirtinimo.
+278	Yra nauja versija: {0}.
+279	Turite naujausią versiją ({0}) arba nėra ryšio su GitHub.
+280	Programos versija: {0}
+281	Paleidžiant tikrinti, ar yra naujų versijų (užklausa į GitHub, jokie duomenys nesiunčiami)
+282	Patikrinti dabar
+283	Lango išvaizda. Pakeitimai taikomi iškart ir įsimenami. Raudonos temos automatiškai įjungiamos versijose (R) ir parenkamos pagal šviesią ar tamsią temą.
+284	 (sava)
+285	Klasikinė išvaizda: spalvas nustato Windows.
+286	. Spalvos: fonas, laukai, mygtukai, tekstas, antrinė, akcentas, sėkmė, įspėjimas, klaida.
+287	Nepavyko atidaryti aplanko: {0}
+288	Nepavyko išsaugoti temos: {0}
+289	Pasirinkti savo spalvą...
+290	Atidaryti aplanką themes
+291	Atnaujinti temų sąrašą
+292	Savos temos: padėkite .json failą į aplanką themes šalia programos (pavyzdys _пример.json sukuriamas aukščiau esančiu mygtuku). Jame spalvos pavidalu #rrggbb, pavadinimas, "kind": "light" arba "dark" ir "r": true raudonoms R režimo temoms. Trūkstamos spalvos imamos iš įtrauktos temos. Patvirtinimo langai (Windows pranešimai) lieka sistemos.
+293	Padaryti nešiojamą (R)
+294	Vyksta darbas
+295	Užduotis dar vykdoma. Nutraukti ją ir išeiti?
+296	DĖMESIO:
+297	PAVOJINGA:
+298	 Darbas sustabdytas, kad nebūtų užpildytas diskas.
+299	pažeistas MSZIP blokas
+300	Trūksta:
+301	Nepavyko perkelti rinkinio: {0}
+302	Archyve nėra paruoštos programos, bet yra diegimo programa: {0}. Tęsiu su ja. Archyvo turinys išsaugotas {1}.
+303	Šalia diegimo programos rasta .bin failų: {0} ({1}):
+304	Nepavyko išpakuoti. Galbūt diegimo programa nestandartinė (tada reikia virtualizatoriaus, pavyzdžiui, Cameyo / Turbo Studio).
+305	Bandau tylųjį diegimą. Išpakuotus failus išsaugosiu {0}.
+306	Atsisiuntimas atšaukiamas pagal jūsų pasirinkimą.
+307	Sustabdyti: išvalysiu diską
+308	Atšaukti atsisiuntimą
+309	Portabilizer (R): failas bus perkeltas
+310	{0} ({1}) bus PERKELTAS į aplanką App šalia savęs: kopija nekuriama, papildomos vietos nereikia.\n\nSeniau vietoje failo nebebus. Grąžinti jį galima išėmus iš aplanko App.\n\nTęsti?
+311	Portabilizer (R): šaltinio failas bus ištrintas
+312	Ar tikrai norite šį failą padaryti nešiojamu radikaliuoju režimu?\n\nPo sėkmingo surinkimo bus IŠTRINTA VISAM LAIKUI (apeinant šiukšlinę):\n{0}\niš viso {1}, taip pat laikinos kopijos.\n\nŠaltinio failo vėliau atkurti nebus galima. Jei kas nors nepavyks (pavyzdžiui, žaidimas nepasileis), jį teks atsisiųsti arba įdiegti iš platformos iš naujo.\n\nTrynimas įvyks tik jei surinkimas pavyko ir viskas patikrinta; klaidos ar atšaukimo atveju failas liks. Rezultatas bus sukurtas šalia šaltinio failo.\n\nTęsti?
+313	Paruošta. Failas perkeltas be kopijos: papildomos vietos neužimta.
+314	laisva diske {0}
+315	 (nėra diske)
+316	Šaltinio failo jau nėra
+317	Pradėti iš naujo?
+318	Aplankas jau yra (ankstesnio bandymo likutis):\n{0}\nDydis: {1}\n\nIštrinti jį ir pradėti iš naujo?
+319	CPU/RAM apkrova nepasiekiama: įdiekite psutil (pip install psutil). Surinktame Portabilizer.exe jis jau yra viduje.
+320	Operatyviosios atminties beveik nebeliko. Uždarykite naršyklę ir nereikalingas programas, kitaip išpakavimas gali labai sulėtėti.
+321	Diskas: skaitymas {0}/s, rašymas {1}/s
+322	apkrova nepasiekiama
+323	Dabar:
+324	Pasirinkta tęsti be DirectX.
+325	Pasirinkta tęsti be jų.
+326	Aplanką {0} galima ištrinti po patikrinimo: jis reikalingas tik kaip diegimo programos šaltinis.
+327	Po išpakavimo pagrindinis exe nerastas.
+328	Vietos nepakaks
+329	Pagal įvertį vietos nepakaks. Jei vieta baigsis, išpakavimas sustos su klaida.\n\nVis tiek tęsti?
+330	Rasta kelios tinkamos programos, ir nesu tikras, kuri pagrindinė. Pasirinkite tą, kuri paleidžia reikiamą programą (vėliau ją bus galima pakeisti režimu «Tik Launch.bat»).
+331	Pasirinkti automatiškai
+332	Ar pakaks vietos?
+333	Paruošta. Šaltinio failas ištrintas, atlaisvinta {0}.
+334	 (jį ištrynė radikalusis režimas)
+335	  <- kur išsaugome
+336	Diske {0}, kuriame išsaugote, mažai vietos ({1}). Lauke «Kur» pasirinkite kitą diską.
+337	Nepavyko perkelti išpakuoto archyvo: {0}
+338	Išpakuota {0}, o .bin yra {1}: panašu į repaką, kurio duomenis diegia pati diegimo programa.
+339	Nepavyko perkelti išpakuotų failų: {0}
+340	Diegimas nepavyko - išpakuoti failai grąžinti į App.
+341	Nepavyko grąžinti išpakuotų failų į App: {0}
+342	\n\nVis tiek pradėti?
+343	Įspėjimas: šalia yra .bin failų. Jei programa nepasileidžia arba jai trūksta duomenų, pakartokite režimu 'Tik diegimas (į App)'.
+344	Diegimo programos, paketai, archyvai
+345	Visi
+346	Programos
+347	Paruošta. Rezultatas yra skirtuke «Istorija».
+348	Nepavyko. Išsamiau - žurnale ir rekomendacijose.
+349	Paruošta, bet šaltinio failas neištrintas:
+350	Kalba
+351	Sąsajos kalba:
+352	Kalba keičiasi iškart: langas persijungs pats, nustatymai bus išsaugoti.
+353	Pirmiausia palaukite užduoties pabaigos arba nutraukite ją: pakeitus kalbą langas paleidžiamas iš naujo.

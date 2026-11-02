@@ -1,0 +1,353 @@
+1	Dibutuhkan {0} {1}, tersedia {2} di drive {3}.{4}
+2	berjalan
+3	jeda
+4	selesai
+5	galat
+6	dibatalkan
+7	dibatalkan (aplikasi ditutup)
+8	Otomatis (ikut Windows)
+9	Terang
+10	Gelap
+11	Klasik (sistem)
+12	Warna saya
+13	B
+14	KB
+15	MB
+16	GB
+17	 Jika di dalam arsip ada installer, dibutuhkan ruang sebesar itu lagi.
+18	berdasarkan isi arsip
+19	perkiraan
+20	Game Unreal Engine mungkin memerlukan pustaka DirectX (June 2010). Jika saat memulai muncul galat tentang xinput1_3.dll, X3DAudio1_7.dll, atau XAPOFX1_5.dll, jalankan DX_fix.bat di folder hasil: hak administrator tidak diperlukan.
+21	Mode radikal tidak menghapus file sumber karena tidak semuanya dapat diverifikasi (alasannya ada di log). Folder portabel sudah dibuat, file sumber masih ada: periksa folder tersebut lalu hapus file sumber sendiri.
+22	Program ini memerlukan .NET yang tidak ada di komputer ini. Jalankan Install_dotnet.bat di folder hasil (file ini mengunduh runtime ke dalam salinan portabel, tanpa hak administrator).
+23	File ini meminta kata sandi. Portabilizer tidak memasukkan kata sandi: ekstrak secara manual dengan 7-Zip (akan menanyakan kata sandi), lalu pilih installer atau folder dari hasilnya.
+24	7z.exe tidak ditemukan (tidak ada di samping program maupun di 7-Zip yang terpasang). Pasang 7-Zip dari 7-zip.org atau letakkan 7z.exe dan 7z.dll di samping Portabilizer atau di folder tools.
+25	innoextract.exe tidak ditemukan. Letakkan di samping Portabilizer atau di folder tools.
+26	Ruang disk tidak cukup. Kosongkan ruang atau pilih drive lain di kolom «Tujuan», lalu di tab «Riwayat» klik «Ulangi».
+27	Installer memerlukan hak administrator. Jika tidak punya, coba mode «Hanya ekstrak» atau cari versi portabel dari pengembangnya.
+28	Exe utama tidak ditemukan. Log di atas mencantumkan exe yang ditemukan beserta alasan penyaringannya: salin nama yang diinginkan ke kolom «Exe utama» dan jalankan mode «Hanya Launch.bat».
+29	Tampaknya ini aplikasi UWP: di luar paket yang terpasang, kemungkinan besar tidak akan berjalan. Cari installer exe.
+30	Pastikan file terunduh sepenuhnya (cocokkan ukurannya atau unduh ulang) dan 7z.exe berada di samping program.
+31	Folder ini sudah dibuat sebelumnya. Buka di tab «Riwayat» atau hapus jika ingin memulai dari awal.
+32	Data berada di file .bin eksternal yang dipasang oleh installer itu sendiri. Untuk itu mungkin diperlukan instalasi, dan instalasi memerlukan hak administrator.
+33	File yang sebagian sudah dibuat masih ada di disk. Anda dapat menghapusnya di tab «Riwayat».
+34	t/a
+35	Ekstraksi
+36	Pengekstrak: {0}
+37	Instalasi
+38	Instalasi senyap ke folder App (bisa memakan waktu lama, jangan tutup jendela)...
+39	Tanpa admin gagal - mencoba dengan UAC (klik 'Ya'). Installer yang berjalan dengan hak administrator tidak dapat dihentikan dari sini.
+40	nama layanan (setup/update/redist, dll.)
+41	utilitas layanan repack
+42	folder sementara installer
+43	program konsol
+44	Exe ditemukan: {0}. Berikut {1} pertama dan alasan tidak dipilih:
+45	Salin nama yang diinginkan ke kolom «Exe utama» dan jalankan mode «Hanya Launch.bat».
+46	File '{0}' tidak ditemukan di App.
+47	Diperlukan .NET ({0}) untuk {1}, tetapi tidak ditemukan di komputer ini. Jalankan Install_dotnet.bat di folder hasil: file ini mengunduh runtime ke folder dotnet di dalam salinan portabel (tanpa hak administrator), dan Launch.bat akan menggunakannya secara otomatis.
+48	Peluncuran: biasa, tidak memerlukan peningkatan hak akses.
+49	Program memerlukan pustaka yang tidak ada di sistem:\n{0}\n\nLetakkan di folder program? Hak administrator tidak diperlukan, sistem tidak diubah, semuanya tetap di dalam folder portabel.\n\nYa - letakkan.\nTidak - lanjutkan tanpa pustaka (program mungkin tidak berjalan).\nBatal - hentikan.
+50	Selesai: {0}
+51	Exe utama: {0}
+52	Jalankan lewat Launch.bat. Folder ini dapat dipindahkan ke flash drive.
+53	Mode radikal: {0} dibebaskan.
+54	Mode: {0}
+55	Jenis: {0}
+56	Merah muda (R)
+57	Arang dengan aksen merah
+58	Merah anggur
+59	Ceri
+60	File: exe, msi, msix/appx, arsip (rar, zip, 7z...). Exe utama bersifat opsional: nama (App.exe), jalur di dalam App, atau file dari folder App. Log disimpan di portabilizer.log.
+61	MODE (R): exe biasa hanya DIPINDAHKAN ke folder App (tanpa salinan, tidak perlu ruang tambahan). Arsip dan installer diekstrak lebih dulu, baru file sumber dihapus: selama proses diperlukan ruang untuk hasil ekstraksi. Sebelum mulai akan ada konfirmasi.
+62	Tidak menghapus {0}: folder ini tidak tampak dibuat oleh Portabilizer.
+63	Diperlukan 7z.exe: tidak ditemukan di samping program maupun di 7-Zip yang terpasang. Pasang 7-Zip (7-zip.org) atau letakkan 7z.exe dan 7z.dll di samping program atau di tools/.
+64	7-Zip, kode 1
+65	File dilindungi kata sandi. Portabilizer tidak memasukkan kata sandi: ekstrak secara manual (7-Zip akan menanyakan kata sandi), lalu pilih folder hasil ekstraksi atau installer.
+66	Installer selesai dengan galat. Pastikan file .bin berada di samping setup.exe.
+67	Di folder {0} sama sekali tidak ada file exe. Pastikan program memang diekstrak atau dipasang ke sini.
+68	MSIX: nama dengan pengodean %XX diperbaiki: {0}
+69	MSIX: AppxManifest.xml tidak ditemukan - mencari exe dengan cara biasa.
+70	MSIX: manifes tidak memuat runFullTrust - kemungkinan ini aplikasi UWP. Di luar paket yang terpasang, kemungkinan besar tidak akan berjalan.
+71	, manifes: {0}.
+72	Ini tampaknya stub online: di dalamnya ada tautan unduhan ({0}). Programnya sendiri akan diunduh saat dijalankan dan dipasang ke sistem, sehingga tidak akan menjadi salinan portabel. Untuk portabilitas sejati, unduh installer offline lengkap dan buat itu portabel.
+73	File dilindungi packer: tidak dapat diekstrak maupun dianalisis, hanya dapat dijalankan.
+74	Peluncuran: dengan UAC (dipilih manual). Launch.bat tidak mengubah hak akses.
+75	Peluncuran: tanpa UAC (RunAsInvoker, dipilih manual).
+76	{0} meminta hak administrator. Launch.bat menjalankannya tanpa UAC (RunAsInvoker), kata sandi tidak diperlukan. Jika program benar-benar menulis ke Program Files, HKLM, memasang layanan atau driver, tanpa hak tersebut program mungkin tidak berfungsi. Dalam kasus itu gunakan Launch_admin.bat (peluncuran biasa dengan UAC).
+77	bukan cab
+78	cab multivolume
+79	Lainnya
+80	Game Unreal Engine: Launch.bat menjalankan {0} secara langsung. {1} di root saat pertama dijalankan meminta pemasangan DirectX dan Visual C++ ke sistem dan menutup diri jika ditolak. Untuk menjalankan lewat file itu: Launch_stub.bat.
+81	Unreal: menjalankan {0}
+82	exe memerlukan admin: Launch.bat berjalan lewat RunAsInvoker
+83	Mode radikal: file sumber dipindahkan, bukan disalin - tidak ada gigabyte tambahan yang terpakai.
+84	proses dibatalkan
+85	Launch.bat tidak dibuat
+86	folder App kosong
+87	File berada di: {0}
+88	Folder file kosong.
+89	Mode tidak dikenal: {0}
+90	File belum ditentukan.
+91	File tidak ditemukan.
+92	Folder sudah ada: {0}
+93	Hapus folder tersebut, atau pilih mode 'Hanya Launch.bat'.
+94	Exe utama tidak ditemukan.
+95	Tentukan exe di kolom 'Exe utama' dan jalankan mode 'Hanya Launch.bat'.
+96	warna harus berformat #rrggbb
+97	Otomatis
+98	Hanya ekstrak
+99	Hanya instal (ke App)
+100	Hanya Launch.bat
+101	Otomatis (tanpa UAC jika exe meminta admin)
+102	Selalu tanpa UAC
+103	Selalu dengan UAC (seperti aslinya)
+104	File:
+105	Tujuan:
+106	Exe utama:
+107	Prosesor
+108	Memori
+109	Kartu grafis
+110	--run menerima: auto, noadmin, admin
+111	Mode radikal MENGHAPUS file sumber setelah build berhasil (tidak dapat dikembalikan).\nJika Anda yakin, tambahkan --yes. Tidak ada yang dilakukan.
+112	--dx menerima: install, skip, cancel
+113	Di drive {0} hanya tersisa {1}.
+114	Diperlukan innoextract.exe (letakkan di sampingnya atau di tools/).
+115	Peluncuran tanpa admin gagal: {0}
+116	Tidak ada program grafis, memakai program konsol: {0}. Jika ini bukan game, tentukan exe secara manual.
+117	Terpilih: {0} (exe yang cocok: {1}). Pilihan lain: {2}. Jika yang berjalan salah, tentukan exe secara manual.
+118	cocok
+119	disaring:
+120	MSIX: gagal membaca manifes: {0}
+121	Gagal membuat Install_dotnet.bat: {0}
+122	Analisis {0}: {1}, {2}
+123	\n\nSebagian file tidak disertakan di Portabilizer:
+124	. Untuk DirectX akan dibuat DX_fix.bat (mengunduh paket DirectX lengkap).
+125	. Anda harus memasangnya secara manual.
+126	DX_fix.bat diperlukan
+127	diekstrak {0} dari {1}
+128	file sumber berada di dalam folder hasil
+129	File sumber dihapus: {0} ({1})
+130	. Jika ini data dari repack yang sama, hapus sendiri.
+131	Disimpan di: {0}
+132	Folder {0} tidak ada. Lakukan ekstraksi atau instalasi terlebih dahulu.
+133	Exe utama tidak ditemukan - tentukan di kolom 'Exe utama'.
+134	Ini exe biasa - disalin apa adanya.
+135	Perhatian: MSIX diekstrak sebagai folder biasa, tanpa pendaftaran paket. Program klasik (full trust) biasanya berjalan seperti ini, tetapi aplikasi UWP dan apa pun yang memerlukan identitas paket mungkin tidak berjalan.
+136	Mode radikal tidak dikonfirmasi: tidak ada yang dilakukan.
+137	Dihentikan oleh pengguna. File yang sebagian sudah dibuat masih ada di disk: Anda dapat menghapusnya di tab «Riwayat».
+138	Galat: {0}
+139	Konverter
+140	Riwayat
+141	Diagnostik
+142	Versi
+143	Tampilan
+144	Siap digunakan.
+145	Jadikan portabel
+146	Jeda
+147	Lanjutkan
+148	Batalkan
+149	Saran
+150	Diperlukan DirectX
+151	Unduhan sedang dijeda, tidak ada yang hilang. Membatalkan akan menghentikan pekerjaan sepenuhnya: setelah itu hanya bisa mulai dari awal («Ulangi» di tab «Riwayat»).
+152	Ruang disk hampir habis
+153	Jeda: proses dibekukan, kemajuan tersimpan.
+154	Melanjutkan dari titik yang sama.
+155	Tanggal
+156	Sumber
+157	Versi
+158	Jenis
+159	Status
+160	Ukuran
+161	Hasil
+162	Catatan
+163	Menghapus {0} ...
+164	\n... dan {0} lagi
+165	Buka folder
+166	Jalankan
+167	Ulangi
+168	Hapus salinan
+169	Hapus file sumber
+170	Hapus dari daftar
+171	Segarkan
+172	Mengumpulkan informasi sistem...
+173	Disk: t/a
+174	Disk
+175	Kapasitas
+176	Tersedia
+177	Terpakai
+178	Portabilizer (R) - radikal
+179	Aktifkan versi biasa
+180	Aktifkan versi (R)
+181	Tema:
+182	Merah gelap (R):
+183	Merah terang (R):
+184	Warna sendiri
+185	Warnai juga latar jendela dengan warna ini?\n\nYa - latar mendapat semburat ringan warna yang dipilih.\nTidak - latar tetap netral, warna hanya untuk tombol dan aksen.
+186	Ruang kemungkinan besar tidak cukup.
+187	tidak dapat dibaca
+188	 (prioritas rendah)
+189	Exe yang ditentukan berada di luar folder App - pilih file di dalam App.
+190	{0}: cab ini memakai kompresi LZX, hanya dapat diekstrak di Windows (expand.exe).
+191	expand.exe tidak dapat mengekstrak {0}: {1}
+192	Pustaka ({0}) diletakkan di samping {1}: {2}.
+193	. Jika program mengeluhkannya, jalankan DX_fix.bat di folder hasil (hak administrator tidak diperlukan).
+194	 ({0}). Pustaka ini tidak disertakan di Portabilizer atau tidak cocok arsitekturnya: jika program mengeluh, pasang paket yang sesuai ke sistem.
+195	kurang:
+196	File sumber TIDAK dihapus:
+197	pengekstrak melaporkan peringatan (
+198	Gagal menghapus {0}: {1}
+199	Salinan sementara dihapus: {0} ({1})
+200	File .bin di samping installer tidak dihapus (mungkin diperlukan program lain):
+201	Mode R: file dipindahkan ke App tanpa salinan ({0}).
+202	Mode instalasi tidak berlaku untuk MSIX/APPX: paket hanya diekstrak.
+203	Gagal mengekstrak paket.
+204	Ini sebuah bundle. Paket utama: {0}. Hasil ekstraksi bundle disimpan di {1}.
+205	Sejauh ini semuanya tenang. Di sini akan muncul saran saat ruang menipis atau terjadi galat umum.
+206	Sisa yang harus ditulis tidak dapat dipastikan.
+207	Program mana yang akan dijalankan?
+208	Pilih file.
+209	\n  ... dan {0} lagi
+210	Persiapan
+211	Dibatalkan sebelum mulai: ruang disk kurang.
+212	Tidak dapat dijeda sekarang (diperlukan psutil: pip install psutil).
+213	Hentikan?
+214	Hentikan pekerjaan? Setelah itu tidak dapat dilanjutkan dari titik berhenti: di tab «Riwayat» akan ada «Ulangi» (mulai dari awal).
+215	berlalu {0}
+216	Pilih entri di daftar terlebih dahulu.
+217	Tunggu tugas saat ini selesai (atau batalkan).
+218	Folder hasil tidak ada di disk.
+219	Buka secara manual:\n{0}
+220	Launch.bat tidak ditemukan: konversi belum selesai.
+221	Penghapusan
+222	Folder ini tidak tampak dibuat oleh Portabilizer (diperlukan nama *_portable dan Launch.bat dengan folder App). Demi keamanan tidak dihapus.
+223	Folder dihapus.
+224	Tidak semuanya dapat dihapus: sebagian file sedang dipakai program.
+225	File sumber tidak ditemukan (mungkin sudah dihapus).
+226	Hapus file sumber?
+227	Akan dihapus PERMANEN (tanpa Recycle Bin), total {0}:\n\n{1}\n\nFolder: {2}\n\nIni file sumber Anda dan tidak dapat dipulihkan. Hapus?
+228	File dihapus: {0}
+229	Hapus entri dari daftar? File di disk tidak terpengaruh.
+230	mendeteksi...
+231	Sistem: {0}\nProsesor: {1}\nRAM: {2}\nKartu grafis: {3}
+232	Versi baru Portabilizer tersedia: {0}. Anda dapat mengunduhnya di Portabilizer Launcher atau di halaman {1}.
+233	_contoh.json
+234	Tema saya
+235	Warna utama (tombol, kemajuan)
+236	Portabilizer (R) - mode radikal
+237	Saat ini aktif: Portabilizer (R) - radikal
+238	Saat ini aktif: Portabilizer (versi biasa)
+239	Versi dapat diganti setelah tugas saat ini selesai.
+240	Dihentikan. Kosongkan ruang, pilih drive lain, atau tambahkan --force.
+241	Ruang sangat pas: hampir tidak ada cadangan, tugas bisa dijeda.
+242	Anda memilih: {0}
+243	tidak
+244	alamat unduhan ditemukan dari petunjuk tidak langsung
+245	Dibatalkan: diperlukan pustaka (
+246	Pustaka:
+247	Gagal memindahkan file ({0}), menyalin seperti biasa.
+248	Gagal mengekstrak paket bersarang.
+249	Mode instalasi tidak berlaku untuk arsip: hanya diekstrak.
+250	Gagal mengekstrak arsip.
+251	Mode instalasi hanya tersedia untuk installer Inno/NSIS di Windows.
+252	Mode:
+253	   Peluncuran:
+254	Sisa yang harus ditulis sekitar {0}, tersedia {1}: seharusnya cukup, bisa diselesaikan.
+255	Sisa yang harus ditulis sekitar {0}, sedangkan tersedia {1}: kurang sekitar {2}.
+256	Tetap dijeda. Kosongkan ruang lalu klik «Lanjutkan».
+257	Melanjutkan dengan risiko sendiri: akan berhenti hanya jika ruang tersedia kurang dari {0}.
+258	Jeda. Kosongkan ruang disk lalu klik «Lanjutkan».
+259	 Tugas dijeda: pilih tindakan di jendela.
+260	Perkiraan ruang yang dibutuhkan
+261	Dibatalkan. Sisa file dapat dihapus di tab «Riwayat».
+262	Ruang disk masih sedikit: {0}.
+263	Proses
+264	sisa ~{0}
+265	JEDA
+266	Jalankan secara manual:\n{0}\n\n{1}
+267	, sehingga tidak dapat diulang. Unduh atau pasang ulang.
+268	Gagal menghapus seluruh folder. Tutup program yang memakainya lalu coba lagi.
+269	Hapus salinan portabel?
+270	{0}\n\nUkuran: {1}\n\nFolder akan dihapus permanen. File sumber (installer atau arsip) tidak terpengaruh.
+271	{0} inti / {1} thread
+272	{0:.0f}%  ({1} dari {2})
+273	, memori {0} dari {1}, {2:.0f} °C
+274	 (perkiraan dari 3D)
+275	Pilih cara Portabilizer membuat salinan portabel. Anda dapat beralih kapan saja (ini hanya mengubah mode kerja). Setiap kali dijalankan, program dimulai dalam versi biasa.
+276	Versi aman.\n\nFile sumber (installer, paket, atau arsip) tidak disentuh, folder portabel dibuat di sampingnya.\n\nKekurangan: kedua salinan tetap ada di disk, baik file sumber maupun folder portabel.\n\nCocok untuk hampir semua kasus, terutama jika Anda tidak yakin programnya akan berjalan.
+277	Versi radikal (berisiko).\n\nSetelah build berhasil, MENGHAPUS file sumber (semua volume arsip) dan salinan sementara, sehingga hasil akhir memakan lebih sedikit ruang. Folder portabel dibuat di samping file sumber.\n\nPenting: selama proses berlangsung, ruang yang dibutuhkan sama seperti versi biasa: file sumber dihapus hanya di akhir, setelah verifikasi. File yang dihapus tidak dapat dikembalikan: jika nanti ada masalah, Anda harus mengunduh atau memasangnya lagi dari platform asalnya.\n\nSebelum setiap proses, program meminta konfirmasi.
+278	Versi baru tersedia: {0}.
+279	Anda memakai versi terbaru ({0}) atau tidak ada koneksi ke GitHub.
+280	Versi program: {0}
+281	Periksa versi baru saat dijalankan (permintaan ke GitHub, tidak ada data yang dikirim)
+282	Periksa sekarang
+283	Tampilan jendela. Perubahan langsung diterapkan dan diingat. Tema merah otomatis aktif di versi (R) dan disesuaikan dengan tema terang atau gelap.
+284	 (kustom)
+285	Tampilan klasik: warna ditentukan oleh Windows.
+286	. Warna: latar, kolom, tombol, teks, sekunder, aksen, berhasil, peringatan, galat.
+287	Gagal membuka folder: {0}
+288	Gagal menyimpan tema: {0}
+289	Pilih warna sendiri...
+290	Buka folder themes
+291	Segarkan daftar tema
+292	Tema sendiri: letakkan file .json di folder themes di samping program (contoh _contoh.json dibuat dengan tombol di atas). Di dalamnya ada warna berformat #rrggbb, nama, "kind": "light" atau "dark", dan "r": true untuk tema merah mode R. Warna yang hilang diambil dari tema bawaan. Jendela konfirmasi (pesan Windows) tetap bergaya sistem.
+293	Jadikan portabel (R)
+294	Sedang bekerja
+295	Tugas masih berjalan. Hentikan dan keluar?
+296	PERHATIAN:
+297	BAHAYA:
+298	 Proses dihentikan agar disk tidak penuh.
+299	blok MSZIP rusak
+300	Kurang:
+301	Gagal memindahkan bundle: {0}
+302	Di dalam arsip tidak ada program siap pakai, tetapi ada installer: {0}. Melanjutkan dengannya. Isi arsip disimpan di {1}.
+303	File .bin ditemukan di samping installer: {0} ({1}):
+304	Gagal mengekstrak. Mungkin installer tidak standar (maka diperlukan virtualizer seperti Cameyo / Turbo Studio).
+305	Mencoba instalasi senyap. File hasil ekstraksi akan disimpan di {0}.
+306	Unduhan dibatalkan sesuai pilihan Anda.
+307	Hentikan: bersihkan disk
+308	Batalkan unduhan
+309	Portabilizer (R): file akan dipindahkan
+310	{0} ({1}) akan DIPINDAHKAN ke folder App di sampingnya: tidak ada salinan, ruang tambahan tidak diperlukan.\n\nDi lokasi lama file tidak akan ada lagi. Anda dapat mengembalikannya dengan mengambilnya dari folder App.\n\nLanjutkan?
+311	Portabilizer (R): file sumber akan dihapus
+312	Yakin ingin menjadikan file ini portabel dalam mode radikal?\n\nSetelah build berhasil, akan DIHAPUS PERMANEN (tanpa Recycle Bin):\n{0}\ntotal {1}, beserta salinan sementara.\n\nFile sumber tidak dapat dikembalikan. Jika ada masalah (misalnya game tidak berjalan), Anda harus mengunduh atau memasangnya lagi dari platform asalnya.\n\nPenghapusan hanya terjadi jika build berhasil dan semuanya terverifikasi; jika ada galat atau dibatalkan, file tetap ada. Hasil dibuat di samping file sumber.\n\nLanjutkan?
+313	Selesai. File dipindahkan tanpa salinan: tidak ada ruang tambahan yang terpakai.
+314	tersedia di disk {0}
+315	 (tidak ada di disk)
+316	File sumber sudah tidak ada
+317	Mulai dari awal?
+318	Folder sudah ada (sisa dari percobaan sebelumnya):\n{0}\nUkuran: {1}\n\nHapus dan mulai dari awal?
+319	Beban CPU/RAM tidak tersedia: pasang psutil (pip install psutil). Di Portabilizer.exe hasil build, modul ini sudah tertanam.
+320	Memori hampir habis. Tutup browser dan program yang tidak perlu, jika tidak ekstraksi dapat melambat drastis.
+321	Disk: baca {0}/dtk, tulis {1}/dtk
+322	beban tidak tersedia
+323	Sekarang:
+324	Memilih melanjutkan tanpa DirectX.
+325	Memilih melanjutkan tanpa pustaka.
+326	Folder {0} dapat dihapus setelah diperiksa: hanya diperlukan sebagai sumber installer.
+327	Setelah ekstraksi, exe utama tidak ditemukan.
+328	Ruang tidak cukup
+329	Menurut perkiraan ruang tidak akan cukup. Jika ruang habis, ekstraksi akan berhenti dengan galat.\n\nTetap lanjutkan?
+330	Ditemukan beberapa program yang cocok dan saya tidak yakin mana yang utama. Pilih yang menjalankan aplikasi yang diinginkan (dapat diganti nanti dengan mode «Hanya Launch.bat»).
+331	Pilih otomatis
+332	Apakah ruangnya cukup?
+333	Selesai. File sumber dihapus, {0} dibebaskan.
+334	 (dihapus oleh mode radikal)
+335	  <- tempat penyimpanan
+336	Di drive {0} tempat Anda menyimpan, ruang tersisa sedikit ({1}). Pilih drive lain di kolom «Tujuan».
+337	Gagal memindahkan arsip yang diekstrak: {0}
+338	Diekstrak {0}, sedangkan di .bin ada {1}: tampaknya repack yang datanya dipasang oleh installer itu sendiri.
+339	Gagal memindahkan hasil ekstraksi: {0}
+340	Instalasi gagal - file hasil ekstraksi dikembalikan ke App.
+341	Gagal mengembalikan hasil ekstraksi ke App: {0}
+342	\n\nTetap mulai?
+343	Peringatan: ada file .bin di sampingnya. Jika program tidak berjalan atau kekurangan data, ulangi dalam mode 'Hanya instal (ke App)'.
+344	Installer, paket, arsip
+345	Semua
+346	Program
+347	Selesai. Hasilnya ada di tab «Riwayat».
+348	Gagal. Detailnya ada di log dan saran.
+349	Selesai, tetapi file sumber tidak dihapus:
+350	Bahasa
+351	Bahasa antarmuka:
+352	Bahasa berubah langsung: jendela akan dimulai ulang sendiri, pengaturan tersimpan.
+353	Tunggu tugas selesai atau batalkan dulu: setelah bahasa diganti, jendela dimulai ulang.

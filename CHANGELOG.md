@@ -6,7 +6,7 @@
 ## v9.1
 
 - Язык интерфейса: вкладка «Язык» (с глобусом), как в настройках Windows: название языка на нём самом и под ним на языке интерфейса. Окно, подсказки, журнал, диалоги и история переведены. Смена языка перезапускает окно, настройки сохраняются
-- Языки: русский, English, Eesti, Français, Español, Deutsch, Italiano, Português, Nederlands, Svenska, Suomi, Українська, Čeština, Română, Ελληνικά, Türkçe, 日本語, 한국어; остальные языки добавляются в следующих версиях
+- Языки: 34 (русский, English, Eesti, Français, Español, Deutsch, Italiano, Português, Nederlands, Polski, Українська, Svenska, Suomi, Türkçe, 中文, 日本語, 한국어, العربية, Čeština, Română, Magyar, Ελληνικά, עברית, हिन्दी, Indonesia, Tiếng Việt, ไทย, Български, Српски, Hrvatski, Latviešu, Lietuvių, Norsk, Dansk)
 - При первом запуске берётся язык Windows (если он есть среди переведённых), иначе английский
 - Файл журнала portabilizer.log по-прежнему пишется по-русски: так проще разбирать ошибки
 

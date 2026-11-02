@@ -1,0 +1,353 @@
+1	Potrebno je {0} {1}, slobodno je {2} na disku {3}.{4}
+2	u tijeku
+3	pauza
+4	gotovo
+5	pogreška
+6	prekinuto
+7	prekinuto (aplikacija je zatvorena)
+8	Auto (kao u sustavu Windows)
+9	Svijetla
+10	Tamna
+11	Klasična (sustavna)
+12	Moja boja
+13	B
+14	KB
+15	MB
+16	GB
+17	 Ako se unutar arhive nalazi instalacijski program, trebat će otprilike još toliko.
+18	prema sadržaju arhive
+19	okvirno
+20	Igri na Unreal Engineu mogu trebati biblioteke DirectX (June 2010). Ako se pri pokretanju pojavi pogreška o xinput1_3.dll, X3DAudio1_7.dll ili XAPOFX1_5.dll, pokrenite DX_fix.bat u mapi rezultata: administratorska prava nisu potrebna.
+21	Radikalni način nije izbrisao izvornu datoteku jer nije bilo moguće provjeriti sve (razlog je u zapisniku). Prijenosna mapa je stvorena, izvornik je na mjestu: provjerite je i sami izbrišite izvornik.
+22	Programu treba .NET, kojeg nema na ovom računalu. Pokrenite Install_dotnet.bat u mapi rezultata (preuzet će runtime u prijenosnu kopiju, bez administratorskih prava).
+23	Datoteka traži lozinku. Portabilizer ne unosi lozinke: raspakirajte je ručno u 7-Zipu (pitat će za lozinku) i odaberite instalacijski program ili mapu iz rezultata.
+24	7z.exe nije pronađen (ni pokraj programa ni u instaliranom 7-Zipu). Instalirajte 7-Zip s 7-zip.org ili stavite 7z.exe i 7z.dll pokraj programa Portabilizer ili u mapu tools.
+25	innoextract.exe nije pronađen. Stavite ga pokraj programa Portabilizer ili u mapu tools.
+26	Na disku nema dovoljno mjesta. Oslobodite mjesto ili odaberite drugi disk u polju «Kamo», zatim na kartici «Povijest» kliknite «Ponovi».
+27	Instalacijski program traži administratorska prava. Ako ih nemate, pokušajte način «Samo raspakiravanje» ili potražite prijenosnu verziju kod razvojnog programera.
+28	Glavni exe nije pronađen. U zapisniku iznad navedeni su pronađeni exe-ovi i razlog odbacivanja: kopirajte željeni naziv u polje «Glavni exe» i pokrenite način «Samo Launch.bat».
+29	Izgleda kao UWP aplikacija: izvan instaliranog paketa vjerojatno se neće pokrenuti. Potražite exe instalacijski program.
+30	Provjerite je li datoteka preuzeta u cijelosti (usporedite veličinu ili preuzmite ponovno) i nalazi li se 7z.exe pokraj programa.
+31	Ova je mapa već ranije stvorena. Otvorite je na kartici «Povijest» ili je izbrišite ako želite početi iznova.
+32	Podaci se nalaze u vanjskim .bin datotekama koje instalira sam instalacijski program. Za to može biti potrebna instalacija, a za nju administratorska prava.
+33	Djelomično stvorene datoteke ostale su na disku. Možete ih izbrisati na kartici «Povijest».
+34	n/d
+35	Raspakiravanje
+36	Raspakiravač: {0}
+37	Instalacija
+38	Tiha instalacija u mapu App (može potrajati više minuta, ne zatvarajte prozor)...
+39	Bez administratora nije uspjelo - pokušavam sa zahtjevom UAC (kliknite 'Da'). Instalacijski program pokrenut s administratorskim pravima odavde se ne može zaustaviti.
+40	servisni naziv (setup/update/redist i sl.)
+41	servisni alat repacka
+42	privremena mapa instalacijskog programa
+43	konzolni program
+44	Pronađeno exe: {0}. Evo prvih {1} i zašto nisu odgovarali:
+45	Kopirajte željeni naziv u polje «Glavni exe» i pokrenite način «Samo Launch.bat».
+46	Datoteka '{0}' nije pronađena u mapi App.
+47	Za {1} potreban je .NET ({0}), a na ovom računalu nije pronađen. Pokrenite Install_dotnet.bat u mapi rezultata: preuzet će runtime u mapu dotnet unutar prijenosne kopije (administratorska prava nisu potrebna), a Launch.bat će ga sam pokupiti.
+48	Pokretanje: uobičajeno, podizanje prava nije potrebno.
+49	Programu trebaju biblioteke kojih nema u sustavu:\n{0}\n\nStaviti ih u mapu programa? Administratorska prava nisu potrebna, sustav se ne mijenja, sve ostaje unutar prijenosne mape.\n\nDa - staviti.\nNe - nastaviti bez njih (program se možda neće pokrenuti).\nOtkaži - prekinuti.
+50	Gotovo: {0}
+51	Glavni exe: {0}
+52	Pokrećite putem Launch.bat. Mapu možete prenositi na USB stick.
+53	Radikalni način: oslobođeno {0}.
+54	Način: {0}
+55	Vrsta: {0}
+56	Svijetlocrvena (R)
+57	Ugljen s crvenim naglaskom
+58	Bordo
+59	Višnja
+60	Datoteka: exe, msi, msix/appx, arhiva (rar, zip, 7z...). Glavni exe nije obavezan: naziv (App.exe), putanja unutar mape App ili datoteka iz mape App. Zapisnik se sprema u portabilizer.log.
+61	NAČIN (R): obični exe jednostavno se PREMJEŠTA u mapu App (nema kopije, mjesto nije potrebno). Arhive i instalacijski programi prvo se raspakiraju, a tek zatim se izvornik briše: tijekom rada potrebno je mjesto za raspakirani sadržaj. Prije pokretanja slijedi potvrda.
+62	Ne brišem {0}: mapa ne izgleda kao da ju je stvorio Portabilizer.
+63	Potreban je 7z.exe: nije pronađen ni pokraj programa ni u instaliranom 7-Zipu. Instalirajte 7-Zip (7-zip.org) ili stavite 7z.exe i 7z.dll pokraj programa ili u tools/.
+64	7-Zip, kod 1
+65	Datoteka je zaštićena lozinkom. Portabilizer ne unosi lozinke: raspakirajte je ručno (7-Zip će sam pitati lozinku), zatim odaberite raspakiranu mapu ili instalacijski program.
+66	Instalacijski program završio je s pogreškom. Provjerite nalaze li se .bin datoteke pokraj setup.exe.
+67	U mapi {0} uopće nema exe datoteka. Provjerite je li se program raspakirao ili instalirao upravo ovdje.
+68	MSIX: ispravljeno naziva s kodiranjem %XX: {0}
+69	MSIX: AppxManifest.xml nije pronađen - tražim exe na uobičajen način.
+70	MSIX: u manifestu nema runFullTrust - to je vjerojatno UWP aplikacija. Izvan instaliranog paketa vjerojatno se neće pokrenuti.
+71	, manifest: {0}.
+72	Ovo izgleda kao mrežni pokretač: unutra je poveznica za preuzimanje ({0}). Sam program preuzet će se pri pokretanju i instalirati u sustav pa to neće biti prijenosna kopija. Za pravu prenosivost preuzmite potpuni izvanmrežni instalacijski program i njega učinite prijenosnim.
+73	Datoteka je zaštićena packerom: ne može se raspakirati ni analizirati, samo pokrenuti.
+74	Pokretanje: sa zahtjevom UAC (odabrano ručno). Launch.bat ne mijenja prava.
+75	Pokretanje: bez zahtjeva UAC (RunAsInvoker, odabrano ručno).
+76	{0} traži administratorska prava. Launch.bat ga pokreće bez zahtjeva UAC (RunAsInvoker), lozinka nije potrebna. Ako program doista piše u Program Files, HKLM, instalira usluge ili upravljačke programe, bez prava možda neće raditi. Tada koristite Launch_admin.bat (uobičajeno pokretanje sa zahtjevom UAC).
+77	nije cab
+78	višedijelni cab
+79	Ostalo
+80	Igra na Unreal Engineu: Launch.bat izravno pokreće {0}. Korijenski {1} pri prvom pokretanju traži instalaciju DirectX-a i Visual C++ u sustav i zatvara se ako odbijete. Pokretanje putem njega: Launch_stub.bat.
+81	Unreal: pokretanje {0}
+82	exe traži administratora: Launch.bat ide putem RunAsInvoker
+83	Radikalni način: izvorna datoteka je premještena, a ne kopirana - nijedan višak gigabajta nije zauzet.
+84	rad je prekinut
+85	Launch.bat nije stvoren
+86	mapa App je prazna
+87	Datoteke se nalaze u: {0}
+88	Mape s datotekama su prazne.
+89	Nepoznat način: {0}
+90	Datoteka nije navedena.
+91	Datoteka nije pronađena.
+92	Mapa već postoji: {0}
+93	Izbrišite je ili odaberite način 'Samo Launch.bat'.
+94	Glavni exe nije pronađen.
+95	Navedite exe u polju 'Glavni exe' i pokrenite način 'Samo Launch.bat'.
+96	boja mora biti oblika #rrggbb
+97	Auto
+98	Samo raspakiravanje
+99	Samo instalacija (u App)
+100	Samo Launch.bat
+101	Auto (bez UAC-a ako exe traži administratora)
+102	Uvijek bez UAC-a
+103	Uvijek s UAC-om (kao u izvorniku)
+104	Datoteka:
+105	Kamo:
+106	Glavni exe:
+107	Procesor
+108	Memorija
+109	Grafička kartica
+110	--run prihvaća: auto, noadmin, admin
+111	Radikalni način BRIŠE izvornu datoteku nakon uspješne izrade (vratiti je nije moguće).\nAko ste sigurni, dodajte --yes. Ništa nije učinjeno.
+112	--dx prihvaća: install, skip, cancel
+113	Na disku {0} preostalo je samo {1}.
+114	Potreban je innoextract.exe (stavite ga pokraj programa ili u tools/).
+115	Pokretanje bez administratora nije uspjelo: {0}
+116	Grafičkih programa nema, uzimam konzolni: {0}. Ako to nije igra, ručno navedite exe.
+117	Odabrano: {0} (prikladnih exe: {1}). Druge mogućnosti: {2}. Ako se pokrene krivi program, ručno navedite exe.
+118	odgovara
+119	odbačen:
+120	MSIX: nije moguće pročitati manifest: {0}
+121	Nije moguće stvoriti Install_dotnet.bat: {0}
+122	Analiza {0}: {1}, {2}
+123	\n\nDio datoteka nije ugrađen u Portabilizer:
+124	. Za DirectX bit će stvoren DX_fix.bat (preuzet će potpuni paket DirectX).
+125	. Morat ćete ih instalirati ručno.
+126	potreban je DX_fix.bat
+127	raspakirano {0} od {1}
+128	izvorna datoteka nalazi se unutar mape rezultata
+129	Izvorna datoteka izbrisana: {0} ({1})
+130	. Ako su to podaci istog repacka, izbrišite ih sami.
+131	Spremljeno u: {0}
+132	Mape {0} nema. Prvo napravite raspakiravanje ili instalaciju.
+133	Glavni exe nije pronađen - navedite ga u polju 'Glavni exe'.
+134	Ovo je običan exe - kopiram ga kakav jest.
+135	Pozor: MSIX je raspakiran kao obična mapa, bez registracije paketa. Klasični (full trust) programi obično tako rade, a UWP aplikacije i sve što traži identifikator paketa možda se neće pokrenuti.
+136	Radikalni način nije potvrđen: ne radim ništa.
+137	Prekinuo korisnik. Djelomično stvorene datoteke ostale su na disku: možete ih izbrisati na kartici «Povijest».
+138	Pogreška: {0}
+139	Pretvarač
+140	Povijest
+141	Dijagnostika
+142	Verzije
+143	Izgled
+144	Spreman za rad.
+145	Napravi prijenosnim
+146	Pauza
+147	Nastavi
+148	Prekini
+149	Preporuke
+150	Potreban je DirectX
+151	Preuzimanje je na pauzi, ništa nije izgubljeno. Otkazivanje trajno zaustavlja rad: poslije je moguće samo početi iznova («Ponovi» na kartici «Povijest»).
+152	Ponestaje mjesta na disku
+153	Pauza: proces je zamrznut, napredak je sačuvan.
+154	Nastavljam od istog mjesta.
+155	Datum
+156	Izvor
+157	Verzija
+158	Vrsta
+159	Status
+160	Veličina
+161	Rezultat
+162	Bilješke
+163	Brišem {0} ...
+164	\n... i još {0}
+165	Otvori mapu
+166	Pokreni
+167	Ponovi
+168	Izbriši kopiju
+169	Izbriši izvornu datoteku
+170	Ukloni s popisa
+171	Osvježi
+172	Prikupljam podatke o sustavu...
+173	Disk: n/d
+174	Disk
+175	Kapacitet
+176	Slobodno
+177	Zauzeto
+178	Portabilizer (R) - radikalni
+179	Uključi običnu verziju
+180	Uključi verziju (R)
+181	Tema:
+182	Tamnocrvena (R):
+183	Svijetlocrvena (R):
+184	Vlastita boja
+185	Obojiti u ovu boju i pozadinu prozora?\n\nDa - pozadina će dobiti lagani ton odabrane boje.\nNe - pozadina ostaje neutralna, boja će biti samo na gumbima i naglascima.
+186	Mjesta vjerojatno neće biti dovoljno.
+187	ne čita se
+188	 (nizak prioritet)
+189	Navedeni exe nalazi se izvan mape App - odaberite datoteku unutar mape App.
+190	{0}: ovaj cab koristi kompresiju LZX, raspakirati se može samo u sustavu Windows (expand.exe).
+191	expand.exe nije uspio izvaditi {0}: {1}
+192	Biblioteke ({0}) stavljene su pokraj {1}: {2}.
+193	. Ako se program požali na njih, pokrenite DX_fix.bat u mapi rezultata (administratorska prava nisu potrebna).
+194	 ({0}). Nisu ugrađene u Portabilizer ili nisu odgovarale po arhitekturi: ako se program požali, instalirajte odgovarajući paket u sustav.
+195	nedostaje:
+196	Izvorna datoteka NIJE izbrisana:
+197	raspakiravač je javio upozorenja (
+198	Nije moguće izbrisati {0}: {1}
+199	Privremena kopija izbrisana: {0} ({1})
+200	.bin datoteke pokraj instalacijskog programa nisu brisane (mogle su trebati drugim programima):
+201	Način R: datoteka je premještena u App bez kopije ({0}).
+202	Način instalacije nije primjenjiv na MSIX/APPX: paket se samo raspakirava.
+203	Nije moguće raspakirati paket.
+204	Ovo je bundle. Glavni paket: {0}. Raspakirani bundle spremljen je u {1}.
+205	Za sada je sve mirno. Ovdje će se pojaviti savjeti kad ponestane mjesta i kod tipičnih pogrešaka.
+206	Koliko još treba zapisati, ne može se točno reći.
+207	Koji program pokrenuti?
+208	Odaberite datoteku.
+209	\n  ... i još {0}
+210	Priprema
+211	Otkazano prije početka: na disku nema dovoljno mjesta.
+212	Pauzu sada nije moguće uključiti (potreban je psutil: pip install psutil).
+213	Prekinuti?
+214	Zaustaviti rad? Poslije se ne može nastaviti od mjesta zaustavljanja: na kartici «Povijest» bit će «Ponovi» (počinje iznova).
+215	prošlo {0}
+216	Prvo odaberite zapis na popisu.
+217	Pričekajte završetak trenutnog zadatka (ili ga prekinite).
+218	Mape rezultata nema na disku.
+219	Otvorite ručno:\n{0}
+220	Launch.bat nije pronađen: pretvorba nije dovršena.
+221	Brisanje
+222	Ova mapa ne izgleda kao da ju je stvorio Portabilizer (potreban je naziv *_portable i Launch.bat s mapom App). Iz opreza je ne brišem.
+223	Mapa je izbrisana.
+224	Nije moguće izbrisati sve: dio datoteka koristi program.
+225	Izvorna datoteka nije pronađena (možda je već izbrisana).
+226	Izbrisati izvornu datoteku?
+227	Bit će TRAJNO izbrisano (mimo koša), ukupno {0}:\n\n{1}\n\nMapa: {2}\n\nOvo je vaša izvorna datoteka, nećete je moći vratiti. Izbrisati?
+228	Datoteka izbrisana: {0}
+229	Ukloniti zapis s popisa? Datoteke na disku ne dira se.
+230	utvrđujem...
+231	Sustav: {0}\nProcesor: {1}\nRadna memorija: {2}\nGrafička kartica: {3}
+232	Dostupna je nova verzija programa Portabilizer: {0}. Možete je preuzeti u Portabilizer Launcheru ili na stranici {1}.
+233	_primjer.json
+234	Moja tema
+235	Glavna boja (gumbi, napredak)
+236	Portabilizer (R) - radikalni način
+237	Trenutno je uključen: Portabilizer (R) - radikalni
+238	Trenutno je uključen: Portabilizer (obična verzija)
+239	Verziju možete promijeniti nakon završetka trenutnog zadatka.
+240	Zaustavljeno. Oslobodite mjesto, odaberite drugi disk ili dodajte --force.
+241	Mjesta je taman: pričuve gotovo nema, zadatak se može zaustaviti na pauzi.
+242	Odabrali ste: {0}
+243	ne
+244	adresa za preuzimanje pronađena je po neizravnim znakovima
+245	Otkazano: potrebne su biblioteke (
+246	Biblioteke:
+247	Nije moguće premjestiti datoteku ({0}), kopiram na uobičajeni način.
+248	Nije moguće raspakirati ugniježđeni paket.
+249	Način instalacije nije primjenjiv na arhivu: ona se samo raspakirava.
+250	Nije moguće raspakirati arhivu.
+251	Način instalacije dostupan je samo za Inno/NSIS instalacijske programe u sustavu Windows.
+252	Način:
+253	   Pokretanje:
+254	Preostalo je za zapisati otprilike {0}, slobodno je {1}: to bi trebalo biti dovoljno, možete doći do kraja.
+255	Preostalo je za zapisati otprilike {0}, a slobodno je {1}: nedostajat će otprilike {2}.
+256	Ostajem na pauzi. Oslobodite mjesto i kliknite «Nastavi».
+257	Nastavljam na vlastiti rizik: zaustavit ću se samo ako slobodnog mjesta bude manje od {0}.
+258	Pauza. Oslobodite mjesto na disku i kliknite «Nastavi».
+259	 Zadatak je na pauzi: u prozoru odaberite što učiniti.
+260	Procjena potrebnog mjesta
+261	Prekinuto. Ostatke možete izbrisati na kartici «Povijest».
+262	Na disku je i dalje malo mjesta: {0}.
+263	Rad
+264	preostalo ~{0}
+265	PAUZA
+266	Pokrenite ručno:\n{0}\n\n{1}
+267	, pa se ne može ponoviti. Preuzmite ili instalirajte ga ponovno.
+268	Nije moguće izbrisati cijelu mapu. Zatvorite programe koji je koriste i pokušajte ponovno.
+269	Izbrisati prijenosnu kopiju?
+270	{0}\n\nVeličina: {1}\n\nMapa će biti nepovratno izbrisana. Izvorna datoteka (instalacijski program ili arhiva) ostaje netaknuta.
+271	{0} jezgri / {1} niti
+272	{0:.0f}%  ({1} od {2})
+273	, memorija {0} od {1}, {2:.0f} °C
+274	 (procjena prema 3D-u)
+275	Odaberite kako Portabilizer izrađuje prijenosne kopije. Možete mijenjati u bilo kojem trenutku (mijenja se samo način rada). Pri svakom pokretanju program se pokreće u običnoj verziji.
+276	Sigurna verzija.\n\nIzvorna datoteka (instalacijski program, paket ili arhiva) ostaje netaknuta, a pokraj nje se stvara prijenosna mapa.\n\nMana: na disku ostaju obje kopije: i izvornik i prijenosna mapa.\n\nPogodno za gotovo sve, osobito ako niste sigurni hoće li program raditi.
+277	Radikalna verzija (rizik).\n\nNakon uspješne izrade BRIŠE izvornu datoteku (sve dijelove arhive) i privremene kopije pa konačni rezultat zauzima manje mjesta. Prijenosna mapa stvara se pokraj izvornika.\n\nVažno: dok rad traje, mjesta treba koliko i u običnoj verziji: izvornik se briše tek na samom kraju, nakon provjere. Izbrisanu datoteku nije moguće vratiti: ako kasnije nešto pođe po zlu, morat ćete je ponovno preuzeti ili instalirati s platforme.\n\nPrije svakog pokretanja program traži potvrdu.
+278	Dostupna je nova verzija: {0}.
+279	Imate najnoviju verziju ({0}) ili nema veze s GitHubom.
+280	Verzija programa: {0}
+281	Provjeravaj nove verzije pri pokretanju (zahtjev prema GitHubu, nikakvi se podaci ne šalju)
+282	Provjeri sada
+283	Izgled prozora. Promjene se primjenjuju odmah i pamte. Crvene teme automatski se uključuju u verzijama (R) i prilagođavaju svijetloj ili tamnoj temi.
+284	 (vlastita)
+285	Klasičan izgled: boje određuje Windows.
+286	. Boje: pozadina, polja, gumbi, tekst, sporedna, naglasak, uspjeh, upozorenje, pogreška.
+287	Nije moguće otvoriti mapu: {0}
+288	Nije moguće spremiti temu: {0}
+289	Odaberi vlastitu boju...
+290	Otvori mapu themes
+291	Osvježi popis tema
+292	Vlastite teme: stavite .json datoteku u mapu themes pokraj programa (uzorak _primjer.json stvara se gumbom iznad). U njoj su boje u obliku #rrggbb, naziv, "kind": "light" ili "dark" i "r": true za crvene teme načina R. Boje koje nedostaju uzimaju se iz ugrađene teme. Prozori potvrde (poruke sustava Windows) ostaju sustavni.
+293	Napravi prijenosnim (R)
+294	Rad je u tijeku
+295	Zadatak se još izvršava. Prekinuti ga i izaći?
+296	PAŽNJA:
+297	OPASNO:
+298	 Rad je zaustavljen kako se disk ne bi napunio.
+299	oštećen blok MSZIP
+300	Nedostaje:
+301	Nije moguće premjestiti bundle: {0}
+302	U arhivi nema gotovog programa, ali ima instalacijski program: {0}. Nastavljam s njim. Sadržaj arhive spremljen je u {1}.
+303	Pokraj instalacijskog programa pronađeno je .bin datoteka: {0} ({1}):
+304	Nije moguće raspakirati. Možda je instalacijski program nestandardan (tada je potreban virtualizator poput Cameyo / Turbo Studio).
+305	Pokušavam tihu instalaciju. Raspakirane datoteke spremit ću u {0}.
+306	Preuzimanje se otkazuje prema vašem izboru.
+307	Zaustavi: očistit ću disk
+308	Otkaži preuzimanje
+309	Portabilizer (R): datoteka će biti premještena
+310	{0} ({1}) bit će PREMJEŠTEN u mapu App pokraj sebe: kopija se ne stvara, dodatno mjesto nije potrebno.\n\nNa prijašnjem mjestu datoteke više neće biti. Možete je vratiti izvadivši je iz mape App.\n\nNastaviti?
+311	Portabilizer (R): izvorna datoteka bit će izbrisana
+312	Želite li doista ovu datoteku učiniti prijenosnom u radikalnom načinu?\n\nNakon uspješne izrade bit će TRAJNO IZBRISANO (mimo koša):\n{0}\nukupno {1}, kao i privremene kopije.\n\nIzvornu datoteku poslije nećete moći vratiti. Ako nešto pođe po zlu (npr. igra se ne pokrene), morat ćete je ponovno preuzeti ili instalirati s platforme.\n\nBrisanje će se dogoditi samo ako je izrada uspjela i sve je provjereno; pri pogrešci ili otkazivanju datoteka ostaje. Rezultat će biti stvoren pokraj izvorne datoteke.\n\nNastaviti?
+313	Gotovo. Datoteka je premještena bez kopije: dodatno mjesto nije zauzeto.
+314	slobodno na disku {0}
+315	 (nema na disku)
+316	Izvorne datoteke više nema
+317	Početi iznova?
+318	Mapa već postoji (ostatak prethodnog pokušaja):\n{0}\nVeličina: {1}\n\nIzbrisati je i početi iznova?
+319	Opterećenje CPU/RAM nije dostupno: instalirajte psutil (pip install psutil). U izgrađenom Portabilizer.exe već je ugrađen.
+320	Radne memorije gotovo nema. Zatvorite preglednik i nepotrebne programe, inače se raspakiravanje može jako usporiti.
+321	Disk: čitanje {0}/s, pisanje {1}/s
+322	opterećenje nije dostupno
+323	Trenutno:
+324	Odabrano je nastaviti bez DirectX-a.
+325	Odabrano je nastaviti bez njih.
+326	Mapu {0} možete izbrisati nakon provjere: potrebna je samo kao izvor instalacijskog programa.
+327	Nakon raspakiravanja glavni exe nije pronađen.
+328	Neće biti dovoljno mjesta
+329	Prema procjeni mjesta neće biti dovoljno. Ako ponestane mjesta, raspakiravanje će stati s pogreškom.\n\nSvejedno nastaviti?
+330	Pronađeno je nekoliko prikladnih programa i nisam siguran koji je glavni. Odaberite onaj koji pokreće željenu aplikaciju (poslije ga možete promijeniti u načinu «Samo Launch.bat»).
+331	Odaberi automatski
+332	Hoće li mjesta biti dovoljno?
+333	Gotovo. Izvorna datoteka izbrisana, oslobođeno {0}.
+334	 (izbrisao ga je radikalni način)
+335	  <- kamo spremamo
+336	Na disku {0}, na koji spremate, malo je mjesta ({1}). Odaberite drugi disk u polju «Kamo».
+337	Nije moguće premjestiti raspakiranu arhivu: {0}
+338	Raspakirano je {0}, a u .bin je {1}: izgleda kao repack čije podatke instalira sam instalacijski program.
+339	Nije moguće premjestiti raspakirano: {0}
+340	Instalacija nije uspjela - raspakirane datoteke vraćene su u App.
+341	Nije moguće vratiti raspakirano u App: {0}
+342	\n\nSvejedno početi?
+343	Upozorenje: pokraj su .bin datoteke. Ako se program ne pokrene ili mu nedostaju podaci, ponovite u načinu 'Samo instalacija (u App)'.
+344	Instalacijski programi, paketi, arhive
+345	Sve
+346	Programi
+347	Gotovo. Rezultat je na kartici «Povijest».
+348	Nije uspjelo. Pojedinosti su u zapisniku i preporukama.
+349	Gotovo, ali izvorna datoteka nije izbrisana:
+350	Jezik
+351	Jezik sučelja:
+352	Jezik se mijenja odmah: prozor će se sam ponovno pokrenuti, postavke će biti sačuvane.
+353	Prvo pričekajte kraj zadatka ili ga prekinite: nakon promjene jezika prozor se ponovno pokreće.
