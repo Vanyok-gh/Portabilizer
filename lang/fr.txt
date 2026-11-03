@@ -351,3 +351,18 @@
 351	Langue de l'interface :
 352	La langue change tout de suite : la fenêtre redémarre seule, les réglages sont conservés.
 353	Attendez la fin de la tâche ou annulez-la : la fenêtre redémarre après le changement de langue.
+354	Un raccourci sur le Bureau ne peut être créé que sous Windows.
+355	Le raccourci n'a pas été créé (PowerShell a renvoyé une erreur). Exécutez Create_Shortcut.bat dans le dossier résultat.
+356	Créer un raccourci « {0} » sur le Bureau ?\n\nUn double-clic lancera le programme depuis ce dossier.
+357	\n\nSi vous déplacez ensuite le dossier, exécutez Create_Shortcut.bat depuis celui-ci : le raccourci sera recréé.
+358	Raccourci non créé : {0}
+359	Create_Shortcut.bat non créé : {0}
+360	\nL'icône est prise dans le programme lui-même.
+361	\nIcône du programme introuvable : le raccourci utilisera l'icône par défaut.
+362	Raccourci sur le Bureau
+363	Le raccourci « {0} » a été créé sur le Bureau.
+364	raccourci sur le Bureau
+365	Icône du raccourci introuvable : le raccourci utilisera l'icône par défaut.
+366	Raccourci sur le Bureau
+367	Impossible de préparer le raccourci : exe principal introuvable.
+368	Impossible de créer le raccourci. Lancez-le manuellement :\n{0}

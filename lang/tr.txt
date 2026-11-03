@@ -351,3 +351,18 @@
 351	Arayüz dili:
 352	Dil hemen değişir: pencere kendiliğinden yeniden başlar, ayarlar korunur.
 353	Önce görevin bitmesini bekleyin veya iptal edin: dil değişince pencere yeniden başlar.
+354	Masaüstü kısayolu yalnızca Windows'ta oluşturulur.
+355	Kısayol oluşturulamadı (PowerShell hata döndürdü). Sonuç klasöründeki Create_Shortcut.bat dosyasını çalıştırın.
+356	Masaüstünde "{0}" kısayolu oluşturulsun mu?\n\nÇift tıklayınca program bu klasörden başlar.
+357	\n\nKlasör sonradan taşınırsa içindeki Create_Shortcut.bat dosyasını çalıştırın: kısayol yeniden oluşturulur.
+358	Kısayol oluşturulamadı: {0}
+359	Create_Shortcut.bat oluşturulamadı: {0}
+360	\nSimge programın kendisinden alınır.
+361	\nProgramın simgesi bulunamadı: kısayol standart simgeyle oluşturulacak.
+362	Masaüstü kısayolu
+363	"{0}" kısayolu masaüstünde oluşturuldu.
+364	masaüstü kısayolu
+365	Kısayol simgesi bulunamadı: kısayol standart simgeyle oluşturulacak.
+366	Masaüstü kısayolu
+367	Kısayol hazırlanamadı: ana exe dosyası bulunamadı.
+368	Kısayol oluşturulamadı. Elle çalıştırın:\n{0}

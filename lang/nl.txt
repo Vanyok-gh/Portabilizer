@@ -351,3 +351,18 @@
 351	Interfacetaal:
 352	De taal verandert meteen: het venster start zichzelf opnieuw op en de instellingen blijven behouden.
 353	Wacht tot de taak klaar is of annuleer haar: na het wisselen van taal wordt het venster opnieuw opgestart.
+354	Een snelkoppeling op het bureaublad kan alleen in Windows worden gemaakt.
+355	De snelkoppeling is niet gemaakt (PowerShell gaf een fout). Voer Create_Shortcut.bat uit in de resultaatmap.
+356	Een snelkoppeling naar „{0}” op het bureaublad maken?\n\nMet een dubbelklik start het programma vanuit deze map.
+357	\n\nAls je de map later verplaatst, voer dan Create_Shortcut.bat daaruit uit: de snelkoppeling wordt opnieuw gemaakt.
+358	Snelkoppeling niet gemaakt: {0}
+359	Create_Shortcut.bat niet gemaakt: {0}
+360	\nHet pictogram wordt uit het programma zelf gehaald.
+361	\nHet programmapictogram is niet gevonden: de snelkoppeling krijgt het standaardpictogram.
+362	Snelkoppeling op bureaublad
+363	De snelkoppeling „{0}” is op het bureaublad gemaakt.
+364	snelkoppeling op bureaublad
+365	Het pictogram voor de snelkoppeling is niet gevonden: de snelkoppeling krijgt het standaardpictogram.
+366	Snelkoppeling op bureaublad
+367	De snelkoppeling kon niet worden voorbereid: hoofd-exe niet gevonden.
+368	De snelkoppeling kon niet worden gemaakt. Voer hem handmatig uit:\n{0}

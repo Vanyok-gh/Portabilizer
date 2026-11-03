@@ -351,3 +351,18 @@
 351	Käyttöliittymän kieli:
 352	Kieli vaihtuu heti: ikkuna käynnistyy itse uudelleen ja asetukset säilyvät.
 353	Odota, että tehtävä päättyy, tai keskeytä se: ikkuna käynnistyy uudelleen kielen vaihdon jälkeen.
+354	Työpöydän pikakuvake luodaan vain Windowsissa.
+355	Pikakuvaketta ei luotu (PowerShell palautti virheen). Suorita Create_Shortcut.bat tuloskansiossa.
+356	Luodaanko pikakuvake "{0}" työpöydälle?\n\nKaksoisnapsauttamalla ohjelma käynnistyy tästä kansiosta.
+357	\n\nJos kansio siirretään myöhemmin, suorita siinä oleva Create_Shortcut.bat: pikakuvake luodaan uudelleen.
+358	Pikakuvaketta ei luotu: {0}
+359	Create_Shortcut.bat-tiedostoa ei luotu: {0}
+360	\nKuvake otetaan itse ohjelmasta.
+361	\nOhjelman kuvaketta ei löytynyt: pikakuvakkeessa on oletuskuvake.
+362	Pikakuvake työpöydälle
+363	Pikakuvake "{0}" luotiin työpöydälle.
+364	pikakuvake työpöydällä
+365	Pikakuvakkeen kuvaketta ei löytynyt: pikakuvakkeessa on oletuskuvake.
+366	Pikakuvake työpöydällä
+367	Pikakuvaketta ei voitu valmistella: pääasiallista exe-tiedostoa ei löytynyt.
+368	Pikakuvakkeen luonti epäonnistui. Suorita käsin:\n{0}

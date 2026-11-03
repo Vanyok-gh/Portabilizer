@@ -351,3 +351,18 @@
 351	Jezik sučelja:
 352	Jezik se mijenja odmah: prozor će se sam ponovno pokrenuti, postavke će biti sačuvane.
 353	Prvo pričekajte kraj zadatka ili ga prekinite: nakon promjene jezika prozor se ponovno pokreće.
+354	Prečac na radnoj površini izrađuje se samo u sustavu Windows.
+355	Prečac nije izrađen (PowerShell je vratio pogrešku). Pokrenite Create_Shortcut.bat u mapi s rezultatom.
+356	Izraditi prečac «{0}» na radnoj površini?\n\nDvostrukim klikom program će se pokrenuti iz ove mape.
+357	\n\nAko se mapa kasnije premjesti, pokrenite Create_Shortcut.bat iz nje: prečac će se ponovno izraditi.
+358	Prečac nije izrađen: {0}
+359	Create_Shortcut.bat nije izrađen: {0}
+360	\nIkona se preuzima iz samog programa.
+361	\nIkona programa nije pronađena: prečac će imati standardnu.
+362	Prečac na radnu površinu
+363	Prečac «{0}» izrađen je na radnoj površini.
+364	prečac na radnoj površini
+365	Ikona za prečac nije pronađena: prečac će imati standardnu.
+366	Prečac na radnoj površini
+367	Prečac nije moguće pripremiti: glavni exe nije pronađen.
+368	Prečac nije moguće izraditi. Pokrenite ručno:\n{0}

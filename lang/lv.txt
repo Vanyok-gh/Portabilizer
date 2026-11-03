@@ -351,3 +351,18 @@
 351	Interfeisa valoda:
 352	Valoda mainās uzreiz: logs pārstartēsies pats, iestatījumi tiks saglabāti.
 353	Vispirms gaidiet uzdevuma beigas vai pārtrauciet to: pēc valodas maiņas logs tiek pārstartēts.
+354	Saīsni darbvirsmā var izveidot tikai sistēmā Windows.
+355	Saīsne nav izveidota (PowerShell atgrieza kļūdu). Palaidiet Create_Shortcut.bat rezultāta mapē.
+356	Izveidot saīsni «{0}» darbvirsmā?\n\nDivreiz noklikšķinot, programma tiks palaista no šīs mapes.
+357	\n\nJa mapi vēlāk pārvietos, palaidiet Create_Shortcut.bat no tās: saīsne tiks izveidota no jauna.
+358	Saīsne nav izveidota: {0}
+359	Create_Shortcut.bat nav izveidots: {0}
+360	\nIkona tiek ņemta no pašas programmas.
+361	\nProgrammas ikonu atrast neizdevās: saīsnei būs standarta ikona.
+362	Saīsne darbvirsmā
+363	Saīsne «{0}» izveidota darbvirsmā.
+364	saīsne darbvirsmā
+365	Saīsnes ikonu atrast neizdevās: saīsnei būs standarta ikona.
+366	Saīsne darbvirsmā
+367	Neizdevās sagatavot saīsni: galvenais exe nav atrasts.
+368	Saīsni izveidot neizdevās. Palaidiet pats:\n{0}

@@ -351,3 +351,18 @@
 351	Bahasa antarmuka:
 352	Bahasa berubah langsung: jendela akan dimulai ulang sendiri, pengaturan tersimpan.
 353	Tunggu tugas selesai atau batalkan dulu: setelah bahasa diganti, jendela dimulai ulang.
+354	Pintasan desktop hanya dibuat di Windows.
+355	Pintasan tidak dibuat (PowerShell mengembalikan galat). Jalankan Create_Shortcut.bat di folder hasil.
+356	Buat pintasan «{0}» di desktop?\n\nDengan klik ganda, program akan berjalan dari folder ini.
+357	\n\nJika folder dipindahkan nanti, jalankan Create_Shortcut.bat dari folder itu: pintasan akan dibuat ulang.
+358	Pintasan tidak dibuat: {0}
+359	Create_Shortcut.bat tidak dibuat: {0}
+360	\nIkon diambil dari program itu sendiri.
+361	\nIkon program tidak ditemukan: pintasan akan memakai ikon standar.
+362	Pintasan ke desktop
+363	Pintasan «{0}» dibuat di desktop.
+364	pintasan di desktop
+365	Ikon untuk pintasan tidak ditemukan: pintasan akan memakai ikon standar.
+366	Pintasan di desktop
+367	Gagal menyiapkan pintasan: exe utama tidak ditemukan.
+368	Pintasan gagal dibuat. Jalankan secara manual:\n{0}

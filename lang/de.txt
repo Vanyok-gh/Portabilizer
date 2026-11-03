@@ -351,3 +351,18 @@
 351	Sprache der Oberfläche:
 352	Die Sprache ändert sich sofort: Das Fenster startet selbst neu, die Einstellungen bleiben erhalten.
 353	Warten Sie zuerst, bis die Aufgabe beendet ist, oder brechen Sie sie ab: Nach dem Sprachwechsel startet das Fenster neu.
+354	Eine Desktop-Verknüpfung kann nur unter Windows erstellt werden.
+355	Die Verknüpfung wurde nicht erstellt (PowerShell hat einen Fehler gemeldet). Führen Sie Create_Shortcut.bat im Ergebnisordner aus.
+356	Desktop-Verknüpfung „{0}“ erstellen?\n\nMit einem Doppelklick wird das Programm aus diesem Ordner gestartet.
+357	\n\nWenn Sie den Ordner später verschieben, führen Sie Create_Shortcut.bat daraus aus: Die Verknüpfung wird neu erstellt.
+358	Verknüpfung nicht erstellt: {0}
+359	Create_Shortcut.bat nicht erstellt: {0}
+360	\nDas Symbol stammt aus dem Programm selbst.
+361	\nDas Programmsymbol wurde nicht gefunden: Die Verknüpfung erhält das Standardsymbol.
+362	Desktop-Verknüpfung
+363	Die Verknüpfung „{0}“ wurde auf dem Desktop erstellt.
+364	Desktop-Verknüpfung
+365	Das Symbol für die Verknüpfung wurde nicht gefunden: Sie erhält das Standardsymbol.
+366	Desktop-Verknüpfung
+367	Die Verknüpfung konnte nicht vorbereitet werden: Haupt-exe nicht gefunden.
+368	Die Verknüpfung konnte nicht erstellt werden. Führen Sie sie manuell aus:\n{0}

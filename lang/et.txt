@@ -351,3 +351,18 @@
 351	Liidese keel:
 352	Keel muutub kohe: aken taaskäivitub ise ja seaded säilivad.
 353	Oota ülesande lõppu või katkesta see: pärast keele vahetamist aken taaskäivitub.
+354	Töölaua otsetee saab luua ainult Windowsis.
+355	Otseteed ei loodud (PowerShell tagastas vea). Käivitage tulemuskaustas Create_Shortcut.bat.
+356	Kas luua töölauale otsetee „{0}”?\n\nTopeltklõps käivitab programmi sellest kaustast.
+357	\n\nKui kaust hiljem teise kohta teisaldada, käivitage selles Create_Shortcut.bat: otsetee luuakse uuesti.
+358	Otseteed ei loodud: {0}
+359	Create_Shortcut.bat ei loodud: {0}
+360	\nIkoon võetakse programmist endast.
+361	\nProgrammi ikooni ei leitud: otsetee saab vaikeikooni.
+362	Töölaua otsetee
+363	Otsetee „{0}” loodi töölauale.
+364	töölaua otsetee
+365	Otsetee ikooni ei leitud: otsetee saab vaikeikooni.
+366	Töölaua otsetee
+367	Otseteed ei õnnestunud ette valmistada: põhi-exe-faili ei leitud.
+368	Otseteed ei õnnestunud luua. Käivitage käsitsi:\n{0}

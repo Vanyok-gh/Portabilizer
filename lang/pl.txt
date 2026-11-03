@@ -351,3 +351,18 @@
 351	Język interfejsu:
 352	Język zmienia się od razu: okno uruchomi się ponownie samo, ustawienia zostaną zachowane.
 353	Najpierw poczekaj na koniec zadania lub je przerwij: po zmianie języka okno jest uruchamiane ponownie.
+354	Skrót na pulpicie można utworzyć tylko w systemie Windows.
+355	Nie utworzono skrótu (PowerShell zwrócił błąd). Uruchom Create_Shortcut.bat w folderze wyniku.
+356	Utworzyć na pulpicie skrót do „{0}”?\n\nPo dwukrotnym kliknięciu program uruchomi się z tego folderu.
+357	\n\nJeśli później przeniesiesz folder, uruchom z niego Create_Shortcut.bat: skrót zostanie utworzony ponownie.
+358	Nie utworzono skrótu: {0}
+359	Nie utworzono Create_Shortcut.bat: {0}
+360	\nIkona jest pobierana z samego programu.
+361	\nNie znaleziono ikony programu: skrót będzie miał ikonę domyślną.
+362	Skrót na pulpicie
+363	Skrót „{0}” został utworzony na pulpicie.
+364	skrót na pulpicie
+365	Nie znaleziono ikony skrótu: będzie miał ikonę domyślną.
+366	Skrót na pulpicie
+367	Nie udało się przygotować skrótu: nie znaleziono głównego pliku exe.
+368	Nie udało się utworzyć skrótu. Uruchom ręcznie:\n{0}

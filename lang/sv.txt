@@ -351,3 +351,18 @@
 351	Gränssnittsspråk:
 352	Språket ändras direkt: fönstret startar om av sig självt och inställningarna sparas.
 353	Vänta tills uppgiften är klar eller avbryt den: fönstret startar om när språket ändras.
+354	Genvägen på skrivbordet kan bara skapas i Windows.
+355	Genvägen skapades inte (PowerShell returnerade ett fel). Kör Create_Shortcut.bat i resultatmappen.
+356	Skapa en genväg till ”{0}” på skrivbordet?\n\nMed ett dubbelklick startas programmet från den här mappen.
+357	\n\nOm du flyttar mappen senare, kör Create_Shortcut.bat från den: genvägen skapas på nytt.
+358	Genvägen skapades inte: {0}
+359	Create_Shortcut.bat skapades inte: {0}
+360	\nIkonen hämtas från själva programmet.
+361	\nProgramikonen hittades inte: genvägen får standardikonen.
+362	Genväg på skrivbordet
+363	Genvägen ”{0}” har skapats på skrivbordet.
+364	genväg på skrivbordet
+365	Ikonen för genvägen hittades inte: genvägen får standardikonen.
+366	Genväg på skrivbordet
+367	Det gick inte att förbereda genvägen: huvud-exe hittades inte.
+368	Det gick inte att skapa genvägen. Kör den manuellt:\n{0}

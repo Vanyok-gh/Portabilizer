@@ -351,3 +351,18 @@
 351	Ngôn ngữ giao diện:
 352	Ngôn ngữ đổi ngay: cửa sổ sẽ tự khởi động lại, cài đặt được giữ nguyên.
 353	Hãy đợi tác vụ kết thúc hoặc hủy bỏ trước: sau khi đổi ngôn ngữ, cửa sổ sẽ khởi động lại.
+354	Lối tắt trên màn hình nền chỉ được tạo trong Windows.
+355	Chưa tạo được lối tắt (PowerShell báo lỗi). Hãy chạy Create_Shortcut.bat trong thư mục kết quả.
+356	Tạo lối tắt «{0}» trên màn hình nền?\n\nNhấp đúp để chạy chương trình từ thư mục này.
+357	\n\nNếu sau này di chuyển thư mục, hãy chạy Create_Shortcut.bat trong đó: lối tắt sẽ được tạo lại.
+358	Chưa tạo được lối tắt: {0}
+359	Chưa tạo được Create_Shortcut.bat: {0}
+360	\nBiểu tượng được lấy từ chính chương trình.
+361	\nKhông tìm thấy biểu tượng của chương trình: lối tắt sẽ dùng biểu tượng mặc định.
+362	Lối tắt ra màn hình nền
+363	Đã tạo lối tắt «{0}» trên màn hình nền.
+364	lối tắt trên màn hình nền
+365	Không tìm thấy biểu tượng cho lối tắt: lối tắt sẽ dùng biểu tượng mặc định.
+366	Lối tắt trên màn hình nền
+367	Không thể chuẩn bị lối tắt: không tìm thấy exe chính.
+368	Không tạo được lối tắt. Hãy chạy thủ công:\n{0}

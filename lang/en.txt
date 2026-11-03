@@ -351,3 +351,18 @@
 351	Interface language:
 352	The language changes at once: the window restarts by itself, settings are kept.
 353	Wait for the current task to finish or cancel it first: the window restarts after the language changes.
+354	A desktop shortcut can only be created on Windows.
+355	The shortcut was not created (PowerShell returned an error). Run Create_Shortcut.bat in the result folder.
+356	Create a desktop shortcut for “{0}”?\n\nDouble-clicking it will launch the program from this folder.
+357	\n\nIf you move the folder later, run Create_Shortcut.bat from it: the shortcut will be created again.
+358	Shortcut not created: {0}
+359	Create_Shortcut.bat not created: {0}
+360	\nThe icon is taken from the program itself.
+361	\nThe program icon could not be found: the shortcut will use the default one.
+362	Desktop shortcut
+363	Shortcut “{0}” created on the desktop.
+364	desktop shortcut
+365	The shortcut icon could not be found: the shortcut will use the default one.
+366	Desktop shortcut
+367	Could not prepare the shortcut: main exe not found.
+368	Could not create the shortcut. Run it manually:\n{0}

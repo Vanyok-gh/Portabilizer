@@ -351,3 +351,18 @@
 351	Grensesnittspråk:
 352	Språket endres umiddelbart: vinduet starter på nytt av seg selv, innstillingene beholdes.
 353	Vent først til oppgaven er ferdig, eller avbryt den: etter språkbyttet starter vinduet på nytt.
+354	Snarvei på skrivebordet kan bare opprettes i Windows.
+355	Snarveien ble ikke opprettet (PowerShell returnerte en feil). Kjør Create_Shortcut.bat i resultatmappen.
+356	Opprette snarvei «{0}» på skrivebordet?\n\nVed dobbeltklikk starter programmet fra denne mappen.
+357	\n\nHvis mappen flyttes senere, kjør Create_Shortcut.bat fra den: snarveien opprettes på nytt.
+358	Snarveien ble ikke opprettet: {0}
+359	Create_Shortcut.bat ble ikke opprettet: {0}
+360	\nIkonet hentes fra selve programmet.
+361	\nFant ikke programikonet: snarveien får standardikonet.
+362	Snarvei på skrivebordet
+363	Snarveien «{0}» er opprettet på skrivebordet.
+364	snarvei på skrivebordet
+365	Fant ikke ikon for snarveien: snarveien får standardikonet.
+366	Snarvei på skrivebordet
+367	Kunne ikke klargjøre snarveien: hovedfilen exe ble ikke funnet.
+368	Kunne ikke opprette snarveien. Kjør manuelt:\n{0}
