@@ -351,3 +351,18 @@
 351	Limba interfeței:
 352	Limba se schimbă imediat: fereastra repornește singură, iar setările se păstrează.
 353	Așteptați să se termine sarcina sau anulați-o: după schimbarea limbii fereastra repornește.
+354	Comanda rapidă de pe desktop se creează doar în Windows.
+355	Comanda rapidă nu a fost creată (PowerShell a returnat o eroare). Rulați Create_Shortcut.bat din folderul rezultatului.
+356	Creați comanda rapidă „{0}” pe desktop?\n\nCu dublu clic, programul va porni din acest folder.
+357	\n\nDacă folderul este mutat ulterior, rulați Create_Shortcut.bat din el: comanda rapidă va fi creată din nou.
+358	Comanda rapidă nu a fost creată: {0}
+359	Create_Shortcut.bat nu a fost creat: {0}
+360	\nPictograma este preluată din program.
+361	\nPictograma programului nu a fost găsită: comanda rapidă va avea pictograma standard.
+362	Comandă rapidă pe desktop
+363	Comanda rapidă „{0}” a fost creată pe desktop.
+364	comandă rapidă pe desktop
+365	Pictograma pentru comanda rapidă nu a fost găsită: comanda rapidă va avea pictograma standard.
+366	Comandă rapidă pe desktop
+367	Nu s-a putut pregăti comanda rapidă: fișierul exe principal nu a fost găsit.
+368	Nu s-a putut crea comanda rapidă. Rulați manual:\n{0}

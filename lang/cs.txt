@@ -351,3 +351,18 @@
 351	Jazyk rozhraní:
 352	Jazyk se změní okamžitě: okno se samo restartuje a nastavení zůstanou zachována.
 353	Počkejte, až úloha skončí, nebo ji zrušte: po změně jazyka se okno restartuje.
+354	Zástupce na ploše se vytváří jen ve Windows.
+355	Zástupce nebyl vytvořen (PowerShell vrátil chybu). Spusťte Create_Shortcut.bat ve složce s výsledkem.
+356	Vytvořit na ploše zástupce „{0}“?\n\nDvojitým kliknutím se program spustí z této složky.
+357	\n\nPokud složku později přesunete, spusťte z ní Create_Shortcut.bat: zástupce se vytvoří znovu.
+358	Zástupce nebyl vytvořen: {0}
+359	Create_Shortcut.bat nebyl vytvořen: {0}
+360	\nIkona se převezme ze samotného programu.
+361	\nIkonu programu se nepodařilo najít: zástupce bude mít standardní ikonu.
+362	Zástupce na plochu
+363	Zástupce „{0}“ byl vytvořen na ploše.
+364	zástupce na ploše
+365	Ikonu zástupce se nepodařilo najít: zástupce bude mít standardní ikonu.
+366	Zástupce na ploše
+367	Zástupce se nepodařilo připravit: hlavní soubor exe nebyl nalezen.
+368	Zástupce se nepodařilo vytvořit. Spusťte ručně:\n{0}

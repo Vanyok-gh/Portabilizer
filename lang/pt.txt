@@ -351,3 +351,18 @@
 351	Idioma da interface:
 352	O idioma muda na hora: a janela reinicia sozinha e as configurações são mantidas.
 353	Aguarde o fim da tarefa ou cancele-a: a janela reinicia depois de trocar o idioma.
+354	O atalho na área de trabalho só pode ser criado no Windows.
+355	O atalho não foi criado (o PowerShell retornou um erro). Execute Create_Shortcut.bat na pasta de resultado.
+356	Criar um atalho para “{0}” na área de trabalho?\n\nCom um clique duplo, o programa será iniciado a partir desta pasta.
+357	\n\nSe você mover a pasta depois, execute Create_Shortcut.bat a partir dela: o atalho será criado novamente.
+358	Atalho não criado: {0}
+359	Create_Shortcut.bat não criado: {0}
+360	\nO ícone é obtido do próprio programa.
+361	\nNão foi possível encontrar o ícone do programa: o atalho usará o padrão.
+362	Atalho na área de trabalho
+363	O atalho “{0}” foi criado na área de trabalho.
+364	atalho na área de trabalho
+365	Não foi possível encontrar o ícone do atalho: ele usará o padrão.
+366	Atalho na área de trabalho
+367	Não foi possível preparar o atalho: exe principal não encontrado.
+368	Não foi possível criar o atalho. Execute manualmente:\n{0}

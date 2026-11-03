@@ -351,3 +351,18 @@
 351	Felület nyelve:
 352	A nyelv azonnal változik: az ablak magától újraindul, a beállítások megmaradnak.
 353	Előbb várja meg a feladat végét, vagy szakítsa meg: a nyelv váltása után az ablak újraindul.
+354	Az asztali parancsikon csak Windowson hozható létre.
+355	A parancsikon nem jött létre (a PowerShell hibát adott vissza). Futtassa a Create_Shortcut.bat fájlt az eredmény mappájában.
+356	Létrehozza a(z) „{0}” parancsikont az asztalon?\n\nDupla kattintásra a program ebből a mappából indul el.
+357	\n\nHa a mappát később áthelyezi, futtassa benne a Create_Shortcut.bat fájlt: a parancsikon újra létrejön.
+358	A parancsikon nem jött létre: {0}
+359	A Create_Shortcut.bat nem jött létre: {0}
+360	\nAz ikont a program maga adja.
+361	\nA program ikonját nem sikerült megtalálni: a parancsikon az alapértelmezett ikont kapja.
+362	Parancsikon az asztalon
+363	A(z) „{0}” parancsikon létrejött az asztalon.
+364	parancsikon az asztalon
+365	A parancsikon ikonját nem sikerült megtalálni: a parancsikon az alapértelmezett ikont kapja.
+366	Parancsikon az asztalon
+367	A parancsikont nem sikerült előkészíteni: a fő exe fájl nem található.
+368	A parancsikont nem sikerült létrehozni. Futtassa kézzel:\n{0}

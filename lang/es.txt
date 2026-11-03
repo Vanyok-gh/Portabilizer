@@ -351,3 +351,18 @@
 351	Idioma de la interfaz:
 352	El idioma cambia al instante: la ventana se reinicia sola y se conservan los ajustes.
 353	Espera a que termine la tarea o cancélala: la ventana se reinicia al cambiar el idioma.
+354	El acceso directo en el escritorio solo se puede crear en Windows.
+355	No se creó el acceso directo (PowerShell devolvió un error). Ejecute Create_Shortcut.bat en la carpeta del resultado.
+356	¿Crear un acceso directo a «{0}» en el escritorio?\n\nCon doble clic, el programa se iniciará desde esta carpeta.
+357	\n\nSi después mueve la carpeta, ejecute Create_Shortcut.bat desde ella: el acceso directo se creará de nuevo.
+358	No se creó el acceso directo: {0}
+359	No se creó Create_Shortcut.bat: {0}
+360	\nEl icono se toma del propio programa.
+361	\nNo se encontró el icono del programa: el acceso directo usará el predeterminado.
+362	Acceso directo en el escritorio
+363	El acceso directo «{0}» se ha creado en el escritorio.
+364	acceso directo en el escritorio
+365	No se encontró el icono del acceso directo: usará el predeterminado.
+366	Acceso directo en el escritorio
+367	No se pudo preparar el acceso directo: no se encontró el exe principal.
+368	No se pudo crear el acceso directo. Ejecútelo manualmente:\n{0}

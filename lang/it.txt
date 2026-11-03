@@ -351,3 +351,18 @@
 351	Lingua dell'interfaccia:
 352	La lingua cambia subito: la finestra si riavvia da sola e le impostazioni vengono mantenute.
 353	Attendi la fine dell'attività o annullala: dopo il cambio di lingua la finestra si riavvia.
+354	Il collegamento sul desktop può essere creato solo in Windows.
+355	Collegamento non creato (PowerShell ha restituito un errore). Eseguite Create_Shortcut.bat nella cartella del risultato.
+356	Creare un collegamento a «{0}» sul desktop?\n\nCon un doppio clic il programma verrà avviato da questa cartella.
+357	\n\nSe in seguito spostate la cartella, eseguite Create_Shortcut.bat da essa: il collegamento verrà ricreato.
+358	Collegamento non creato: {0}
+359	Create_Shortcut.bat non creato: {0}
+360	\nL'icona viene presa dal programma stesso.
+361	\nImpossibile trovare l'icona del programma: il collegamento userà quella predefinita.
+362	Collegamento sul desktop
+363	Il collegamento «{0}» è stato creato sul desktop.
+364	collegamento sul desktop
+365	Impossibile trovare l'icona del collegamento: verrà usata quella predefinita.
+366	Collegamento sul desktop
+367	Impossibile preparare il collegamento: exe principale non trovato.
+368	Impossibile creare il collegamento. Eseguitelo manualmente:\n{0}

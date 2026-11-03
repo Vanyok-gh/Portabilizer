@@ -351,3 +351,18 @@
 351	Sąsajos kalba:
 352	Kalba keičiasi iškart: langas persijungs pats, nustatymai bus išsaugoti.
 353	Pirmiausia palaukite užduoties pabaigos arba nutraukite ją: pakeitus kalbą langas paleidžiamas iš naujo.
+354	Nuoroda darbalaukyje kuriama tik „Windows“ sistemoje.
+355	Nuoroda nesukurta („PowerShell“ grąžino klaidą). Paleiskite Create_Shortcut.bat rezultato aplanke.
+356	Sukurti nuorodą „{0}“ darbalaukyje?\n\nDukart spustelėjus programa bus paleista iš šio aplanko.
+357	\n\nJei aplankas vėliau bus perkeltas, paleiskite iš jo Create_Shortcut.bat: nuoroda bus sukurta iš naujo.
+358	Nuoroda nesukurta: {0}
+359	Create_Shortcut.bat nesukurtas: {0}
+360	\nPiktograma paimama iš pačios programos.
+361	\nProgramos piktogramos rasti nepavyko: nuoroda turės standartinę.
+362	Nuoroda į darbalaukį
+363	Nuoroda „{0}“ sukurta darbalaukyje.
+364	nuoroda darbalaukyje
+365	Nuorodos piktogramos rasti nepavyko: nuoroda turės standartinę.
+366	Nuoroda darbalaukyje
+367	Nepavyko paruošti nuorodos: pagrindinis exe nerastas.
+368	Nuorodos sukurti nepavyko. Paleiskite rankiniu būdu:\n{0}

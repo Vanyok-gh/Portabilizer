@@ -12,6 +12,7 @@ Portabilizer v8.9 - превращает установщик, пакет или
   3. Находит главный exe (для MSIX - по AppxManifest.xml; можно указать вручную).
   4. Создаёт Launch.bat, который перенаправляет APPDATA, LOCALAPPDATA,
      USERPROFILE и TEMP в папку Data рядом с программой.
+  5. Кладёт Create_Shortcut.bat и предлагает ярлык на рабочем столе с иконкой программы.
 
 Режимы:
   auto      - сначала распаковка; если нужна установка (репак) - пробует её,
@@ -1785,6 +1786,143 @@ exit /b 1
 """
 
 
+# ---------------------------------------------------------------- ярлык на рабочем столе
+# Create_Shortcut.bat лежит в папке результата: создаёт на рабочем столе ярлык на Launch.bat с иконкой
+# программы. Пути считаются от места самого файла, поэтому после переноса папки его достаточно запустить
+# снова (старый ярлык с тем же именем будет заменён). Права администратора не нужны.
+SHORTCUT_BAT = r"""@echo off
+chcp 65001 >nul
+setlocal
+rem Creates a desktop shortcut to Launch.bat of this folder. Run again after moving the folder.
+set "ROOT=%~dp0"
+set "PZ_NAME=@NAME@"
+set "PZ_ICON=@ICON@"
+set "PZ_IDX=@IDX@"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $r=$env:ROOT.TrimEnd('\'); $d=[Environment]::GetFolderPath('Desktop'); $s=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path $d ($env:PZ_NAME+'.lnk'))); $s.TargetPath=Join-Path $r 'Launch.bat'; $s.WorkingDirectory=$r; $s.WindowStyle=7; if ($env:PZ_ICON) { $s.IconLocation=(Join-Path $r $env:PZ_ICON)+','+$env:PZ_IDX }; $s.Save()"
+set "RC=%errorlevel%"
+if /i "%~1"=="silent" exit /b %RC%
+if not "%RC%"=="0" (
+  echo Could not create the shortcut.
+  pause
+  exit /b %RC%
+)
+echo Done: the shortcut "%PZ_NAME%" is on the desktop.
+timeout /t 3 >nul
+exit /b 0
+"""
+
+
+def shortcut_name(target) -> str:
+    """Имя ярлыка: имя папки результата без хвоста _portable и без символов, недопустимых в имени файла."""
+    name = re.sub(r"(?i)[ _-]*portable$", "", Path(target).name).strip()
+    name = re.sub(r'[<>:"/\\|?*%\x00-\x1f]', "", name).strip(" .")
+    return name or "Portabilizer"
+
+
+def pe_has_icon(path):
+    """True/False: есть ли в exe/dll ресурс иконки (RT_GROUP_ICON). None - файл не удалось разобрать
+    (тогда считаем, что иконка может быть: Windows сама покажет стандартную, если её нет)."""
+    try:
+        with open(path, "rb") as f:
+            d = f.read(1 << 20)
+            if d[:2] != b"MZ":
+                return None
+            pe = struct.unpack_from("<I", d, 0x3C)[0]
+            if d[pe:pe + 4] != b"PE\0\0":
+                return None
+            nsec, osz = struct.unpack_from("<H", d, pe + 6)[0], struct.unpack_from("<H", d, pe + 20)[0]
+            opt = pe + 24
+            magic = struct.unpack_from("<H", d, opt)[0]
+            dd = opt + (112 if magic == 0x20B else 96)
+            rva, size = struct.unpack_from("<II", d, dd + 2 * 8)
+            if not rva or not size:
+                return False
+            for i in range(nsec):
+                o = opt + osz + i * 40
+                vsize, va, rsize, raw = struct.unpack_from("<IIII", d, o + 8)
+                if va <= rva < va + max(vsize, rsize):
+                    off = raw + rva - va
+                    f.seek(off)
+                    head = f.read(16)
+                    named, ids = struct.unpack_from("<HH", head, 12)
+                    ent = f.read(8 * (named + ids))
+                    for k in range(named, named + ids):
+                        if struct.unpack_from("<I", ent, k * 8)[0] == 14:
+                            return True
+                    return False
+    except (OSError, struct.error):
+        return None
+    return None
+
+
+def autorun_icon(folder: Path):
+    """Из autorun.inf: (относительный путь, номер) иконки диска или None."""
+    for name in ("autorun.inf", "AUTORUN.INF", "Autorun.inf"):
+        f = Path(folder) / name
+        if f.is_file():
+            try:
+                text = f.read_bytes().decode("utf-8", "replace")
+            except OSError:
+                return None
+            m = re.search(r"(?im)^\s*icon\s*=\s*\"?([^\r\n\",]+?)\"?\s*(?:,\s*(-?\d+))?\s*$", text)
+            if m:
+                return m.group(1).strip().strip("\\/"), int(m.group(2) or 0)
+    return None
+
+
+def pick_icon(app: Path, main: Path):
+    """Откуда взять иконку ярлыка: (путь относительно папки результата, номер) или None.
+    Порядок: сам главный exe (если в нём есть иконка), .ico рядом с ним, иконка из autorun.inf диска."""
+    app, main = Path(app), Path(main)
+
+    def rel(p):
+        return "App\\" + str(Path(p).relative_to(app)).replace("/", "\\")
+    try:
+        if main.is_file() and pe_has_icon(main) is not False:
+            return rel(main), 0
+        icos = []
+        for d in (main.parent, app):
+            icos += [p for p in sorted(d.glob("*.ico")) if p not in icos]
+        if icos:
+            same = [p for p in icos if p.stem.lower() == main.stem.lower()]
+            return rel((same or icos)[0]), 0
+        ar = autorun_icon(app)
+        if ar and (app / ar[0]).is_file():
+            return rel(app / ar[0]), ar[1]
+    except (OSError, ValueError):
+        pass
+    return None
+
+
+def write_shortcut_script(target: Path, app: Path, main: Path, name=None):
+    """Пишет Create_Shortcut.bat в папку результата. Возвращает (путь к файлу, имя ярлыка, иконка или None)."""
+    name = name or shortcut_name(target)
+    icon = pick_icon(app, main)
+    bat = Path(target) / "Create_Shortcut.bat"
+    esc = lambda v: str(v).replace("%", "%%")                                   # noqa: E731
+    bat.write_text(SHORTCUT_BAT.replace("\r\n", "\n")
+                   .replace("@NAME@", esc(name)).replace("@ICON@", esc(icon[0]) if icon else "")
+                   .replace("@IDX@", str(icon[1]) if icon else "0"), encoding="utf-8")
+    return bat, name, icon
+
+
+def create_desktop_shortcut(bat: Path, log) -> bool:
+    """Запускает Create_Shortcut.bat без окна. Только Windows."""
+    if os.name != "nt":
+        log("Ярлык на рабочем столе создаётся только в Windows.")
+        return False
+    try:
+        r = subprocess.run(["cmd", "/c", str(bat), "silent"], capture_output=True, timeout=60,
+                           creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+    except (OSError, subprocess.SubprocessError) as e:
+        log(f"Ярлык не создан: {e}")
+        return False
+    if r.returncode != 0:
+        log("Ярлык не создан (PowerShell вернул ошибку). Запустите Create_Shortcut.bat в папке результата.")
+        return False
+    return True
+
+
 def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=True,
            system_root=None) -> bool:
     """Пишет Launch.bat. Для игр на Unreal Engine запускает ...-Shipping.exe напрямую
@@ -1862,6 +2000,19 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
     if needs_admin:
         notes.append("exe требует админа: Launch.bat идёт через RunAsInvoker")
     dotnet_check(main, target, log)
+    try:
+        bat, sc_name, icon = write_shortcut_script(target, app, main)
+        if info is not None:
+            info["shortcut"] = {"bat": str(bat), "name": sc_name, "icon": icon[0] if icon else ""}
+        ask = (info or {}).get("shortcut_prompt")
+        if ask and ask(sc_name, bool(icon)):
+            if create_desktop_shortcut(bat, log):
+                log(f"Ярлык «{sc_name}» создан на рабочем столе.")
+                notes.append("ярлык на рабочем столе")
+        elif not icon:
+            log("Иконку для ярлыка найти не удалось: ярлык будет со стандартной.")
+    except (OSError, ValueError) as e:
+        log(f"Create_Shortcut.bat не создан: {e}")
     log(f"Готово: {target}")
     log(f"Главный exe: {rel_exe}")
     log("Запускайте через Launch.bat. Папку можно переносить на флешку.")
@@ -2170,7 +2321,7 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
 
 
 def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, history=None,
-                chooser=None, radical=False, confirmed=False, dx_prompt=None):
+                chooser=None, radical=False, confirmed=False, dx_prompt=None, shortcut_prompt=None):
     """Главная функция: конвертация + учёт в истории + поддержка паузы/отмены через job.
 
     radical=True (режим R): после успешной сборки удаляет исходный файл и временные копии.
@@ -2198,7 +2349,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
                           main_exe="", note="", radical=bool(radical))
     info = {"set_target": (lambda p: history.update(rec["id"], target=p)) if rec
             else (lambda p: None), "chooser": chooser, "radical": bool(radical),
-            "dx_prompt": dx_prompt}
+            "dx_prompt": dx_prompt, "shortcut_prompt": shortcut_prompt}
     ok, status = False, "failed"
     try:
         if job:
@@ -2242,7 +2393,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "9.1"
+APP_VERSION = "9.2"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
@@ -2837,6 +2988,12 @@ def gui(_hook=None, start_radical=False):
         v = ask_ui("askyesnocancel", tr("Нужен DirectX"), text, icon="question")
         return "install" if v is True else "skip" if v is False else "cancel"
 
+    def shortcut_ui(name, has_icon):
+        text = tr("Создать ярлык «{0}» на рабочем столе?\n\nПо двойному щелчку программа запустится из этой папки.", name)
+        text += tr("\nИконка берётся из самой программы.") if has_icon else tr("\nИконку программы найти не удалось: ярлык будет со стандартной.")
+        text += tr("\n\nЕсли папку потом переместить, запустите Create_Shortcut.bat из неё: ярлык создастся заново.")
+        return bool(ask_ui("askyesno", tr("Ярлык на рабочем столе"), text, icon="question"))
+
     def set_buttons(st):
         on, off = ["!disabled"], ["disabled"]
         btn_start.state(off if st != "idle" else on)
@@ -3034,7 +3191,7 @@ def gui(_hook=None, start_radical=False):
                 job.stage = tr("Подготовка")
                 ok = portabilize(src_p, dst_p, log, mode, mexe.get(), job=job, history=history,
                                  chooser=choose_exe_ui, radical=radical, confirmed=radical,
-                                 dx_prompt=dx_ui)
+                                 dx_prompt=dx_ui, shortcut_prompt=shortcut_ui)
             except Exception as e:  # noqa
                 log(f"Ошибка: {e}")
             finally:
@@ -3212,6 +3369,33 @@ def gui(_hook=None, start_radical=False):
         except Exception as e:  # noqa
             messagebox.showinfo(tr("История"), tr("Запустите вручную:\n{0}\n\n{1}", bat, e), parent=root)
 
+    def make_shortcut():
+        rec = selected_rec()
+        if not rec:
+            return
+        t = Path(rec.get("target") or "")
+        if not (t / "Launch.bat").is_file():
+            messagebox.showinfo(tr("История"), tr("Launch.bat не найден: конвертация не завершена."),
+                                parent=root)
+            return
+        bat = t / "Create_Shortcut.bat"
+        main_rel = rec.get("main_exe") or ""
+        if main_rel and (t / "App" / main_rel).is_file():                    # перечитываем иконку заново
+            try:
+                bat, _n, _i = write_shortcut_script(t, t / "App", t / "App" / main_rel)
+            except OSError:
+                pass
+        if not bat.is_file():
+            messagebox.showinfo(tr("История"), tr("Не удалось подготовить ярлык: главный exe не найден."),
+                                parent=root)
+            return
+        if create_desktop_shortcut(bat, log):
+            messagebox.showinfo(tr("История"), tr("Ярлык «{0}» создан на рабочем столе.", shortcut_name(t)),
+                                parent=root)
+        else:
+            messagebox.showinfo(tr("История"), tr("Ярлык создать не получилось. Запустите вручную:\n{0}", bat),
+                                parent=root)
+
     def retry():
         rec = selected_rec()
         if not rec or busy():
@@ -3307,7 +3491,7 @@ def gui(_hook=None, start_radical=False):
     hb = ttk.Frame(hist_tab)
     hb.grid(row=1, column=0, columnspan=2, sticky="ew", padx=8, pady=(0, 8))
     for text, cmd in ((tr("Открыть папку"), open_result), (tr("Запустить"), launch_result),
-                      (tr("Повторить"), retry), (tr("Удалить копию"), delete_portable),
+                      (tr("Ярлык на рабочий стол"), make_shortcut), (tr("Повторить"), retry), (tr("Удалить копию"), delete_portable),
                       (tr("Удалить исходный файл"), delete_source), (tr("Убрать из списка"), forget),
                       (tr("Обновить"), refresh_history)):
         ttk.Button(hb, text=text, command=cmd).pack(side="left", padx=3)
@@ -3822,7 +4006,7 @@ def gui(_hook=None, start_radical=False):
                "on_job_event": on_job_event, "retry": retry, "show_low_space": show_low_space,
                "choose_exe_ui": choose_exe_ui, "chooser_dlg": chooser_dlg,
                "low_dlg": low_dlg, "do_cancel": do_cancel,
-               "open_result": open_result, "launch_result": launch_result,
+               "open_result": open_result, "launch_result": launch_result, "make_shortcut": make_shortcut,
                "delete_portable": delete_portable, "delete_source": delete_source,
                "forget": forget, "nb": nb, "disks": disks, "cpu_var": cpu_var,
                "sysinfo": sysinfo, "tips": tips, "ver": ver, "set_version": set_version,

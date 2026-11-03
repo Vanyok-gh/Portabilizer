@@ -351,3 +351,18 @@
 351	Grænsefladesprog:
 352	Sproget skiftes med det samme: vinduet genstarter af sig selv, indstillingerne bevares.
 353	Vent først, til opgaven er færdig, eller afbryd den: efter sprogskiftet genstarter vinduet.
+354	Genvej på skrivebordet kan kun oprettes i Windows.
+355	Genvejen blev ikke oprettet (PowerShell returnerede en fejl). Kør Create_Shortcut.bat i resultatmappen.
+356	Opret genvejen «{0}» på skrivebordet?\n\nVed dobbeltklik starter programmet fra denne mappe.
+357	\n\nHvis mappen flyttes senere, så kør Create_Shortcut.bat fra den: genvejen oprettes igen.
+358	Genvejen blev ikke oprettet: {0}
+359	Create_Shortcut.bat blev ikke oprettet: {0}
+360	\nIkonet hentes fra selve programmet.
+361	\nProgrammets ikon blev ikke fundet: genvejen får standardikonet.
+362	Genvej på skrivebordet
+363	Genvejen «{0}» er oprettet på skrivebordet.
+364	genvej på skrivebordet
+365	Ikon til genvejen blev ikke fundet: genvejen får standardikonet.
+366	Genvej på skrivebordet
+367	Kunne ikke klargøre genvejen: hoved-exe blev ikke fundet.
+368	Genvejen kunne ikke oprettes. Kør manuelt:\n{0}
