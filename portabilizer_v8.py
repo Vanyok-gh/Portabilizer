@@ -1099,7 +1099,7 @@ def extract(exe: Path, kind: str, out: Path, log, job=None) -> bool:
 SKIP = ("unins", "uninst", "uninstall", "setup", "vcredist", "vc_redist",
         "dxsetup", "dxwebsetup", "crashpad", "crashreport", "update",
         "facompress", "precomp", "cls-", "oalinst", "physx", "dotnet", "redist",
-        "subprocess", "prereq")
+        "subprocess", "prereq", "isdel", "inst32")      # isdel/inst32: помощники InstallShield
 # короткие имена сравниваем целиком, чтобы не отсеять игры вроде "ArcheAge.exe"
 SKIP_EXACT = ("xtool", "srep", "arc", "unarc", "7z", "7za", "zpaq", "lzma")
 # служебные установщики, которые не надо принимать за основной установщик в архиве
@@ -2505,7 +2505,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "9.3.4"
+APP_VERSION = "9.3.5"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
