@@ -966,7 +966,9 @@ def extract(exe: Path, kind: str, out: Path, log, job=None) -> bool:
         return ok
     if kind in ("msi", "wix") and os.name == "nt" and exe.suffix.lower() == ".msi":
         # административная распаковка, ничего не ставит в систему
-        return run(["msiexec", "/a", str(exe), "/qn", f"TARGETDIR={out}"], log, job=job)
+        # msiexec сам разбирает командную строку: кавычки должны стоять ВОКРУГ значения
+        # (TARGETDIR="путь"), а не вокруг всего параметра - иначе он печатает справку и выходит
+        return run(f'msiexec /a "{exe}" /qn TARGETDIR="{out}"', log, job=job)
     tool = find_tool("7z.exe", "7za.exe", "7z", "7zz")
     if not tool:
         log("Нужен 7z.exe: не найден ни рядом с программой, ни в установленном 7-Zip. "
@@ -2396,7 +2398,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "9.3"
+APP_VERSION = "9.3.1"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
