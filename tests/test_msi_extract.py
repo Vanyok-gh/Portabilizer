@@ -71,4 +71,7 @@ check("KeysFile" in P.MSI_STRIP_PS and "DELETE FROM File WHERE File=" in P.MSI_S
 check("IS*" in P.MSI_STRIP_PS and "AdminExecuteSequence" in P.MSI_STRIP_PS, "скрипт чистит IS-действия")
 check("Component_='DirectX9'" in P.MSI_STRIP_PS, "файлы DirectX9 убираются из черновика")
 check("`" not in P.MSI_STRIP_PS, "в PowerShell-тексте нет обратных кавычек (экранирование)")
+with tempfile.TemporaryDirectory() as d3:
+    d3 = Path(d3); (d3 / "EAXUnified").mkdir(); f = d3 / "EAXUnified" / "_ISDel.exe"; f.write_bytes(b"MZ" + b"\0" * 600)
+    check(P.exe_reject_reason(f, d3) is not None, "_ISDel.exe (помощник InstallShield) отсеивается")
 print(f"MSI: {n} проверок пройдено")
