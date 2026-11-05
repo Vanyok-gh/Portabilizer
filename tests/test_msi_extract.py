@@ -55,6 +55,19 @@ with tempfile.TemporaryDirectory() as d:
     res, calls = scenario(False, False)
     check(not res, "обе попытки неудачны: False")
 
+import glob
+real = glob.glob("/mnt/user-data/attachments/*/*Lara_Croft*.msi")
+if real:
+    import pzp_msi
+    with tempfile.TemporaryDirectory() as d2:
+        d2 = Path(d2); (d2 / "x.msi").write_bytes(Path(real[0]).read_bytes())
+        m1 = pzp_msi.missing_source_files(d2 / "x.msi")
+        check(len(m1) > 100 and any(p.endswith("PARIS6.GMX.CLZ") for _, p in m1), "без папок: все несжатые файлы отсутствуют")
+        (d2 / "Data" / "Maps").mkdir(parents=True); (d2 / "Data" / "Maps" / "PARIS6.GMX.CLZ").write_bytes(b"1")
+        m2 = pzp_msi.missing_source_files(d2 / "x.msi")
+        check(len(m2) == len(m1) - 1 and not any(p.endswith("PARIS6.GMX.CLZ") for _, p in m2), "найденный файл больше не отсутствует")
+        check(not any(k == "TRAOD.exe1" for k, _ in m1), "файлы внутри cab не считаются отсутствующими")
+check("KeysFile" in P.MSI_STRIP_PS and "DELETE FROM File WHERE File=" in P.MSI_STRIP_PS, "скрипт убирает строки отсутствующих файлов")
 check("IS*" in P.MSI_STRIP_PS and "AdminExecuteSequence" in P.MSI_STRIP_PS, "скрипт чистит IS-действия")
 check("Component_='DirectX9'" in P.MSI_STRIP_PS, "файлы DirectX9 убираются из черновика")
 check("`" not in P.MSI_STRIP_PS, "в PowerShell-тексте нет обратных кавычек (экранирование)")
