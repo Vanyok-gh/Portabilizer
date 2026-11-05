@@ -948,6 +948,79 @@ def list_drives():
 
 # --------------------------------------------------- распаковка и установка
 
+# PowerShell: убирает из ЧЕРНОВИКА msi действия InstallScript (имена на IS...). Без них msiexec /a
+# не требует движок InstallScript (isscript.msi, нужны права администратора) и просто копирует файлы.
+MSI_STRIP_PS = r"""
+param([string]$Path)
+$ErrorActionPreference = 'Stop'
+$inst = New-Object -ComObject WindowsInstaller.Installer
+$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))
+foreach ($t in 'AdminExecuteSequence', 'AdminUISequence') {
+    try {
+        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))
+        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null
+        $names = @()
+        while ($true) {
+            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)
+            if ($r -eq $null) { break }
+            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))
+            if ($n -like 'IS*') { $names += $n }
+        }
+        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null
+        foreach ($n in $names) {
+            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))
+            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null
+            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null
+        }
+        Write-Host "$t : removed $($names.Count)"
+    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }
+}
+$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null
+"""
+
+
+def _has_files(folder: Path) -> bool:
+    return folder.is_dir() and any(p.is_file() for p in folder.rglob("*"))
+
+
+def msi_admin_extract(exe: Path, out: Path, log, job=None) -> bool:
+    """Распаковка MSI без установки (msiexec /a).
+
+    Кавычки ставим ВОКРУГ значения (TARGETDIR="путь"): иначе msiexec печатает справку и выходит.
+    Если пакет требует движок InstallScript (который нельзя поставить без прав администратора),
+    повторяем на временной копии msi без IS-действий. Копия лежит рядом с оригиналом, чтобы
+    msiexec видел исходные файлы и cab-ы; после работы она удаляется.
+    """
+    mlog = out.parent / "msiexec.log"
+    ok = run(f'msiexec /a "{exe}" /qn TARGETDIR="{out}" /l*v "{mlog}"', log, job=job)
+    if ok and _has_files(out):
+        return True
+    log(f"msiexec: код {run.rc}, файлов в результате {'есть' if _has_files(out) else 'нет'}. Подробный лог: {mlog}")
+    tmp = exe.with_name(exe.stem + "_pz_tmp.msi")
+    ps = out.parent / "_msi_strip.ps1"
+    try:
+        shutil.copy2(exe, tmp)
+        ps.write_text(MSI_STRIP_PS, encoding="utf-8-sig")
+        log("Повтор без действий InstallScript (на временной копии msi)")
+        if not run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(ps), str(tmp)],
+                   log, job=job):
+            return False
+        ok = run(f'msiexec /a "{tmp}" /qn TARGETDIR="{out}" /l*v "{mlog}"', log, job=job)
+        if not (ok and _has_files(out)):
+            log(f"msiexec: код {run.rc}, файлов в результате {'есть' if _has_files(out) else 'нет'}. "
+                f"Подробный лог: {mlog}")
+        return ok and _has_files(out)
+    except OSError as e:
+        log(f"msi: не удалось подготовить копию: {e}")
+        return False
+    finally:
+        for f in (tmp, ps):
+            try:
+                f.unlink()
+            except OSError:
+                pass
+
+
 def extract(exe: Path, kind: str, out: Path, log, job=None) -> bool:
     out.mkdir(parents=True, exist_ok=True)
     if job:
@@ -966,9 +1039,7 @@ def extract(exe: Path, kind: str, out: Path, log, job=None) -> bool:
         return ok
     if kind in ("msi", "wix") and os.name == "nt" and exe.suffix.lower() == ".msi":
         # административная распаковка, ничего не ставит в систему
-        # msiexec сам разбирает командную строку: кавычки должны стоять ВОКРУГ значения
-        # (TARGETDIR="путь"), а не вокруг всего параметра - иначе он печатает справку и выходит
-        return run(f'msiexec /a "{exe}" /qn TARGETDIR="{out}"', log, job=job)
+        return msi_admin_extract(exe, out, log, job)
     tool = find_tool("7z.exe", "7za.exe", "7z", "7zz")
     if not tool:
         log("Нужен 7z.exe: не найден ни рядом с программой, ни в установленном 7-Zip. "
@@ -2398,7 +2469,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "9.3.1"
+APP_VERSION = "9.3.2"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
