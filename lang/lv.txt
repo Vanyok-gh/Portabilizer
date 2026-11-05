@@ -366,3 +366,21 @@
 366	Saīsne darbvirsmā
 367	Neizdevās sagatavot saīsni: galvenais exe nav atrasts.
 368	Saīsni izveidot neizdevās. Palaidiet pats:\n{0}
+369	Mape ar diska failiem:
+370	Sējuma etiķete:
+371	Attēla fails:
+372	ISO: veidoju {0} no {1}, etiķete {2}
+373	ISO attēls
+374	Izveidot ISO
+375	Veidoju attēlu...
+376	ISO: gatavs, {0}
+377	Izvēlieties mapi ar diska failiem.
+378	Sējuma etiķetei jābūt no 1 līdz 32 rakstzīmēm.
+379	Norādiet, kur saglabāt attēlu.
+380	Sējuma etiķetei jāsakrīt ar to, ko gaida programma (piemēram, TRAOD1). Gatavo attēlu pievieno ar peles labo pogu: Pievienot (Windows 10 un 11), un tas parādīsies kā DVD diskdzinis ar šo etiķeti.
+381	Fails jau pastāv:\n{0}\n\nVai aizstāt to?
+382	ISO: ierakstīšanas kļūda: {0}
+383	Diska attēls
+384	Gatavs: {0} ({1})
+385	Veidoju attēlu... {0}%
+386	Attēls nav izveidots.

@@ -366,3 +366,21 @@
 366	Desktop shortcut
 367	Could not prepare the shortcut: main exe not found.
 368	Could not create the shortcut. Run it manually:\n{0}
+369	Folder with disc files:
+370	Volume label:
+371	Image file:
+372	ISO: building {0} from {1}, label {2}
+373	ISO image
+374	Create ISO
+375	Building image...
+376	ISO: done, {0}
+377	Select the folder with the disc files.
+378	The volume label must be 1 to 32 characters long.
+379	Specify where to save the image.
+380	The volume label must match the one the program expects (for example, TRAOD1). To mount the finished image, right-click it and choose Mount (Windows 10 and 11); it will appear as a DVD drive with this label.
+381	File already exists:\n{0}\n\nReplace it?
+382	ISO: write error: {0}
+383	Disc image
+384	Done: {0} ({1})
+385	Building image... {0}%
+386	Image was not created.

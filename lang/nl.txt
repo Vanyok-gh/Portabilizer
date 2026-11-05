@@ -366,3 +366,21 @@
 366	Snelkoppeling op bureaublad
 367	De snelkoppeling kon niet worden voorbereid: hoofd-exe niet gevonden.
 368	De snelkoppeling kon niet worden gemaakt. Voer hem handmatig uit:\n{0}
+369	Map met schijfbestanden:
+370	Volumenaam:
+371	Afbeeldingsbestand:
+372	ISO: {0} maken van {1}, volumenaam {2}
+373	ISO-image
+374	ISO maken
+375	Image maken...
+376	ISO: klaar, {0}
+377	Selecteer de map met de schijfbestanden.
+378	De volumenaam moet 1 tot 32 tekens lang zijn.
+379	Geef aan waar de image moet worden opgeslagen.
+380	De volumenaam moet overeenkomen met die het programma verwacht (bijvoorbeeld TRAOD1). De voltooide image koppel je met de rechtermuisknop: Koppelen (Windows 10 en 11); hij verschijnt als dvd-station met deze naam.
+381	Bestand bestaat al:\n{0}\n\nVervangen?
+382	ISO: schrijffout: {0}
+383	Schijfimage
+384	Klaar: {0} ({1})
+385	Image maken... {0}%
+386	Image is niet gemaakt.

@@ -366,3 +366,21 @@
 366	Desktop-Verknüpfung
 367	Die Verknüpfung konnte nicht vorbereitet werden: Haupt-exe nicht gefunden.
 368	Die Verknüpfung konnte nicht erstellt werden. Führen Sie sie manuell aus:\n{0}
+369	Ordner mit den Datenträgerdateien:
+370	Volumebezeichnung:
+371	Abbilddatei:
+372	ISO: Erstelle {0} aus {1}, Bezeichnung {2}
+373	ISO-Abbild
+374	ISO erstellen
+375	Abbild wird erstellt...
+376	ISO: fertig, {0}
+377	Wählen Sie den Ordner mit den Datenträgerdateien aus.
+378	Die Volumebezeichnung muss 1 bis 32 Zeichen lang sein.
+379	Geben Sie an, wo das Abbild gespeichert werden soll.
+380	Die Volumebezeichnung muss mit der vom Programm erwarteten übereinstimmen (z. B. TRAOD1). Das fertige Abbild wird per Rechtsklick eingebunden: Bereitstellen (Windows 10 und 11); es erscheint als DVD-Laufwerk mit dieser Bezeichnung.
+381	Die Datei existiert bereits:\n{0}\n\nErsetzen?
+382	ISO: Schreibfehler: {0}
+383	Datenträgerabbild
+384	Fertig: {0} ({1})
+385	Abbild wird erstellt... {0}%
+386	Abbild wurde nicht erstellt.

@@ -366,3 +366,21 @@
 366	Zástupce na ploše
 367	Zástupce se nepodařilo připravit: hlavní soubor exe nebyl nalezen.
 368	Zástupce se nepodařilo vytvořit. Spusťte ručně:\n{0}
+369	Složka se soubory disku:
+370	Název svazku:
+371	Soubor obrazu:
+372	ISO: sestavuji {0} z {1}, název svazku {2}
+373	Obraz ISO
+374	Vytvořit ISO
+375	Sestavuji obraz...
+376	ISO: hotovo, {0}
+377	Vyberte složku se soubory disku.
+378	Název svazku musí mít 1 až 32 znaků.
+379	Určete, kam se má obraz uložit.
+380	Název svazku musí odpovídat tomu, který program očekává (například TRAOD1). Hotový obraz se připojí pravým tlačítkem myši: Připojit (Windows 10 a 11), zobrazí se jako jednotka DVD s tímto názvem.
+381	Soubor již existuje:\n{0}\n\nNahradit jej?
+382	ISO: chyba zápisu: {0}
+383	Obraz disku
+384	Hotovo: {0} ({1})
+385	Sestavuji obraz... {0}%
+386	Obraz nebyl vytvořen.

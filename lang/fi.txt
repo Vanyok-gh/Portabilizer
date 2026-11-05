@@ -366,3 +366,21 @@
 366	Pikakuvake työpöydällä
 367	Pikakuvaketta ei voitu valmistella: pääasiallista exe-tiedostoa ei löytynyt.
 368	Pikakuvakkeen luonti epäonnistui. Suorita käsin:\n{0}
+369	Levyn tiedostojen kansio:
+370	Taltion nimi:
+371	Levykuvatiedosto:
+372	ISO: kokoan {0} kansiosta {1}, nimi {2}
+373	ISO-levykuva
+374	Luo ISO
+375	Kootaan levykuvaa...
+376	ISO: valmis, {0}
+377	Valitse levyn tiedostojen kansio.
+378	Taltion nimen pituuden on oltava 1-32 merkkiä.
+379	Määritä, minne levykuva tallennetaan.
+380	Taltion nimen on vastattava nimeä, jota ohjelma odottaa (esimerkiksi TRAOD1). Valmis levykuva liitetään hiiren oikealla painikkeella: Liitä (Windows 10 ja 11), ja se näkyy DVD-asemana tällä nimellä.
+381	Tiedosto on jo olemassa:\n{0}\n\nKorvataanko se?
+382	ISO: kirjoitusvirhe: {0}
+383	Levykuva
+384	Valmis: {0} ({1})
+385	Kootaan levykuvaa... {0}%
+386	Levykuvaa ei luotu.

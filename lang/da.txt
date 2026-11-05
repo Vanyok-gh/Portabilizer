@@ -366,3 +366,21 @@
 366	Genvej på skrivebordet
 367	Kunne ikke klargøre genvejen: hoved-exe blev ikke fundet.
 368	Genvejen kunne ikke oprettes. Kør manuelt:\n{0}
+369	Mappe med diskfiler:
+370	Drevnavn:
+371	Aftryksfil:
+372	ISO: opretter {0} fra {1}, navn {2}
+373	ISO-aftryk
+374	Opret ISO
+375	Opretter aftryk...
+376	ISO: færdig, {0}
+377	Vælg mappen med diskfiler.
+378	Drevnavnet skal være på 1 til 32 tegn.
+379	Angiv, hvor aftrykket skal gemmes.
+380	Drevnavnet skal svare til det, programmet forventer (for eksempel TRAOD1). Det færdige aftryk tilsluttes med højreklik: Monter (Windows 10 og 11), og det vises som et DVD-drev med dette navn.
+381	Filen findes allerede:\n{0}\n\nVil du erstatte den?
+382	ISO: skrivefejl: {0}
+383	Diskaftryk
+384	Færdig: {0} ({1})
+385	Opretter aftryk... {0}%
+386	Aftrykket blev ikke oprettet.

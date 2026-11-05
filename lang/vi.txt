@@ -366,3 +366,21 @@
 366	Lối tắt trên màn hình nền
 367	Không thể chuẩn bị lối tắt: không tìm thấy exe chính.
 368	Không tạo được lối tắt. Hãy chạy thủ công:\n{0}
+369	Thư mục chứa tệp đĩa:
+370	Nhãn ổ đĩa:
+371	Tệp ảnh đĩa:
+372	ISO: đang tạo {0} từ {1}, nhãn {2}
+373	Ảnh ISO
+374	Tạo ISO
+375	Đang tạo ảnh đĩa...
+376	ISO: xong, {0}
+377	Chọn thư mục chứa tệp đĩa.
+378	Nhãn ổ đĩa phải dài từ 1 đến 32 ký tự.
+379	Chỉ định nơi lưu ảnh đĩa.
+380	Nhãn ổ đĩa phải khớp với nhãn mà chương trình mong đợi (ví dụ TRAOD1). Ảnh đĩa đã tạo được gắn bằng cách nhấp chuột phải: Gắn kết (Windows 10 và 11), và nó sẽ xuất hiện như một ổ DVD với nhãn này.
+381	Tệp đã tồn tại:\n{0}\n\nGhi đè?
+382	ISO: lỗi ghi: {0}
+383	Ảnh đĩa
+384	Xong: {0} ({1})
+385	Đang tạo ảnh đĩa... {0}%
+386	Ảnh đĩa chưa được tạo.

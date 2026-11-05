@@ -366,3 +366,21 @@
 366	Atalho na área de trabalho
 367	Não foi possível preparar o atalho: exe principal não encontrado.
 368	Não foi possível criar o atalho. Execute manualmente:\n{0}
+369	Pasta com os arquivos do disco:
+370	Rótulo do volume:
+371	Arquivo de imagem:
+372	ISO: criando {0} a partir de {1}, rótulo {2}
+373	Imagem ISO
+374	Criar ISO
+375	Criando imagem...
+376	ISO: pronto, {0}
+377	Selecione a pasta com os arquivos do disco.
+378	O rótulo do volume deve ter de 1 a 32 caracteres.
+379	Informe onde salvar a imagem.
+380	O rótulo do volume deve corresponder ao esperado pelo programa (por exemplo, TRAOD1). A imagem pronta é montada com o botão direito: Montar (Windows 10 e 11); ela aparecerá como uma unidade de DVD com esse rótulo.
+381	O arquivo já existe:\n{0}\n\nSubstituí-lo?
+382	ISO: erro de gravação: {0}
+383	Imagem de disco
+384	Pronto: {0} ({1})
+385	Criando imagem... {0}%
+386	A imagem não foi criada.

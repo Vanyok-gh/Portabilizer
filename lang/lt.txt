@@ -366,3 +366,21 @@
 366	Nuoroda darbalaukyje
 367	Nepavyko paruošti nuorodos: pagrindinis exe nerastas.
 368	Nuorodos sukurti nepavyko. Paleiskite rankiniu būdu:\n{0}
+369	Aplankas su disko failais:
+370	Tomo žymė:
+371	Atvaizdo failas:
+372	ISO: kuriu {0} iš {1}, žymė {2}
+373	ISO atvaizdas
+374	Sukurti ISO
+375	Kuriu atvaizdą...
+376	ISO: paruošta, {0}
+377	Pasirinkite aplanką su disko failais.
+378	Tomo žymė turi būti nuo 1 iki 32 simbolių.
+379	Nurodykite, kur išsaugoti atvaizdą.
+380	Tomo žymė turi sutapti su tuo, ko tikisi programa (pvz., TRAOD1). Paruoštas atvaizdas prijungiamas dešiniuoju pelės mygtuku: Prijungti (Windows 10 ir 11), ir jis atsiras kaip DVD įrenginys su šia žyme.
+381	Failas jau yra:\n{0}\n\nPakeisti jį?
+382	ISO: įrašymo klaida: {0}
+383	Disko atvaizdas
+384	Paruošta: {0} ({1})
+385	Kuriu atvaizdą... {0}%
+386	Atvaizdas nesukurtas.

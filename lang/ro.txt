@@ -366,3 +366,21 @@
 366	Comandă rapidă pe desktop
 367	Nu s-a putut pregăti comanda rapidă: fișierul exe principal nu a fost găsit.
 368	Nu s-a putut crea comanda rapidă. Rulați manual:\n{0}
+369	Folderul cu fișierele discului:
+370	Eticheta volumului:
+371	Fișier imagine:
+372	ISO: construiesc {0} din {1}, eticheta {2}
+373	Imagine ISO
+374	Creează ISO
+375	Se construiește imaginea...
+376	ISO: gata, {0}
+377	Alegeți folderul cu fișierele discului.
+378	Eticheta volumului trebuie să aibă între 1 și 32 de caractere.
+379	Indicați unde să se salveze imaginea.
+380	Eticheta volumului trebuie să coincidă cu cea așteptată de program (de exemplu TRAOD1). Imaginea gata făcută se montează cu clic dreapta: Montare (Windows 10 și 11), iar ea va apărea ca unitate DVD cu această etichetă.
+381	Fișierul există deja:\n{0}\n\nÎl înlocuiți?
+382	ISO: eroare de scriere: {0}
+383	Imagine de disc
+384	Gata: {0} ({1})
+385	Se construiește imaginea... {0}%
+386	Imaginea nu a fost creată.
