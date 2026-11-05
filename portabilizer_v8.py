@@ -975,6 +975,13 @@ foreach ($t in 'AdminExecuteSequence', 'AdminUISequence') {
         Write-Host "$t : removed $($names.Count)"
     } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }
 }
+# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:
+# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).
+try {
+    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))
+    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null
+    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null
+} catch { Write-Host "File : skipped ($($_.Exception.Message))" }
 $db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null
 """
 
@@ -2469,7 +2476,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "9.3.2"
+APP_VERSION = "9.3.3"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 

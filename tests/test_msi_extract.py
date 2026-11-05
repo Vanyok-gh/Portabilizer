@@ -56,5 +56,6 @@ with tempfile.TemporaryDirectory() as d:
     check(not res, "обе попытки неудачны: False")
 
 check("IS*" in P.MSI_STRIP_PS and "AdminExecuteSequence" in P.MSI_STRIP_PS, "скрипт чистит IS-действия")
+check("Component_='DirectX9'" in P.MSI_STRIP_PS, "файлы DirectX9 убираются из черновика")
 check("`" not in P.MSI_STRIP_PS, "в PowerShell-тексте нет обратных кавычек (экранирование)")
 print(f"MSI: {n} проверок пройдено")
