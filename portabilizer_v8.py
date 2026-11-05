@@ -124,6 +124,7 @@ from urllib.parse import unquote
 
 from pzp_i18n import LANGS, detect_lang, get_lang, lang_name, set_lang, tr, trx
 from pzp_iso import IsoError, build_iso
+from pzp_msi import missing_source_files
 
 try:
     import psutil
@@ -951,7 +952,7 @@ def list_drives():
 # PowerShell: убирает из ЧЕРНОВИКА msi действия InstallScript (имена на IS...). Без них msiexec /a
 # не требует движок InstallScript (isscript.msi, нужны права администратора) и просто копирует файлы.
 MSI_STRIP_PS = r"""
-param([string]$Path)
+param([string]$Path, [string]$KeysFile)
 $ErrorActionPreference = 'Stop'
 $inst = New-Object -ComObject WindowsInstaller.Installer
 $db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))
@@ -982,6 +983,23 @@ try {
     $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null
     $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null
 } catch { Write-Host "File : skipped ($($_.Exception.Message))" }
+# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,
+# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).
+if ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {
+    $cnt = 0
+    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {
+        if (-not $k -or $k.Contains("'")) { continue }
+        try {
+            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {
+                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))
+                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null
+                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null
+            }
+            $cnt++
+        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }
+    }
+    Write-Host "File : removed $cnt missing sources"
+}
 $db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null
 """
 
@@ -1005,12 +1023,23 @@ def msi_admin_extract(exe: Path, out: Path, log, job=None) -> bool:
     log(f"msiexec: код {run.rc}, файлов в результате {'есть' if _has_files(out) else 'нет'}. Подробный лог: {mlog}")
     tmp = exe.with_name(exe.stem + "_pz_tmp.msi")
     ps = out.parent / "_msi_strip.ps1"
+    keys = out.parent / "_msi_missing.txt"
     try:
+        try:
+            missing = missing_source_files(exe)
+        except Exception as e:                      # разбор msi - необязательное улучшение
+            log(f"msi: не удалось проверить наличие исходных файлов ({e})")
+            missing = []
+        if missing:
+            keys.write_text("\n".join(k for k, _ in missing), encoding="utf-8")
+            names = ", ".join(Path(p).name for _, p in missing[:12])
+            log(f"Нет исходных файлов рядом с msi: {len(missing)} (они будут пропущены): {names}"
+                + (" ..." if len(missing) > 12 else ""))
         shutil.copy2(exe, tmp)
         ps.write_text(MSI_STRIP_PS, encoding="utf-8-sig")
         log("Повтор без действий InstallScript (на временной копии msi)")
-        if not run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(ps), str(tmp)],
-                   log, job=job):
+        if not run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(ps), str(tmp),
+                    str(keys)], log, job=job):
             return False
         ok = run(f'msiexec /a "{tmp}" /qn TARGETDIR="{out}" /l*v "{mlog}"', log, job=job)
         if not (ok and _has_files(out)):
@@ -1021,7 +1050,7 @@ def msi_admin_extract(exe: Path, out: Path, log, job=None) -> bool:
         log(f"msi: не удалось подготовить копию: {e}")
         return False
     finally:
-        for f in (tmp, ps):
+        for f in (tmp, ps, keys):
             try:
                 f.unlink()
             except OSError:
@@ -2476,7 +2505,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "9.3.3"
+APP_VERSION = "9.3.4"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
