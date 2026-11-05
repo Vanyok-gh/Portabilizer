@@ -366,3 +366,21 @@
 366	Genväg på skrivbordet
 367	Det gick inte att förbereda genvägen: huvud-exe hittades inte.
 368	Det gick inte att skapa genvägen. Kör den manuellt:\n{0}
+369	Mapp med skivfiler:
+370	Volymetikett:
+371	Avbildningsfil:
+372	ISO: skapar {0} från {1}, etikett {2}
+373	ISO-avbild
+374	Skapa ISO
+375	Skapar avbild...
+376	ISO: klart, {0}
+377	Välj mappen med skivfilerna.
+378	Volymetiketten måste vara 1 till 32 tecken lång.
+379	Ange var avbilden ska sparas.
+380	Volymetiketten måste stämma med den som programmet förväntar sig (till exempel TRAOD1). Den färdiga avbilden monteras med högerklick: Montera (Windows 10 och 11); den visas som en DVD-enhet med den etiketten.
+381	Filen finns redan:\n{0}\n\nVill du ersätta den?
+382	ISO: skrivfel: {0}
+383	Skivavbild
+384	Klart: {0} ({1})
+385	Skapar avbild... {0}%
+386	Avbilden skapades inte.

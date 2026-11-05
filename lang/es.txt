@@ -366,3 +366,21 @@
 366	Acceso directo en el escritorio
 367	No se pudo preparar el acceso directo: no se encontró el exe principal.
 368	No se pudo crear el acceso directo. Ejecútelo manualmente:\n{0}
+369	Carpeta con los archivos del disco:
+370	Etiqueta de volumen:
+371	Archivo de imagen:
+372	ISO: creando {0} desde {1}, etiqueta {2}
+373	Imagen ISO
+374	Crear ISO
+375	Creando imagen...
+376	ISO: listo, {0}
+377	Seleccione la carpeta con los archivos del disco.
+378	La etiqueta de volumen debe tener de 1 a 32 caracteres.
+379	Indique dónde guardar la imagen.
+380	La etiqueta de volumen debe coincidir con la que espera el programa (por ejemplo, TRAOD1). Para montar la imagen terminada, haga clic con el botón derecho y elija Montar (Windows 10 y 11); aparecerá como una unidad de DVD con esta etiqueta.
+381	El archivo ya existe:\n{0}\n\n¿Reemplazarlo?
+382	ISO: error de escritura: {0}
+383	Imagen de disco
+384	Listo: {0} ({1})
+385	Creando imagen... {0}%
+386	La imagen no se creó.

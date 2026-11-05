@@ -366,3 +366,21 @@
 366	Collegamento sul desktop
 367	Impossibile preparare il collegamento: exe principale non trovato.
 368	Impossibile creare il collegamento. Eseguitelo manualmente:\n{0}
+369	Cartella con i file del disco:
+370	Etichetta del volume:
+371	File immagine:
+372	ISO: creo {0} da {1}, etichetta {2}
+373	Immagine ISO
+374	Crea ISO
+375	Creazione dell'immagine...
+376	ISO: fatto, {0}
+377	Seleziona la cartella con i file del disco.
+378	L'etichetta del volume deve contenere da 1 a 32 caratteri.
+379	Indica dove salvare l'immagine.
+380	L'etichetta del volume deve corrispondere a quella attesa dal programma (ad esempio TRAOD1). L'immagine pronta si monta con il clic destro: Monta (Windows 10 e 11); apparirà come unità DVD con questa etichetta.
+381	Il file esiste già:\n{0}\n\nSostituirlo?
+382	ISO: errore di scrittura: {0}
+383	Immagine disco
+384	Fatto: {0} ({1})
+385	Creazione dell'immagine... {0}%
+386	Immagine non creata.

@@ -366,3 +366,21 @@
 366	Snarvei på skrivebordet
 367	Kunne ikke klargjøre snarveien: hovedfilen exe ble ikke funnet.
 368	Kunne ikke opprette snarveien. Kjør manuelt:\n{0}
+369	Mappe med diskfiler:
+370	Volumetikett:
+371	Avbildefil:
+372	ISO: lager {0} fra {1}, etikett {2}
+373	ISO-avbilde
+374	Lag ISO
+375	Lager avbilde...
+376	ISO: ferdig, {0}
+377	Velg mappen med diskfiler.
+378	Volumetiketten må være på 1 til 32 tegn.
+379	Angi hvor avbildet skal lagres.
+380	Volumetiketten må stemme med den programmet venter (for eksempel TRAOD1). Det ferdige avbildet kobles til med høyreklikk: Monter (Windows 10 og 11), og det vises som en DVD-stasjon med denne etiketten.
+381	Filen finnes allerede:\n{0}\n\nVil du erstatte den?
+382	ISO: skrivefeil: {0}
+383	Diskavbilde
+384	Ferdig: {0} ({1})
+385	Lager avbilde... {0}%
+386	Avbildet ble ikke opprettet.

@@ -366,3 +366,21 @@
 366	Skrót na pulpicie
 367	Nie udało się przygotować skrótu: nie znaleziono głównego pliku exe.
 368	Nie udało się utworzyć skrótu. Uruchom ręcznie:\n{0}
+369	Folder z plikami dysku:
+370	Etykieta woluminu:
+371	Plik obrazu:
+372	ISO: tworzę {0} z {1}, etykieta {2}
+373	Obraz ISO
+374	Utwórz ISO
+375	Tworzenie obrazu...
+376	ISO: gotowe, {0}
+377	Wybierz folder z plikami dysku.
+378	Etykieta woluminu musi mieć od 1 do 32 znaków.
+379	Określ, gdzie zapisać obraz.
+380	Etykieta woluminu musi być zgodna z oczekiwaną przez program (na przykład TRAOD1). Gotowy obraz podłącza się prawym przyciskiem myszy: Zainstaluj (Windows 10 i 11); pojawi się jako napęd DVD z tą etykietą.
+381	Plik już istnieje:\n{0}\n\nZastąpić go?
+382	ISO: błąd zapisu: {0}
+383	Obraz dysku
+384	Gotowe: {0} ({1})
+385	Tworzenie obrazu... {0}%
+386	Obraz nie został utworzony.

@@ -13,6 +13,7 @@ Portabilizer v8.9 - превращает установщик, пакет или
   4. Создаёт Launch.bat, который перенаправляет APPDATA, LOCALAPPDATA,
      USERPROFILE и TEMP в папку Data рядом с программой.
   5. Кладёт Create_Shortcut.bat и предлагает ярлык на рабочем столе с иконкой программы.
+  Отдельно: вкладка «Образ ISO» собирает образ диска из папки (для игр, которым нужен диск с меткой в приводе).
 
 Режимы:
   auto      - сначала распаковка; если нужна установка (репак) - пробует её,
@@ -122,6 +123,7 @@ from pathlib import Path
 from urllib.parse import unquote
 
 from pzp_i18n import LANGS, detect_lang, get_lang, lang_name, set_lang, tr, trx
+from pzp_iso import IsoError, build_iso
 
 try:
     import psutil
@@ -2394,7 +2396,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "9.2"
+APP_VERSION = "9.3"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
@@ -2866,12 +2868,13 @@ def gui(_hook=None, start_radical=False):
 
     nb = ttk.Notebook(root)
     nb.pack(fill="both", expand=True)
-    main_tab, hist_tab, diag_tab, ver_tab, look_tab, lang_tab = (
-        ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb))
+    main_tab, hist_tab, diag_tab, ver_tab, iso_tab, look_tab, lang_tab = (
+        ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb), ttk.Frame(nb))
     nb.add(main_tab, text=tr("Конвертер"))
     nb.add(hist_tab, text=tr("История"))
     nb.add(diag_tab, text=tr("Диагностика"))
     nb.add(ver_tab, text=tr("Версии"))
+    nb.add(iso_tab, text=tr("Образ ISO"))
     nb.add(look_tab, text=tr("Оформление"))
     nb.add(lang_tab, text=tr("Язык"))
 
@@ -3914,6 +3917,109 @@ def gui(_hook=None, start_radical=False):
 
     btn_ver_n.config(command=lambda: set_version(False))
     btn_ver_r.config(command=lambda: set_version(True))
+
+    # --------------------------------------------------------------- вкладка «Образ ISO»
+    # Старые игры проверяют, что в приводе лежит диск с нужной меткой. Образ ISO, подключённый средствами
+    # Windows, выглядит как такой привод. Здесь образ собирается из папки с файлами диска.
+    iso_src, iso_label, iso_out = tk.StringVar(), tk.StringVar(), tk.StringVar()
+    iso_status = tk.StringVar(value=tr("Готов к работе."))
+    iso_state = {"stop": False, "busy": False}
+    iso_tab.grid_columnconfigure(1, weight=1)
+
+    def iso_row(r, label, var, cmd):
+        ttk.Label(iso_tab, text=label).grid(row=r, column=0, sticky="w", padx=8, pady=6)
+        ttk.Entry(iso_tab, textvariable=var, width=60).grid(row=r, column=1, padx=4, sticky="ew")
+        if cmd:
+            ttk.Button(iso_tab, text="...", width=4, command=cmd).grid(row=r, column=2, padx=4)
+
+    def iso_pick_src():
+        d = filedialog.askdirectory()
+        if not d:
+            return
+        iso_src.set(d)
+        if not iso_label.get().strip():
+            iso_label.set(re.sub(r"[^A-Za-z0-9_]", "_", Path(d).name).upper()[:32])
+        if not iso_out.get().strip():
+            iso_out.set(str(Path(d).with_suffix(".iso")) if Path(d).suffix == "" else str(Path(d)) + ".iso")
+
+    def iso_pick_out():
+        f = filedialog.asksaveasfilename(defaultextension=".iso", filetypes=[(tr("Образ диска"), "*.iso")],
+                                         initialfile=Path(iso_out.get() or "disc.iso").name)
+        if f:
+            iso_out.set(f)
+
+    iso_row(0, tr("Папка с файлами диска:"), iso_src, iso_pick_src)
+    iso_row(1, tr("Метка тома:"), iso_label, None)
+    iso_row(2, tr("Файл образа:"), iso_out, iso_pick_out)
+    ttk.Label(iso_tab, style="Muted.TLabel", wraplength=820, text=tr(
+        "Метка тома должна совпадать с той, что ждёт программа (например, TRAOD1). Готовый образ подключается "
+        "правой кнопкой: Подключить (Windows 10 и 11), он появится как DVD-привод с этой меткой.")).grid(
+        row=3, column=0, columnspan=3, sticky="w", padx=8, pady=(2, 8))
+    iso_btns = ttk.Frame(iso_tab)
+    iso_btns.grid(row=4, column=0, columnspan=3, pady=6)
+    iso_go = ttk.Button(iso_btns, text=tr("Создать ISO"))
+    iso_cancel = ttk.Button(iso_btns, text=tr("Прервать"), state="disabled")
+    iso_go.pack(side="left", padx=4)
+    iso_cancel.pack(side="left", padx=4)
+    iso_pb = ttk.Progressbar(iso_tab, mode="determinate", maximum=100)
+    iso_pb.grid(row=5, column=0, columnspan=3, sticky="ew", padx=8, pady=(8, 2))
+    ttk.Label(iso_tab, textvariable=iso_status).grid(row=6, column=0, columnspan=3, sticky="w", padx=8)
+
+    def iso_finish(ok, text):
+        iso_state["busy"] = False
+        iso_go.config(state="normal")
+        iso_cancel.config(state="disabled")
+        if ok:
+            iso_pb["value"] = 100
+        iso_status.set(text)
+
+    def iso_start():
+        if iso_state["busy"]:
+            return
+        src_dir, label, out = iso_src.get().strip(), iso_label.get().strip(), iso_out.get().strip()
+        if not src_dir or not Path(src_dir).is_dir():
+            messagebox.showinfo(tr("Образ ISO"), tr("Выберите папку с файлами диска."), parent=root)
+            return
+        if not label or len(label) > 32:
+            messagebox.showinfo(tr("Образ ISO"), tr("Метка тома должна быть от 1 до 32 символов."), parent=root)
+            return
+        if not out:
+            messagebox.showinfo(tr("Образ ISO"), tr("Укажите, куда сохранить образ."), parent=root)
+            return
+        if Path(out).exists() and not messagebox.askyesno(
+                tr("Образ ISO"), tr("Файл уже есть:\n{0}\n\nЗаменить его?", out), parent=root, default="no"):
+            return
+        iso_state.update(busy=True, stop=False)
+        iso_go.config(state="disabled")
+        iso_cancel.config(state="normal")
+        iso_pb["value"] = 0
+        iso_status.set(tr("Собираю образ..."))
+        log(f"ISO: собираю {out} из {src_dir}, метка {label}")
+
+        def progress(done, total):
+            pct = int(100 * done / total) if total else 100
+            root.after(0, lambda: (iso_pb.configure(value=pct),
+                                   iso_status.set(tr("Собираю образ... {0}%", pct))))
+
+        def work():
+            try:
+                size = build_iso(src_dir, out, label, progress, should_stop=lambda: iso_state["stop"])
+            except IsoError as e:
+                log(f"ISO: {e}")
+                msg = str(e)
+                root.after(0, lambda: iso_finish(False, tr("Образ не создан.") if iso_state["stop"] else msg))
+                return
+            except OSError as e:
+                log(f"ISO: ошибка записи: {e}")
+                msg = str(e)
+                root.after(0, lambda: iso_finish(False, msg))
+                return
+            log(f"ISO: готово, {fmt_size(size)}")
+            root.after(0, lambda: iso_finish(True, tr("Готово: {0} ({1})", out, fmt_size(size))))
+        threading.Thread(target=work, daemon=True).start()
+
+    iso_go.config(command=iso_start)
+    iso_cancel.config(command=lambda: iso_state.update(stop=True))
 
     # --------------------------------------------------------------- завершение
     # --- Язык: как в Windows - сверху название на самом языке, под ним оно же на языке интерфейса

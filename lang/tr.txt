@@ -366,3 +366,21 @@
 366	Masaüstü kısayolu
 367	Kısayol hazırlanamadı: ana exe dosyası bulunamadı.
 368	Kısayol oluşturulamadı. Elle çalıştırın:\n{0}
+369	Disk dosyalarının klasörü:
+370	Birim etiketi:
+371	Görüntü dosyası:
+372	ISO: {1} içinden {0} oluşturuluyor, etiket {2}
+373	ISO görüntüsü
+374	ISO oluştur
+375	Görüntü oluşturuluyor...
+376	ISO: hazır, {0}
+377	Disk dosyalarının klasörünü seçin.
+378	Birim etiketi 1 ile 32 karakter arasında olmalıdır.
+379	Görüntünün nereye kaydedileceğini belirtin.
+380	Birim etiketi programın beklediğiyle aynı olmalıdır (örneğin TRAOD1). Hazır görüntü sağ tıklanarak bağlanır: Bağla (Windows 10 ve 11); bu etiketle bir DVD sürücüsü olarak görünür.
+381	Dosya zaten var:\n{0}\n\nDeğiştirilsin mi?
+382	ISO: yazma hatası: {0}
+383	Disk görüntüsü
+384	Hazır: {0} ({1})
+385	Görüntü oluşturuluyor... {0}%
+386	Görüntü oluşturulmadı.

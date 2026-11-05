@@ -366,3 +366,21 @@
 366	Töölaua otsetee
 367	Otseteed ei õnnestunud ette valmistada: põhi-exe-faili ei leitud.
 368	Otseteed ei õnnestunud luua. Käivitage käsitsi:\n{0}
+369	Kettafailidega kaust:
+370	Köite silt:
+371	Kujutisefail:
+372	ISO: koostan {0} kaustast {1}, silt {2}
+373	ISO-kujutis
+374	Loo ISO
+375	Koostan kujutist...
+376	ISO: valmis, {0}
+377	Valige kettafailidega kaust.
+378	Köite silt peab olema 1 kuni 32 tähemärki pikk.
+379	Määrake, kuhu kujutis salvestada.
+380	Köite silt peab ühtima sellega, mida programm ootab (näiteks TRAOD1). Valmis kujutise ühendamiseks tehke sellel paremklõps ja valige Ühenda (Windows 10 ja 11); see ilmub DVD-draivina selle sildiga.
+381	Fail on juba olemas:\n{0}\n\nKas asendada see?
+382	ISO: kirjutusviga: {0}
+383	Kettakujutis
+384	Valmis: {0} ({1})
+385	Koostan kujutist... {0}%
+386	Kujutist ei loodud.

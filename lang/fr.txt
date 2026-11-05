@@ -366,3 +366,21 @@
 366	Raccourci sur le Bureau
 367	Impossible de préparer le raccourci : exe principal introuvable.
 368	Impossible de créer le raccourci. Lancez-le manuellement :\n{0}
+369	Dossier des fichiers du disque :
+370	Nom de volume :
+371	Fichier image :
+372	ISO : création de {0} à partir de {1}, nom de volume {2}
+373	Image ISO
+374	Créer l'ISO
+375	Création de l'image...
+376	ISO : terminé, {0}
+377	Sélectionnez le dossier des fichiers du disque.
+378	Le nom de volume doit comporter de 1 à 32 caractères.
+379	Indiquez où enregistrer l'image.
+380	Le nom de volume doit correspondre à celui attendu par le programme (par exemple, TRAOD1). Pour monter l'image terminée, faites un clic droit dessus et choisissez Monter (Windows 10 et 11) ; elle apparaîtra comme un lecteur DVD portant ce nom.
+381	Le fichier existe déjà :\n{0}\n\nLe remplacer ?
+382	ISO : erreur d'écriture : {0}
+383	Image disque
+384	Terminé : {0} ({1})
+385	Création de l'image... {0}%
+386	L'image n'a pas été créée.

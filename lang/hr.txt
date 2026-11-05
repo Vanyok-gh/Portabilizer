@@ -366,3 +366,21 @@
 366	Prečac na radnoj površini
 367	Prečac nije moguće pripremiti: glavni exe nije pronađen.
 368	Prečac nije moguće izraditi. Pokrenite ručno:\n{0}
+369	Mapa s datotekama diska:
+370	Oznaka volumena:
+371	Datoteka slike:
+372	ISO: izrađujem {0} iz {1}, oznaka {2}
+373	ISO slika
+374	Izradi ISO
+375	Izrađujem sliku...
+376	ISO: gotovo, {0}
+377	Odaberite mapu s datotekama diska.
+378	Oznaka volumena mora imati od 1 do 32 znaka.
+379	Navedite gdje spremiti sliku.
+380	Oznaka volumena mora se podudarati s onom koju program očekuje (npr. TRAOD1). Gotova slika se montira desnim klikom: Montiraj (Windows 10 i 11), a pojavit će se kao DVD pogon s ovom oznakom.
+381	Datoteka već postoji:\n{0}\n\nZamijeniti je?
+382	ISO: pogreška pri zapisivanju: {0}
+383	Slika diska
+384	Gotovo: {0} ({1})
+385	Izrađujem sliku... {0}%
+386	Slika nije izrađena.

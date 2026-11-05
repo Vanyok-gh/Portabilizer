@@ -366,3 +366,21 @@
 366	Parancsikon az asztalon
 367	A parancsikont nem sikerült előkészíteni: a fő exe fájl nem található.
 368	A parancsikont nem sikerült létrehozni. Futtassa kézzel:\n{0}
+369	A lemezfájlokat tartalmazó mappa:
+370	Kötetcímke:
+371	Lemezkép fájl:
+372	ISO: {0} összeállítása a(z) {1} mappából, címke: {2}
+373	ISO-lemezkép
+374	ISO létrehozása
+375	Lemezkép összeállítása...
+376	ISO: kész, {0}
+377	Válassza ki a lemezfájlokat tartalmazó mappát.
+378	A kötetcímke hossza 1 és 32 karakter között legyen.
+379	Adja meg, hová mentse a lemezképet.
+380	A kötetcímkének egyeznie kell azzal, amelyet a program vár (például TRAOD1). Az elkészült lemezkép jobb gombbal csatlakoztatható: Csatlakoztatás (Windows 10 és 11), és DVD-meghajtóként jelenik meg ezzel a címkével.
+381	A fájl már létezik:\n{0}\n\nCseréli?
+382	ISO: írási hiba: {0}
+383	Lemezkép
+384	Kész: {0} ({1})
+385	Lemezkép összeállítása... {0}%
+386	A lemezkép nem jött létre.

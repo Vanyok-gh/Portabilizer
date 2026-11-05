@@ -366,3 +366,21 @@
 366	Pintasan di desktop
 367	Gagal menyiapkan pintasan: exe utama tidak ditemukan.
 368	Pintasan gagal dibuat. Jalankan secara manual:\n{0}
+369	Folder berkas disk:
+370	Label volume:
+371	Berkas citra:
+372	ISO: membuat {0} dari {1}, label {2}
+373	Citra ISO
+374	Buat ISO
+375	Membuat citra...
+376	ISO: selesai, {0}
+377	Pilih folder berkas disk.
+378	Label volume harus 1 sampai 32 karakter.
+379	Tentukan lokasi penyimpanan citra.
+380	Label volume harus sama dengan yang diharapkan program (misalnya TRAOD1). Citra yang sudah jadi dipasang dengan klik kanan: Pasang (Windows 10 dan 11), lalu muncul sebagai drive DVD dengan label ini.
+381	Berkas sudah ada:\n{0}\n\nGanti?
+382	ISO: kesalahan penulisan: {0}
+383	Citra disk
+384	Selesai: {0} ({1})
+385	Membuat citra... {0}%
+386	Citra tidak dibuat.
