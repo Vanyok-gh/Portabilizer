@@ -1504,9 +1504,76 @@ set "LOCALAPPDATA=%DATA%\AppData\Local"
 set "TEMP=%DATA%\Temp"
 set "TMP=%DATA%\Temp"
 if exist "%ROOT%dotnet\dotnet.exe" set "DOTNET_ROOT=%ROOT%dotnet"
-{invoker}start "" /D "%ROOT%App\{rel_dir}" "%ROOT%App\{rel_exe}" %*
+{invoker}if exist "%ROOT%Portable.ps1" (
+  powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT%Portable.ps1" -Root "%ROOT:~0,-1%" -Dir "{dir_arg}" -Exe "App\{rel_exe}"
+  goto :end
+)
+start "" /D "%ROOT%App\{rel_dir}" "%ROOT%App\{rel_exe}" %*
+:end
 endlocal
 """
+
+
+# Portable.ps1 пишется рядом с Launch.bat, только если есть папка Discs (образы дисков) или Registry
+# (настройки в реестре). Запускает программу, ждёт её выхода и убирает за собой.
+PORTABLE_PS = r"""# Portable.ps1: used by Launch.bat when the folders Discs and/or Registry exist next to it.
+#  Discs\*.iso       disc images, mounted before the start and unmounted after the exit
+#  Registry\*.reg    settings imported into HKCU before the start ({ROOT} is replaced by this folder)
+#  Registry\keys.txt HKCU keys (one per line) exported to Registry\saved after the exit
+param([string]$Root, [string]$Dir, [string]$Exe)
+$ErrorActionPreference = 'Continue'
+$Root = $Root.TrimEnd('\')
+$mounted = @()
+$discs = Join-Path $Root 'Discs'
+if (Test-Path -LiteralPath $discs) {
+    foreach ($iso in (Get-ChildItem -LiteralPath $discs -Filter *.iso | Sort-Object Name)) {
+        try {
+            $img = Get-DiskImage -ImagePath $iso.FullName
+            if (-not $img.Attached) {
+                Mount-DiskImage -ImagePath $iso.FullName | Out-Null
+                $mounted += $iso.FullName
+                Write-Host "Mounted $($iso.Name)"
+            }
+        } catch {
+            Write-Host "Could not mount $($iso.Name): $($_.Exception.Message). Mount it by hand: right-click - Mount."
+        }
+    }
+}
+$reg = Join-Path $Root 'Registry'
+function Import-Reg($file) {
+    $text = [IO.File]::ReadAllText($file)
+    if ($text.Contains('{ROOT}')) {
+        $text = $text.Replace('{ROOT}', $Root.Replace('\', '\'))
+        $tmp = Join-Path $env:TEMP ('pz_' + [IO.Path]::GetFileName($file))
+        [IO.File]::WriteAllText($tmp, $text, [Text.Encoding]::Unicode)
+        & reg.exe import $tmp 2>&1 | Out-Null
+        Remove-Item -LiteralPath $tmp -ErrorAction SilentlyContinue
+    } else {
+        & reg.exe import $file 2>&1 | Out-Null
+    }
+}
+if (Test-Path -LiteralPath $reg) {
+    foreach ($f in (Get-ChildItem -LiteralPath $reg -Filter *.reg)) { Import-Reg $f.FullName }
+    $saved = Join-Path $reg 'saved'
+    if (Test-Path -LiteralPath $saved) {
+        foreach ($f in (Get-ChildItem -LiteralPath $saved -Filter *.reg)) { & reg.exe import $f.FullName 2>&1 | Out-Null }
+    }
+}
+Start-Process -FilePath (Join-Path $Root $Exe) -WorkingDirectory (Join-Path $Root $Dir) -Wait
+$keys = Join-Path $reg 'keys.txt'
+if (Test-Path -LiteralPath $keys) {
+    $saved = Join-Path $reg 'saved'
+    New-Item -ItemType Directory -Force -Path $saved | Out-Null
+    $i = 0
+    foreach ($k in (Get-Content -LiteralPath $keys)) {
+        $k = $k.Trim()
+        if ($k) { $i++; & reg.exe export $k (Join-Path $saved ("key$i.reg")) /y 2>&1 | Out-Null }
+    }
+}
+foreach ($m in $mounted) { try { Dismount-DiskImage -ImagePath $m | Out-Null } catch {} }
+"""
+
+
 
 INVOKER_LINE = 'rem exe requires admin: run without UAC prompt (RunAsInvoker)\r\nset "__COMPAT_LAYER=RunAsInvoker"\r\n'
 
@@ -2035,6 +2102,40 @@ def create_desktop_shortcut(bat: Path, log) -> bool:
     return True
 
 
+def work_dir(base: Path, exe_rel: Path) -> Path:
+    """Рабочая папка запуска (относительно App). Обычно папка exe. Исключение: exe лежит в bin,
+    а рядом с bin есть data - так устроены многие старые игры, они ищут data\\... от корня
+    установки (без этого игра падает на загрузке своих данных)."""
+    d = exe_rel.parent
+    if d.name.lower() == "bin" and d.parent != d:
+        up = base / d.parent
+        try:
+            if any(x.is_dir() and x.name.lower() == "data" for x in up.iterdir()):
+                return d.parent
+        except OSError:
+            pass
+    return d
+
+
+def write_portable_ps(target: Path, log) -> bool:
+    """Portable.ps1 нужен, если рядом с Launch.bat лежат папки Discs (образы) или Registry (настройки)."""
+    ps = target / "Portable.ps1"
+    if not ((target / "Discs").is_dir() or (target / "Registry").is_dir()):
+        return False
+    try:
+        ps.write_text(PORTABLE_PS, encoding="utf-8-sig")
+    except OSError as e:
+        log(f"Не удалось создать Portable.ps1: {e}")
+        return False
+    parts = []
+    if (target / "Discs").is_dir():
+        parts.append("образы из Discs будут подключаться перед запуском и отключаться после выхода")
+    if (target / "Registry").is_dir():
+        parts.append("настройки из Registry загрузятся в реестр пользователя перед запуском")
+    log("Portable.ps1: " + "; ".join(parts) + ".")
+    return True
+
+
 def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=True,
            system_root=None) -> bool:
     """Пишет Launch.bat. Для игр на Unreal Engine запускает ...-Shipping.exe напрямую
@@ -2047,10 +2148,11 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
     base = app.resolve()
 
     def write_launcher(name, exe_rel, invoker=False):
-        d = exe_rel.parent
+        d = work_dir(base, exe_rel)
+        rel_dir = str(d).replace("/", "\\") if str(d) != "." else ""
         (target / name).write_text(
-            LAUNCHER.format(rel_exe=str(exe_rel).replace("/", "\\"),
-                            rel_dir=str(d).replace("/", "\\") if str(d) != "." else "",
+            LAUNCHER.format(rel_exe=str(exe_rel).replace("/", "\\"), rel_dir=rel_dir,
+                            dir_arg=("App\\" + rel_dir) if rel_dir else "App",
                             invoker=INVOKER_LINE.replace("\r\n", "\n") if invoker else ""),
             encoding="utf-8")
 
@@ -2058,6 +2160,7 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
     policy = RUN_POLICY["value"] if RUN_POLICY["value"] in RUN_POLICIES else "auto"
     needs_admin = exe_report(analyze_exe(launch), launch.name, policy, log)
     write_launcher("Launch.bat", rel_exe, invoker=needs_admin)
+    write_portable_ps(target, log)
     if needs_admin or policy == "admin":
         write_launcher("Launch_admin.bat", rel_exe)
     (target / "Data").mkdir(exist_ok=True)
@@ -2505,7 +2608,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "9.3.5"
+APP_VERSION = "9.4"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
