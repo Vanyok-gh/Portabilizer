@@ -1103,8 +1103,12 @@ def digitize_disc_game(msi: Path, app: Path, target: Path, log, job=None, info=N
         except OSError as e:
             log(f"Реестр: не удалось записать .reg ({e})")
     # патчи совместимости exe
-    if pzp_disc.apply_patches(game, log):
+    patched = pzp_disc.apply_patches(game, log)
+    if patched:
         did = True
+        if info is not None:
+            # оригинальный Launcher.exe без прав администратора молча закрывается: запускаем сам exe игры (самую новую сборку)
+            info["disc_main"] = str(max({r[0] for r in patched}, key=lambda q: q.name.lower()))
     # образ первого диска из папки, где лежит установщик (корень диска содержит Data)
     if DISC_OPTIONS["iso"] and a["labels"]:
         src = msi.parent
@@ -1114,7 +1118,7 @@ def digitize_disc_game(msi: Path, app: Path, target: Path, log, job=None, info=N
             has_data = any(x.is_dir() and x.name.lower() == "data" for x in src.iterdir())
         except OSError:
             has_data = False
-        inside = target in src.parents or src == target
+        inside = src == out.parent or src in out.parents     # образ не должен попасть внутрь собственного источника
         if has_data and not out.exists() and not inside:
             try:
                 if job:
@@ -2600,7 +2604,11 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
                     pass
             if exe.suffix.lower() == ".msi" and kind in ("msi", "wix"):
                 digitize_disc_game(exe, app, target, log, job, info)
-            main = resolve_manual(app, manual_exe, log) or find_main_exe(app, log, info.get('chooser'))
+            main = resolve_manual(app, manual_exe, log)
+            if not main and info.get("disc_main") and Path(info["disc_main"]).is_file():
+                main = Path(info["disc_main"]).resolve()
+                log(f"Для дисковой игры главным выбран {main.name} (оригинальный Launcher.exe без прав администратора не запускается).")
+            main = main or find_main_exe(app, log, info.get('chooser'))
 
             if mode == "auto" and can_install:
                 got = dir_size(app)
@@ -2722,7 +2730,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "10.1"
+APP_VERSION = "10.2"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
