@@ -2537,9 +2537,16 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
         if not extract(exe, kind, app, log, job):
             log("Не удалось распаковать архив.")
             return False
-        main = resolve_manual(app, manual_exe, log) or find_main_exe(app, log, info.get('chooser'))
+        disc_inner = None
+        try:
+            cand = find_installer(app)
+            if cand and cand.suffix.lower() == ".msi" and pzp_disc.disc_labels(cand):
+                disc_inner = cand
+        except Exception:
+            pass
+        main = resolve_manual(app, manual_exe, log) or (None if disc_inner else find_main_exe(app, log, info.get('chooser')))
         if not main:
-            inner = find_installer(app)
+            inner = disc_inner or find_installer(app)
             if inner:
                 rel = inner.relative_to(app)
                 staging = target / "Extracted_archive"
@@ -2551,6 +2558,7 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
                     log(f"Не удалось переместить распакованный архив: {e}")
                     return False
                 info["chained"] = True
+                info["search_root"] = str(staging)
                 ok = _portabilize(staging / rel, out_root, log, mode, manual_exe,
                                   target, job, info)
                 if ok:
@@ -2575,10 +2583,21 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
         do_extract = mode in ("extract", "auto")
 
         if do_extract:
+            if exe.suffix.lower() == ".msi" and kind in ("msi", "wix"):
+                try:
+                    root_s = info.get("search_root") or (str(exe.parent.parent) if exe.parent.parent != exe.parent else "")
+                    pzp_disc.gather_cabinets(exe, root_s, log, info.setdefault("placed_cabs", []))
+                except Exception as e:
+                    log(f"Проверка кабинетов пропущена: {e}")
             if not extract(exe, kind, app, log, job):
                 log("Не удалось распаковать. Возможно, установщик нестандартный "
                     "(тогда нужен виртуализатор вроде Cameyo / Turbo Studio).")
                 return False
+            for c in info.pop("placed_cabs", []):      # чужие кабинеты нужны были только msiexec, в образ диска 1 не попадут
+                try:
+                    Path(c).unlink()
+                except OSError:
+                    pass
             if exe.suffix.lower() == ".msi" and kind in ("msi", "wix"):
                 digitize_disc_game(exe, app, target, log, job, info)
             main = resolve_manual(app, manual_exe, log) or find_main_exe(app, log, info.get('chooser'))
@@ -2703,7 +2722,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "10.0"
+APP_VERSION = "10.1"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 

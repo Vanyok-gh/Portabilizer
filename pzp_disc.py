@@ -335,3 +335,68 @@ def scan_exe_hints(exe, limit=64 * 1024 * 1024) -> dict:
     prompts = re.findall(rb"(?i)[\x20-\x7e]{0,60}(?:insert (?:the )?(?:correct |game |cd|dvd|disc|disk)|please insert)[\x20-\x7e]{0,60}", data)
     res["disc_prompts"] = sorted({p.decode("latin1").strip() for p in prompts})[:5]
     return res
+
+
+# ---------------------------------------------------------------------------------------------
+# Несколько дисков в одном задании: .cab второго диска должны лежать рядом с msi первого.
+def cabinets(msi_path) -> list:
+    """[(имя .cab, метка диска)] для внешних кабинетов (без '#' = внутри msi)."""
+    m = _tables(msi_path)
+    out = []
+    try:
+        for r in m.table("Media")[1]:
+            cab = str(r[3] or "").strip()
+            if cab and not cab.startswith("#"):
+                out.append((cab, str(r[4] or "").strip()))
+    except Exception:
+        pass
+    return out
+
+
+def _find_file(root: Path, name: str, depth: int = 3):
+    import os
+    root = str(root)
+    base = root.rstrip("\\/").count(os.sep)
+    low = name.lower()
+    for cur, dirs, files in os.walk(root):
+        if cur.rstrip("\\/").count(os.sep) - base >= depth:
+            dirs[:] = []
+        for f in files:
+            if f.lower() == low:
+                return Path(cur) / f
+    return None
+
+
+def _place(src: Path, dst: Path):
+    """Жёсткая ссылка (место не тратится, права не нужны), иначе копия."""
+    import os
+    try:
+        os.link(src, dst)
+    except OSError:
+        shutil.copy2(src, dst)
+
+
+def gather_cabinets(msi_path, search_root, log, placed=None) -> list:
+    """Ищет недостающие .cab (по таблице Media) в search_root и кладёт их рядом с msi.
+    Возвращает список так и не найденных: [(cab, метка диска)]."""
+    msi_path = Path(msi_path)
+    missing = []
+    for cab, label in cabinets(msi_path):
+        here = msi_path.parent / cab
+        if here.exists():
+            continue
+        found = _find_file(Path(search_root), cab) if search_root else None
+        if found and found.resolve() != here.resolve():
+            try:
+                _place(found, here)
+                if placed is not None:
+                    placed.append(here)
+                log(f"Кабинет {cab} (диск {label or '?'}) найден в {found.parent} и подключён к установщику.")
+                continue
+            except OSError as e:
+                log(f"Не удалось подключить {cab}: {e}")
+        missing.append((cab, label))
+    for cab, label in missing:
+        log(f"Не найден {cab} рядом с msi (он на диске {label or '?'}). Положите его рядом с установщиком "
+            f"или в соседнюю папку диска {label or ''}.")
+    return missing

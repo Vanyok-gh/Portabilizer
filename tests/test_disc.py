@@ -113,4 +113,18 @@ with tempfile.TemporaryDirectory() as d:
 if glob.glob("/mnt/user-data/attachments/*/*TRAOD_P4.exe"):
     h = D.scan_exe_hints(glob.glob("/mnt/user-data/attachments/*/*TRAOD_P4.exe")[0])
     check(any("TombRaiderAngelOfDarkness" in k for k in h["registry"]), "в настоящем TRAOD_P4.exe найден ключ реестра игры")
+
+# --- кабинеты второго диска подтягиваются к msi
+if real:
+    with tempfile.TemporaryDirectory() as d:
+        d = Path(d); (d / "disc1").mkdir(); (d / "disc2" / "x").mkdir(parents=True)
+        msi = d / "disc1" / "a.msi"; msi.write_bytes(Path(real[0]).read_bytes())
+        check(D.cabinets(msi) == [("Release.cab", "TRAOD2"), ("Common.cab", "TRAOD2")], f"кабинеты из Media: {D.cabinets(msi)}")
+        (d / "disc2" / "RELEASE.CAB").write_bytes(b"cab1")
+        logs.clear()
+        miss = D.gather_cabinets(msi, d, log)
+        check((d / "disc1" / "Release.cab").read_bytes() == b"cab1", "Release.cab подключён рядом с msi (регистр не важен)")
+        check(miss == [("Common.cab", "TRAOD2")], f"Common.cab не найден, о нём сказано: {miss}")
+        check(any("Common.cab" in l and "TRAOD2" in l for l in logs), "в логе понятное сообщение о недостающем кабинете")
+        check(D.gather_cabinets(msi, d, log) == [("Common.cab", "TRAOD2")], "повторный вызов идемпотентен")
 print(f"Disc: {n} проверок пройдено")
