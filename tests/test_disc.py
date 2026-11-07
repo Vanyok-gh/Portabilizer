@@ -127,4 +127,20 @@ if real:
         check(miss == [("Common.cab", "TRAOD2")], f"Common.cab не найден, о нём сказано: {miss}")
         check(any("Common.cab" in l and "TRAOD2" in l for l in logs), "в логе понятное сообщение о недостающем кабинете")
         check(D.gather_cabinets(msi, d, log) == [("Common.cab", "TRAOD2")], "повторный вызов идемпотентен")
+
+# --- ISO строится и когда источник лежит внутри выходной папки (игра из архива); главный exe - пропатченный
+if real:
+    import portabilizer_v8 as P
+    with tempfile.TemporaryDirectory() as d:
+        d = Path(d); tgt = d / "Out"; src = tgt / "Extracted_archive" / "Disc1"; app = tgt / "App"
+        src.mkdir(parents=True); (src / "Data").mkdir(); (src / "Data" / "f.bin").write_bytes(b"1234")
+        game = app / "program files" / "Eidos Interactive" / "TRAOD"
+        (game / "bin").mkdir(parents=True); (game / "data").mkdir()
+        (game / "bin" / "TRAOD_P3.exe").write_bytes(b"MZ" + sig + b"\0" * 9)
+        (game / "bin" / "TRAOD_P4.exe").write_bytes(b"MZ" + sig + b"\0" * 9)
+        msi = src / "x.msi"; msi.write_bytes(Path(real[0]).read_bytes())
+        info = {}
+        P.digitize_disc_game(msi, app, tgt, log, None, info)
+        check((tgt / "Discs" / "TRAOD1.iso").is_file(), "образ TRAOD1.iso создан, хотя источник внутри выходной папки")
+        check(Path(info.get("disc_main", "")).name == "TRAOD_P4.exe", f"главный exe для дисковой игры: {info.get('disc_main')}")
 print(f"Disc: {n} проверок пройдено")
