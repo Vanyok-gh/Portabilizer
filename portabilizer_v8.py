@@ -125,6 +125,7 @@ from urllib.parse import unquote
 from pzp_i18n import LANGS, detect_lang, get_lang, lang_name, set_lang, tr, trx
 from pzp_iso import IsoError, build_iso
 from pzp_msi import missing_source_files
+import pzp_disc
 
 try:
     import psutil
@@ -1057,6 +1058,87 @@ def msi_admin_extract(exe: Path, out: Path, log, job=None) -> bool:
                 pass
 
 
+DISC_OPTIONS = {"iso": True}        # собирать образ первого диска (Discs\\<метка>.iso) для дисковых игр
+
+
+def _safe_name(s: str) -> str:
+    return re.sub(r'[\\/:*?"<>|]+', "_", s).strip(" .") or "game"
+
+
+def digitize_disc_game(msi: Path, app: Path, target: Path, log, job=None, info=None) -> bool:
+    """v10: из установщика (msi) выжимаем всё, что нужно дисковой игре без диска и без прав администратора:
+    файлы «с диска» -> в папку игры, настройки реестра -> Registry\\*.reg (HKCU), патчи совместимости exe,
+    образ первого диска -> Discs\\<метка>.iso. Ничего не ломает: любая ошибка разбора - просто пропуск."""
+    try:
+        a = pzp_disc.analyze(msi)
+    except Exception as e:
+        log(f"Оцифровка: не удалось разобрать установщик ({e})")
+        return False
+    rel = a["install_rel"]
+    game = app.joinpath(*rel) if rel else None
+    if not game or not game.is_dir():
+        return False
+    did = False
+    if a["labels"] and a["layout"]:
+        log(f"Дисковая игра: диски {', '.join(a['labels'])}; файлы с диска: {', '.join(a['layout'])}.")
+        if pzp_disc.merge_disc_layout(app, game, a["layout"], log):
+            did = True
+    # настройки реестра, которые писал установщик
+    if a["registry"]:
+        game_rel = "\\".join(rel)
+        text = pzp_disc.reg_text(a["registry"], "{ROOT}\\App\\" + game_rel)
+        regdir = target / "Registry"
+        try:
+            regdir.mkdir(exist_ok=True)
+            (regdir / f"{_safe_name(game.name)}.reg").write_text(text, encoding="utf-16")
+            # ключ с настройками игры сохраняется при выходе (графика и т.п.) - берём самый короткий путь без версии
+            keys = [e["key"] for e in a["registry"] if e["root"] in (1, 2, -1, 0)]
+            if keys:
+                k = min(keys, key=len)
+                if re.fullmatch(r"\d+(\.\d+)*", k.split("\\")[-1]) and "\\" in k:
+                    k = k.rsplit("\\", 1)[0]
+                (regdir / "keys.txt").write_text("HKEY_CURRENT_USER\\" + k + "\r\n", encoding="utf-8")
+            log(f"Реестр: Registry\\{_safe_name(game.name)}.reg ({len(a['registry'])} записей, в HKCU).")
+            did = True
+        except OSError as e:
+            log(f"Реестр: не удалось записать .reg ({e})")
+    # патчи совместимости exe
+    if pzp_disc.apply_patches(game, log):
+        did = True
+    # образ первого диска из папки, где лежит установщик (корень диска содержит Data)
+    if DISC_OPTIONS["iso"] and a["labels"]:
+        src = msi.parent
+        label = a["labels"][0]
+        out = target / "Discs" / f"{_safe_name(label)}.iso"
+        try:
+            has_data = any(x.is_dir() and x.name.lower() == "data" for x in src.iterdir())
+        except OSError:
+            has_data = False
+        inside = target in src.parents or src == target
+        if has_data and not out.exists() and not inside:
+            try:
+                if job:
+                    job.stage = "Образ диска"
+                out.parent.mkdir(exist_ok=True)
+                log(f"Образ диска {label}: собираю из {src} (метка тома {label}).")
+                size = build_iso(src, out, label, should_stop=(lambda: job.cancelled) if job and hasattr(job, "cancelled") else None)
+                log(f"Образ диска: {out.name}, {fmt_size(size)}.")
+                did = True
+            except (IsoError, OSError) as e:
+                log(f"Образ диска не создан: {e}")
+                try:
+                    out.unlink()
+                except OSError:
+                    pass
+        elif has_data and out.exists():
+            log(f"Образ диска уже есть: {out.name}")
+    if info is not None and a["labels"] and len(a["labels"]) > 1:
+        info.setdefault("notes", []).append(
+            f"Игре могут понадобиться другие диски ({', '.join(a['labels'][1:])}): соберите образы во вкладке ISO "
+            f"с метками тома {', '.join(a['labels'][1:])} и положите в папку Discs.")
+    return did
+
+
 def extract(exe: Path, kind: str, out: Path, log, job=None) -> bool:
     out.mkdir(parents=True, exist_ok=True)
     if job:
@@ -1543,7 +1625,7 @@ $reg = Join-Path $Root 'Registry'
 function Import-Reg($file) {
     $text = [IO.File]::ReadAllText($file)
     if ($text.Contains('{ROOT}')) {
-        $text = $text.Replace('{ROOT}', $Root.Replace('\', '\'))
+        $text = $text.Replace('{ROOT}', $Root.Replace('\', '\\'))   # .reg wants doubled backslashes
         $tmp = Join-Path $env:TEMP ('pz_' + [IO.Path]::GetFileName($file))
         [IO.File]::WriteAllText($tmp, $text, [Text.Encoding]::Unicode)
         & reg.exe import $tmp 2>&1 | Out-Null
@@ -1553,11 +1635,12 @@ function Import-Reg($file) {
     }
 }
 if (Test-Path -LiteralPath $reg) {
-    foreach ($f in (Get-ChildItem -LiteralPath $reg -Filter *.reg)) { Import-Reg $f.FullName }
+    # saved settings first, then the base files: paths like InstalledPath always match the current folder
     $saved = Join-Path $reg 'saved'
     if (Test-Path -LiteralPath $saved) {
         foreach ($f in (Get-ChildItem -LiteralPath $saved -Filter *.reg)) { & reg.exe import $f.FullName 2>&1 | Out-Null }
     }
+    foreach ($f in (Get-ChildItem -LiteralPath $reg -Filter *.reg)) { Import-Reg $f.FullName }
 }
 Start-Process -FilePath (Join-Path $Root $Exe) -WorkingDirectory (Join-Path $Root $Dir) -Wait
 $keys = Join-Path $reg 'keys.txt'
@@ -2486,6 +2569,8 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
                 log("Не удалось распаковать. Возможно, установщик нестандартный "
                     "(тогда нужен виртуализатор вроде Cameyo / Turbo Studio).")
                 return False
+            if exe.suffix.lower() == ".msi" and kind in ("msi", "wix"):
+                digitize_disc_game(exe, app, target, log, job, info)
             main = resolve_manual(app, manual_exe, log) or find_main_exe(app, log, info.get('chooser'))
 
             if mode == "auto" and can_install:
@@ -2608,7 +2693,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "9.4"
+APP_VERSION = "10.0"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 

@@ -47,7 +47,7 @@ Target: standard Windows 11 user, no admin password.
 ## Data still missing in the user's copy (low priority)
 `FRONTEND.GMX`/`INVENT.GMX` variants, some Paris maps/audio, `EN_FLASH.MPG` - they come from disc 2 / `Release` folder.
 
-## v10 plan (generic "digitize a disc game")
+## v10 (implemented in `pzp_disc.py`, called from `digitize_disc_game`)
 1. Analyze installer MSI: `Registry` table -> `.reg` (HKLM -> HKCU, `{ROOT}` placeholder), `Media` volume labels,
    directories outside INSTALLDIR (`CDROM_*`) = disc layout -> merge into install `data` by case-insensitive name.
 2. Recipes (`recipes/*.json`, key = MSI ProductCode or exe name): exe patches (signature, replace, expected hits),
