@@ -54,3 +54,18 @@ Target: standard Windows 11 user, no admin password.
    preferred exe, disc labels, working dir.
 3. Generated `Play` script like the above (disc mount by label, registry, working dir, patches applied once).
 4. UI: "disc game" option; log shows what was detected.
+
+## Wishlist for v10.1 (from user testing, 2026-11-07)
+1. **Multi-disc installers must be one job.** The disc-1 MSI needs `Release.cab` that lives on disc 2
+   (Media table: each cabinet has a disk id and a volume label). The user should not copy cabinets by hand.
+   - Input may be several folders / ISO files / one ZIP that contains several disc folders or several ZIPs
+     (disc1.zip, disc2.zip). Portabilizer unpacks them into one temporary "overlay" folder and runs msiexec
+     against it, so every cabinet and loose disc file is next to the msi.
+   - Merge rule: same relative path from a later disc does not overwrite an earlier one.
+2. **Pre-check before msiexec**: read the `Media` table (`Cabinet` column) and tell the user right away
+   "Release.cab not found next to the msi (it is on disc TRAOD2)" instead of error 1603/1311.
+3. **Select several files** in the converter (multi-select) and process them one after another.
+4. **ISO tab label**: auto label from the folder name breaks with non-Latin names (`____1`); ask for / detect the label
+   from the msi (`disc_labels`) and warn when it is not ASCII.
+5. TGA -> PNG screenshots: only after the rest is verified.
+6. Inno Setup / NSIS installers: needs sample installers to test the parser.
