@@ -48,7 +48,8 @@ check('-Dir "App"' in make(Path("tool.exe"), data_dir=False, discs=True)[1], "ex
 txt = ps.read_text("utf-8-sig")
 for need in ("Mount-DiskImage", "Dismount-DiskImage", "reg.exe import", "reg.exe export", "{ROOT}", "-Wait", "keys.txt", "Discs", "Registry"):
     check(need in txt, "Portable.ps1: " + need)
-check("\\\\" not in txt, "в Portable.ps1 нет задвоенных обратных слэшей")
+check(txt.count("\\\\") == 1 and "Replace('\\', '\\\\')" in txt, "в Portable.ps1 задвоенный слэш только в замене {ROOT} (в .reg нужны \\\\)")
+check(txt.index("'saved'") < txt.index("Import-Reg $f.FullName"), "сохранённые настройки грузятся раньше основных .reg")
 check(txt.count("{") == txt.count("}") and txt.count("(") == txt.count(")"), "скобки сбалансированы")
 # только Registry
 t, bat = make(Path("tool.exe"), data_dir=False, registry=True)
