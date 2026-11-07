@@ -2243,6 +2243,16 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
     policy = RUN_POLICY["value"] if RUN_POLICY["value"] in RUN_POLICIES else "auto"
     needs_admin = exe_report(analyze_exe(launch), launch.name, policy, log)
     write_launcher("Launch.bat", rel_exe, invoker=needs_admin)
+    try:
+        hints = pzp_disc.scan_exe_hints(launch)
+        if hints["registry"] and not (target / "Registry").is_dir():
+            log("Подсказка: exe читает реестр: " + "; ".join(hints["registry"][:4])
+                + ". Если игра не запускается, нужные значения можно положить в Registry\\*.reg (HKCU).")
+        if hints["disc_check"]:
+            log("Подсказка: exe проверяет диск (GetVolumeInformation/GetDriveType). Если игра просит диск, "
+                "соберите образ диска во вкладке ISO (метка тома как у диска) и положите его в папку Discs.")
+    except Exception:
+        pass
     write_portable_ps(target, log)
     if needs_admin or policy == "admin":
         write_launcher("Launch_admin.bat", rel_exe)

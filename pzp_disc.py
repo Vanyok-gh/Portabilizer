@@ -304,3 +304,34 @@ def analyze(msi_path) -> dict:
         except Exception:
             pass
     return out
+
+
+# ---------------------------------------------------------------------------------------------
+# Подсказки по готовой папке игры (когда установщика нет): что видно в самом exe. Exe не запускается.
+_REG_RE = re.compile(rb"(?i)software\\[\w .\-\\]{3,}")
+_REG_SKIP = ("microsoft", "classes", "policies", "wow6432node\\microsoft")
+
+
+def scan_exe_hints(exe, limit=64 * 1024 * 1024) -> dict:
+    """{'registry': [ключи HKLM/HKCU, которые exe читает], 'disc_check': bool, 'disc_prompts': [строки]}.
+    Значения ключей по exe узнать нельзя, только их пути: это подсказка, что именно игра ищет в реестре."""
+    res = {"registry": [], "disc_check": False, "disc_prompts": []}
+    try:
+        with open(exe, "rb") as f:
+            data = f.read(limit)
+    except OSError:
+        return res
+    strs = re.findall(rb"[\x20-\x7e]{6,}", data)                                           # ASCII-строки
+    strs += [m.replace(b"\x00", b"") for m in re.findall(rb"(?:[\x20-\x7e]\x00){6,}", data)]  # UTF-16
+    seen = set()
+    for m in (g for st in strs for g in _REG_RE.findall(st)):
+        k = m.decode("latin1").rstrip("\\")
+        low = k.lower().replace("software\\", "", 1)
+        if k.lower() in seen or any(low.startswith(s) for s in _REG_SKIP) or k.count("\\") < 1:
+            continue
+        seen.add(k.lower())
+        res["registry"].append(k)
+    res["disc_check"] = b"GetVolumeInformation" in data and b"GetDriveType" in data
+    prompts = re.findall(rb"(?i)[\x20-\x7e]{0,60}(?:insert (?:the )?(?:correct |game |cd|dvd|disc|disk)|please insert)[\x20-\x7e]{0,60}", data)
+    res["disc_prompts"] = sorted({p.decode("latin1").strip() for p in prompts})[:5]
+    return res

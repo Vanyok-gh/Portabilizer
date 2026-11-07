@@ -100,4 +100,17 @@ if real:
         P.digitize_disc_game(msi2, app, tgt, log, None, {})
         iso = tgt / "Discs" / "TRAOD1.iso"
         check(iso.is_file() and iso.stat().st_size > 2048 * 16, "образ диска TRAOD1.iso собран")
+
+# --- подсказки из exe
+with tempfile.TemporaryDirectory() as d:
+    e = Path(d) / "g.exe"
+    e.write_bytes(b"MZ\0" + b"Software\\Core Design\\Game\\1.0\\\0" + b"Software\\Microsoft\\Direct3D\\\0GetVolumeInformationA\0GetDriveTypeA\0Please insert the game disc\0")
+    h = D.scan_exe_hints(e)
+    check(h["registry"] == ["Software\\Core Design\\Game\\1.0"], f"ключ реестра из exe: {h['registry']}")
+    check(h["disc_check"], "проверка диска определяется по API")
+    check(h["disc_prompts"] and "insert" in h["disc_prompts"][0].lower(), "строка просьбы вставить диск найдена")
+    check(D.scan_exe_hints(Path(d) / "нет.exe") == {"registry": [], "disc_check": False, "disc_prompts": []}, "нет файла - пустой результат")
+if glob.glob("/mnt/user-data/attachments/*/*TRAOD_P4.exe"):
+    h = D.scan_exe_hints(glob.glob("/mnt/user-data/attachments/*/*TRAOD_P4.exe")[0])
+    check(any("TombRaiderAngelOfDarkness" in k for k in h["registry"]), "в настоящем TRAOD_P4.exe найден ключ реестра игры")
 print(f"Disc: {n} проверок пройдено")
