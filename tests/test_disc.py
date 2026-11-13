@@ -143,4 +143,20 @@ if real:
         P.digitize_disc_game(msi, app, tgt, log, None, info)
         check((tgt / "Discs" / "TRAOD1.iso").is_file(), "образ TRAOD1.iso создан, хотя источник внутри выходной папки")
         check(Path(info.get("disc_main", "")).name == "TRAOD_P4.exe", f"главный exe для дисковой игры: {info.get('disc_main')}")
+
+# --- два диска: образ делается для каждого, метки берутся из msi, а не из имён папок
+if real:
+    import portabilizer_v8 as P
+    with tempfile.TemporaryDirectory() as d:
+        d = Path(d); tgt = d / "Out"; stg = tgt / "Extracted_discs"; app = tgt / "App"
+        d1 = stg / "Disc1" / "TRAOD1"; d2 = stg / "Disc2"
+        (d1 / "Data").mkdir(parents=True); (d1 / "Data" / "f.bin").write_bytes(b"1234")
+        (d2 / "Data").mkdir(parents=True); (d2 / "Data" / "g.bin").write_bytes(b"5678"); (d2 / "Release.cab").write_bytes(b"cab")
+        game = app / "program files" / "Eidos Interactive" / "TRAOD"; (game / "bin").mkdir(parents=True)
+        msi = d1 / "x.msi"; msi.write_bytes(Path(real[0]).read_bytes())
+        info = {"disc_roots": [d1, d2]}
+        P.digitize_disc_game(msi, app, tgt, log, None, info)
+        check((tgt / "Discs" / "TRAOD1.iso").is_file() and (tgt / "Discs" / "TRAOD2.iso").is_file(), "образы обоих дисков созданы")
+        check(info.get("made_discs") == ["TRAOD1", "TRAOD2"], f"собраны диски: {info.get('made_discs')}")
+        check(not any("другие диски" in x for x in info.get("notes", [])), "заметки о недостающих дисках нет")
 print(f"Disc: {n} проверок пройдено")
