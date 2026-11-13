@@ -66,6 +66,121 @@ def disc_labels(msi_path) -> list:
     return out
 
 
+def _dir_parts(d: dict, key: str) -> list:
+    """Путь каталога по таблице Directory (как в административном образе): список имён папок."""
+    parts, guard = [], 0
+    while key in d and key != "TARGETDIR" and guard < 40:
+        guard += 1
+        parent, default = d[key]
+        name = _src_name(default)
+        if name not in (".", ""):
+            parts.append(name)
+        key = parent
+    return parts[::-1]
+
+
+def msi_ini_values(msi_path) -> list:
+    """Записи таблицы IniFile (установщик пишет их при установке, а msiexec /a - нет), например Locale.ini у
+    Company of Heroes. Возвращает [{'dir': [папки от корня образа], 'file', 'section', 'key', 'value', 'action'}].
+    Значения с неразрешёнными [Свойствами] пропускаются. action: 0 - записать, 1 - только если ключа нет."""
+    m = _tables(msi_path)
+    try:
+        rows = m.table("IniFile")[1]
+    except Exception:
+        return []
+    props, d = _props(m), _dirs(m)
+    out = []
+    for r in rows:
+        file, dirprop, section, key, value, action = _src_name(str(r[1])), r[2], str(r[3]), str(r[4]), str(r[5] or ""), r[6]
+        if action not in (0, 1) or dirprop not in d:
+            continue
+        def rep(mo):
+            return props.get(mo.group(1), mo.group(0))
+        value = re.sub(r"\[([A-Za-z_][A-Za-z0-9_]*)\]", rep, value)
+        if re.search(r"\[[^\]]*\]", value) or re.search(r"\[[^\]]*\]", section + key):
+            continue
+        out.append({"dir": _dir_parts(d, dirprop), "file": file, "section": section, "key": key,
+                    "value": value, "action": action})
+    return out
+
+
+def write_ini_value(path, section: str, key: str, value: str, only_if_absent=False) -> bool:
+    """Записывает key=value в раздел [section] ini-файла (файл и раздел создаются). True, если файл изменён."""
+    path = Path(path)
+    try:
+        text = path.read_text(encoding="utf-16" if path.read_bytes()[:2] in (b"\xff\xfe", b"\xfe\xff") else "utf-8-sig") \
+            if path.is_file() else ""
+    except (OSError, UnicodeError):
+        text = ""
+    lines = text.splitlines()
+    sec_at, key_at, end = None, None, len(lines)
+    for i, ln in enumerate(lines):
+        t = ln.strip()
+        if t.startswith("[") and t.endswith("]"):
+            if sec_at is not None:
+                end = i
+                break
+            if t[1:-1].strip().lower() == section.lower():
+                sec_at = i
+        elif sec_at is not None and "=" in t and t.split("=", 1)[0].strip().lower() == key.lower():
+            key_at = i
+    new = f"{key}={value}"
+    if key_at is not None:
+        if only_if_absent or lines[key_at] == new:
+            return False
+        lines[key_at] = new
+    elif sec_at is not None:
+        while end > sec_at + 1 and not lines[end - 1].strip():
+            end -= 1                          # вставляем сразу за последним ключом раздела, не после пустых строк
+        lines.insert(end, new)
+    else:
+        if lines and lines[-1].strip():
+            lines.append("")
+        lines += [f"[{section}]", new]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\r\n".join(lines) + "\r\n", encoding="utf-8")
+    return True
+
+
+def apply_ini_values(app: Path, entries: list, log=None) -> list:
+    """Применяет msi_ini_values к папке App. Возвращает список записанных файлов (относительно App)."""
+    app = Path(app)
+    done = []
+    for e in entries:
+        folder = app.joinpath(*e["dir"])
+        if not folder.parent.is_dir():          # папки этой записи в образе нет: не создаём чужое дерево
+            continue
+        target = folder / e["file"]
+        try:
+            if write_ini_value(target, e["section"], e["key"], e["value"], e["action"] == 1):
+                rel = str(target.relative_to(app))
+                if rel not in done:
+                    done.append(rel)
+        except OSError as ex:
+            if log:
+                log(f"INI: не удалось записать {target.name} ({ex})")
+    return done
+
+
+_DISC_SIBLINGS = ("setup.exe", "autorun.exe", "autorun.inf")
+
+
+def is_disc_msi(msi_path) -> bool:
+    """msi с диска игры: в таблице Media есть метки томов, либо рядом лежит Setup.exe / AutoRun.exe / autorun.inf
+    (у некоторых игр, например Company of Heroes, меток тома в msi нет)."""
+    msi_path = Path(msi_path)
+    try:
+        if disc_labels(msi_path):
+            return True
+    except Exception:
+        pass
+    try:
+        names = {x.name.lower() for x in msi_path.parent.iterdir() if x.is_file()}
+    except OSError:
+        return False
+    return any(n in names for n in _DISC_SIBLINGS)
+
+
 def _subst(value: str, props: dict) -> str:
     def rep(mo):
         k = mo.group(1)

@@ -126,6 +126,10 @@ from pzp_i18n import LANGS, detect_lang, get_lang, lang_name, set_lang, tr, trx
 from pzp_iso import IsoError, build_iso
 from pzp_msi import missing_source_files
 import pzp_disc
+import pzp_multi
+import pzp_relic
+import pzp_sxs
+import pzp_tga
 
 try:
     import psutil
@@ -1083,6 +1087,15 @@ def digitize_disc_game(msi: Path, app: Path, target: Path, log, job=None, info=N
         log(f"Дисковая игра: диски {', '.join(a['labels'])}; файлы с диска: {', '.join(a['layout'])}.")
         if pzp_disc.merge_disc_layout(app, game, a["layout"], log):
             did = True
+    # ini-файлы, которые установщик пишет при установке (у Company of Heroes это Locale.ini с языком)
+    try:
+        ini_done = pzp_disc.apply_ini_values(app, pzp_disc.msi_ini_values(msi), log)
+    except Exception as e:
+        ini_done = []
+        log(f"INI: не удалось разобрать записи установщика ({e})")
+    if ini_done:
+        did = True
+        log("Файлы настроек из установщика созданы: " + ", ".join(ini_done) + ".")
     # настройки реестра, которые писал установщик
     if a["registry"]:
         game_rel = "\\".join(rel)
@@ -1092,7 +1105,7 @@ def digitize_disc_game(msi: Path, app: Path, target: Path, log, job=None, info=N
             regdir.mkdir(exist_ok=True)
             (regdir / f"{_safe_name(game.name)}.reg").write_text(text, encoding="utf-16")
             # ключ с настройками игры сохраняется при выходе (графика и т.п.) - берём самый короткий путь без версии
-            keys = [e["key"] for e in a["registry"] if e["root"] in (1, 2, -1, 0)]
+            keys = [e["key"] for e in a["registry"] if e["root"] in (1, 2, -1) and e["key"].lower().startswith("software\\")]
             if keys:
                 k = min(keys, key=len)
                 if re.fullmatch(r"\d+(\.\d+)*", k.split("\\")[-1]) and "\\" in k:
@@ -1109,37 +1122,52 @@ def digitize_disc_game(msi: Path, app: Path, target: Path, log, job=None, info=N
         if info is not None:
             # оригинальный Launcher.exe без прав администратора молча закрывается: запускаем сам exe игры (самую новую сборку)
             info["disc_main"] = str(max({r[0] for r in patched}, key=lambda q: q.name.lower()))
-    # образ первого диска из папки, где лежит установщик (корень диска содержит Data)
+    # образы дисков: из папки с установщиком (корень диска содержит Data); при нескольких дисках - из каждого
     if DISC_OPTIONS["iso"] and a["labels"]:
-        src = msi.parent
-        label = a["labels"][0]
-        out = target / "Discs" / f"{_safe_name(label)}.iso"
-        try:
-            has_data = any(x.is_dir() and x.name.lower() == "data" for x in src.iterdir())
-        except OSError:
-            has_data = False
-        inside = src == out.parent or src in out.parents     # образ не должен попасть внутрь собственного источника
-        if has_data and not out.exists() and not inside:
+        pairs = []
+        roots = (info or {}).get("disc_roots")
+        if roots:
             try:
-                if job:
-                    job.stage = "Образ диска"
-                out.parent.mkdir(exist_ok=True)
-                log(f"Образ диска {label}: собираю из {src} (метка тома {label}).")
-                size = build_iso(src, out, label, should_stop=(lambda: job.cancelled) if job and hasattr(job, "cancelled") else None)
-                log(f"Образ диска: {out.name}, {fmt_size(size)}.")
-                did = True
-            except (IsoError, OSError) as e:
-                log(f"Образ диска не создан: {e}")
+                lab = pzp_multi.assign_labels(roots, msi, a["labels"], pzp_disc.cabinets(msi))
+                pairs = [(r, lab[r], False) for r in roots if r in lab]
+            except Exception as e:
+                log(f"Метки дисков не определены: {e}")
+        if not pairs:
+            pairs = [(msi.parent, a["labels"][0], True)]
+        made = []
+        for src, label, need_data in pairs:
+            out = target / "Discs" / f"{_safe_name(label)}.iso"
+            try:
+                has_data = any(x.is_dir() and x.name.lower() == "data" for x in src.iterdir())
+            except OSError:
+                has_data = False
+            inside = src == out.parent or src in out.parents     # образ не должен попасть внутрь собственного источника
+            if (has_data or not need_data) and not out.exists() and not inside:
                 try:
-                    out.unlink()
-                except OSError:
-                    pass
-        elif has_data and out.exists():
-            log(f"Образ диска уже есть: {out.name}")
+                    if job:
+                        job.stage = "Образ диска"
+                    out.parent.mkdir(exist_ok=True)
+                    log(f"Образ диска {label}: собираю из {src} (метка тома {label}).")
+                    size = build_iso(src, out, label, should_stop=(lambda: job.cancelled) if job and hasattr(job, "cancelled") else None)
+                    log(f"Образ диска: {out.name}, {fmt_size(size)}.")
+                    made.append(label)
+                    did = True
+                except (IsoError, OSError) as e:
+                    log(f"Образ диска не создан: {e}")
+                    try:
+                        out.unlink()
+                    except OSError:
+                        pass
+            elif (has_data or not need_data) and out.exists():
+                log(f"Образ диска уже есть: {out.name}")
+        if info is not None:
+            info["made_discs"] = made
     if info is not None and a["labels"] and len(a["labels"]) > 1:
-        info.setdefault("notes", []).append(
-            f"Игре могут понадобиться другие диски ({', '.join(a['labels'][1:])}): соберите образы во вкладке ISO "
-            f"с метками тома {', '.join(a['labels'][1:])} и положите в папку Discs.")
+        rest = [x for x in a["labels"] if x not in info.get("made_discs", [])]
+        if rest:
+            info.setdefault("notes", []).append(
+                f"Игре могут понадобиться другие диски ({', '.join(rest)}): соберите образы во вкладке ISO "
+                f"с метками тома {', '.join(rest)} и положите в папку Discs.")
     return did
 
 
@@ -1400,6 +1428,24 @@ def find_installer(folder: Path):
     return cands[0][3]
 
 
+def find_disc_msi(folder: Path):
+    """msi с диска игры (см. pzp_disc.is_disc_msi) внутри папки. Ищется раньше обычного установщика:
+    рядом с msi могут лежать большие exe (демо, autorun), которые find_installer ставит выше."""
+    best = None
+    for p in folder.rglob("*.msi"):
+        try:
+            if not p.is_file() or len(p.relative_to(folder).parts) > 4 \
+                    or any(j in p.name.lower() for j in INSTALLER_JUNK):
+                continue
+            if pzp_disc.is_disc_msi(p):
+                key = (len(p.relative_to(folder).parts), -p.stat().st_size)
+                if best is None or key < best[0]:
+                    best = (key, p)
+        except OSError:
+            continue
+    return best[1] if best else None
+
+
 def resolve_manual(app: Path, manual: str, log):
     """Главный exe, указанный вручную: полный путь внутри App, относительный путь или просто имя."""
     manual = (manual or "").strip().strip('"')
@@ -1646,7 +1692,9 @@ if (Test-Path -LiteralPath $reg) {
     }
     foreach ($f in (Get-ChildItem -LiteralPath $reg -Filter *.reg)) { Import-Reg $f.FullName }
 }
+$gameStart = Get-Date
 Start-Process -FilePath (Join-Path $Root $Exe) -WorkingDirectory (Join-Path $Root $Dir) -Wait
+#SHOTS#
 $keys = Join-Path $reg 'keys.txt'
 if (Test-Path -LiteralPath $keys) {
     $saved = Join-Path $reg 'saved'
@@ -1659,6 +1707,8 @@ if (Test-Path -LiteralPath $keys) {
 }
 foreach ($m in $mounted) { try { Dismount-DiskImage -ImagePath $m | Out-Null } catch {} }
 """
+PORTABLE_PS = PORTABLE_PS.replace("#SHOTS#", pzp_tga.PS_BLOCK)
+SHOT_OPTIONS = {"png": False}      # создавать флаг конвертации скриншотов TGA -> PNG (после выхода из игры)
 
 
 
@@ -1824,8 +1874,21 @@ def runtime_family(name: str) -> str:
 
 
 def dx_dir() -> Path:
+    """Папка dx с cab-файлами DirectX: вшитая в exe, затем рядом с exe (на случай сборки без неё), затем рядом со скриптом."""
+    cands = []
     base = getattr(sys, "_MEIPASS", None)
-    return (Path(base) if base else Path(__file__).resolve().parent) / "dx"
+    if base:
+        cands.append(Path(base) / "dx")
+    if getattr(sys, "frozen", False):
+        cands.append(Path(sys.executable).resolve().parent / "dx")
+    cands.append(Path(__file__).resolve().parent / "dx")
+    for c in cands:
+        try:
+            if c.is_dir() and any(c.glob("*.cab")):
+                return c
+        except OSError:
+            continue
+    return cands[0]
 
 
 def cab_read(path):
@@ -1955,12 +2018,29 @@ def scan_dx_names(exe, limit=700 * 1024 * 1024) -> set:
     return found
 
 
+def scan_dx_names_dir(launch: Path, max_files=80, max_size=64 * 1024 * 1024) -> set:
+    """Как scan_dx_names, но ещё и по dll рядом с exe: у многих игр (Company of Heroes) DirectX подключают
+    движковые dll, а в самом exe имён библиотек нет."""
+    found = scan_dx_names(launch)
+    try:
+        dlls = sorted(x for x in Path(launch).parent.iterdir() if x.is_file() and x.suffix.lower() == ".dll")
+    except OSError:
+        return found
+    for d in dlls[:max_files]:
+        try:
+            if d.stat().st_size <= max_size:
+                found |= scan_dx_names(d, limit=max_size)
+        except OSError:
+            continue
+    return found
+
+
 def dx_plan(launch: Path, system_root=None, index=None) -> dict:
     """Какие встроенные библиотеки (DirectX, Visual C++, OpenAL) нужны exe, но отсутствуют
     и в системе, и рядом с ним."""
     arch = analyze_exe(launch)["arch"]
     arch = "x86" if arch == "x86" else "x64"
-    need = scan_dx_names(launch)
+    need = scan_dx_names_dir(launch)
     if unreal_rank(launch):
         need |= set(DX_UE_DEFAULT)
     root = system_root or os.environ.get("SystemRoot") or ""
@@ -2015,14 +2095,14 @@ set "DX=%ROOT%DX9"
 echo Этот файл кладёт библиотеки DirectX (June 2010) рядом с игрой.
 echo Права администратора не нужны, система не изменяется.
 echo.
-if exist "%DX%\*x64.cab" goto extract
+if exist "%DX%\*@ARCH@.cab" goto extract
 echo Скачиваю DirectX End-User Runtimes (June 2010), около 96 МБ...
 powershell -NoProfile -ExecutionPolicy Bypass -Command "try { Invoke-WebRequest -UseBasicParsing -Uri '@URL@' -OutFile '%ROOT%directx_Jun2010_redist.exe' } catch { Write-Host $_.Exception.Message }"
 if exist "%ROOT%directx_Jun2010_redist.exe" (
   echo Распаковываю пакет ^(в систему ничего не ставится^)...
   "%ROOT%directx_Jun2010_redist.exe" /Q /T:"%DX%"
 )
-if exist "%DX%\*x64.cab" goto extract
+if exist "%DX%\*@ARCH@.cab" goto extract
 echo.
 echo Автоматически не получилось. Сделайте вручную:
 echo   1. Скачайте directx_Jun2010_redist.exe: @PAGE@
@@ -2034,10 +2114,10 @@ pause
 exit /b 1
 :extract
 pushd "%DX%"
-md Files\x64 2>nul
-expand.exe *x64.cab -F:*.dll .\Files\x64 -R
+md Files\@ARCH@ 2>nul
+expand.exe *@ARCH@.cab -F:*.dll .\Files\@ARCH@ -R
 popd
-copy /Y "%DX%\Files\x64\*.dll" "%DEST%\" >nul
+for %%F in (@FILES@) do copy /Y "%DX%\Files\@ARCH@\%%F" "%DEST%\" >nul
 if errorlevel 1 goto fail
 echo.
 echo Готово: библиотеки скопированы в
@@ -2207,10 +2287,15 @@ def work_dir(base: Path, exe_rel: Path) -> Path:
 def write_portable_ps(target: Path, log) -> bool:
     """Portable.ps1 нужен, если рядом с Launch.bat лежат папки Discs (образы) или Registry (настройки)."""
     ps = target / "Portable.ps1"
-    if not ((target / "Discs").is_dir() or (target / "Registry").is_dir()):
+    shots = bool(SHOT_OPTIONS.get("png"))
+    if not ((target / "Discs").is_dir() or (target / "Registry").is_dir() or shots):
         return False
     try:
         ps.write_text(PORTABLE_PS, encoding="utf-8-sig")
+        if shots:
+            (target / "Screenshots_PNG.txt").write_text(
+                "While this file exists, Launch.bat converts new .tga screenshots to .png after you quit the game.\r\n"
+                "The .tga files are kept. Delete this file to turn it off.\r\n", encoding="utf-8")
     except OSError as e:
         log(f"Не удалось создать Portable.ps1: {e}")
         return False
@@ -2219,6 +2304,8 @@ def write_portable_ps(target: Path, log) -> bool:
         parts.append("образы из Discs будут подключаться перед запуском и отключаться после выхода")
     if (target / "Registry").is_dir():
         parts.append("настройки из Registry загрузятся в реестр пользователя перед запуском")
+    if shots:
+        parts.append("после выхода из игры новые скриншоты .tga превратятся в .png (оригиналы останутся; выключается удалением Screenshots_PNG.txt)")
     log("Portable.ps1: " + "; ".join(parts) + ".")
     return True
 
@@ -2291,11 +2378,15 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
         put_low = {x.lower() for x in put}
         left = [n for n in plan["missing"] if n + ".dll" not in put_low]
         left_dx = [n for n in left if n in DX_NAMES]
+        if left_dx and not plan["index"]:
+            log("Папка dx с библиотеками DirectX не найдена. Положите её рядом с Portabilizer.exe "
+                "(она есть в архиве part2) и соберите заново: библиотеки тогда лягут рядом с игрой сами.")
         left_other = [n for n in left if n not in DX_NAMES]
         if left_dx:
             dest = str(launch.parent.resolve().relative_to(target.resolve())).replace("/", "\\")
             (target / "DX_fix.bat").write_text(
-                DX_FIX.replace("@DEST@", dest).replace("@URL@", DX_URL).replace("@PAGE@", DX_PAGE),
+                DX_FIX.replace("@DEST@", dest).replace("@URL@", DX_URL).replace("@PAGE@", DX_PAGE)
+                .replace("@ARCH@", plan["arch"]).replace("@FILES@", " ".join(n + ".dll" for n in left_dx)),
                 encoding="utf-8")
             log(("Без DirectX выбрано продолжить. " if choice != "install" else "")
                 + "Не хватает: " + ", ".join(n + ".dll" for n in left_dx)
@@ -2309,6 +2400,18 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
                 + f" ({fams}). В Portabilizer они не встроены или не подошли по разрядности: "
                 "если программа пожалуется, поставьте соответствующий пакет в систему.")
             notes.append("не хватает: " + ", ".join(n + ".dll" for n in left_other))
+    try:
+        sxs = pzp_sxs.plan(launch, dx_dir(), os.environ.get("SystemRoot") or None)
+    except Exception:  # noqa: подсказка не должна ломать сборку
+        sxs = None
+    if sxs and sxs["need"]:
+        if sxs["place"] and pzp_sxs.place(launch, sxs, log):
+            notes.append("Visual C++ 2005/2008: " + ", ".join(f"{n} {v}" for (n, v, _a), _c in sxs["place"]))
+        for name, ver, arch in sxs["missing"]:
+            log(f"Игре нужна {name} {ver} ({arch}), но такой версии в Portabilizer нет. Если игра не запустится "
+                "с ошибкой параллельной конфигурации (side-by-side), поставьте Microsoft Visual C++ "
+                "Redistributable нужного года в систему или пришлите разработчику vcredist с этой версией.")
+            notes.append(f"нет {name} {ver}")
     if needs_admin:
         notes.append("exe требует админа: Launch.bat идёт через RunAsInvoker")
     dotnet_check(main, target, log)
@@ -2415,6 +2518,102 @@ def radical_cleanup(exe: Path, target: Path, info, log, job=None) -> dict:
         log("Файлы .bin рядом с установщиком не удалялись (они могли понадобиться другим "
             "программам): " + ", ".join(Path(b).name for b in info["bins"]) +
             ". Если это данные того же репака, удалите их сами.")
+    log(f"Радикальный режим: освобождено {fmt_size(res['freed'])}.")
+    return res
+
+
+def radical_unsafe_source(p: Path) -> str:
+    """Почему этот источник нельзя удалять в режиме R (пустая строка - можно)."""
+    p = Path(p)
+    if not p.exists():
+        return "не найден"
+    try:
+        r = p.resolve()
+    except OSError:
+        return "путь не читается"
+    if r == Path(r.anchor):
+        return "это корень диска"
+    home = Path.home().resolve()
+    if r == home or r in home.parents:
+        return "это папка пользователя"
+    if r.parent == home and r.name.lower() in ("desktop", "documents", "downloads", "рабочий стол",
+                                              "документы", "загрузки", "music", "pictures", "videos"):
+        return "это общая папка пользователя"
+    return ""
+
+
+def radical_sources_size(srcs) -> int:
+    total = 0
+    for x in srcs:
+        x = Path(x)
+        if x.is_dir():
+            total += dir_size(x)
+        else:
+            total += sum(f.stat().st_size for f in source_group(x) if f.exists())
+    return total
+
+
+def radical_cleanup_multi(srcs, target: Path, info, log, job=None) -> dict:
+    """R для папок и нескольких источников: после проверенного успеха удаляет исходные папки/файлы
+    (у архивов - все тома) и временные копии. При малейшем сомнении ничего не трогает."""
+    res = {"deleted": [], "freed": 0, "kept_reason": "", "moved": False}
+    target = Path(target)
+    app = target / "App"
+
+    def keep(reason):
+        res["kept_reason"] = reason
+        log("Исходники НЕ удалены: " + reason + ".")
+        return res
+
+    if job is not None and job.cancelled:
+        return keep("работа была прервана")
+    if not (target / "Launch.bat").is_file():
+        return keep("Launch.bat не создан")
+    if not app.is_dir() or not any(app.iterdir()):
+        return keep("папка App пуста")
+    if EXTRACT_WARNINGS:
+        return keep("распаковщик сообщил о предупреждениях (" + EXTRACT_WARNINGS[0] + ")")
+    tr_ = target.resolve()
+    items = []
+    for x in srcs:
+        x = Path(x)
+        why = radical_unsafe_source(x)
+        if why:
+            return keep(f"{x.name}: {why}")
+        rx = x.resolve()
+        if rx == tr_ or tr_ in rx.parents or rx in tr_.parents:
+            return keep(f"{x.name}: источник и результат лежат один в другом")
+        items.append(x)
+    for x in items:
+        try:
+            if x.is_dir():
+                size = dir_size(x)
+                _rmtree(x)
+                gone = not x.exists()
+            else:
+                size, gone = 0, True
+                for f in source_group(x):
+                    if f.is_file():
+                        size += f.stat().st_size
+                        f.unlink()
+        except OSError as e:
+            log(f"Не удалось удалить {x}: {e}")
+            continue
+        if gone:
+            res["deleted"].append(str(x))
+            res["freed"] += size
+            log(f"Удалён исходник: {x.name} ({fmt_size(size)})")
+        else:
+            log(f"Исходник {x} удалён не полностью (остались занятые файлы).")
+    for name in ("Extracted_discs", "Extracted_archive", "Extracted_bundle", "Extracted"):
+        d = target / name
+        if d.is_dir():
+            size = dir_size(d)
+            _rmtree(d)
+            if not d.exists():
+                res["deleted"].append(str(d))
+                res["freed"] += size
+                log(f"Удалена временная копия: {name} ({fmt_size(size)})")
     log(f"Радикальный режим: освобождено {fmt_size(res['freed'])}.")
     return res
 
@@ -2541,10 +2740,27 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
         if not extract(exe, kind, app, log, job):
             log("Не удалось распаковать архив.")
             return False
+        relic_root = pzp_relic.find_root(app)
+        if relic_root:
+            # диск Relic в архиве: раскладываем из распакованного в чистую App, распакованное потом удаляем
+            staging = target / "Extracted_archive"
+            try:
+                app.rename(staging)
+            except OSError as e:
+                log(f"Не удалось переместить распакованный архив: {e}")
+                return False
+            info["kind"] = f"{info['kind']} > {tr('установщик Relic')}" if info.get("kind") else tr("установщик Relic")
+            ok = _portabilize_relic(staging / relic_root.relative_to(app), target, manual_exe, log, job, info, consume=True)
+            if ok:
+                shutil.rmtree(staging, ignore_errors=True)
+                log("Распакованный архив удалён: игра уже разложена в App.")
+            else:
+                log(f"Распакованный архив оставлен в {staging} для разбора.")
+            return ok
         disc_inner = None
         try:
-            cand = find_installer(app)
-            if cand and cand.suffix.lower() == ".msi" and pzp_disc.disc_labels(cand):
+            cand = find_disc_msi(app)
+            if cand:
                 disc_inner = cand
         except Exception:
             pass
@@ -2657,12 +2873,233 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
     return finish(target, app, main, log, info, direct_unreal=not (manual_exe or "").strip())
 
 
+def ascii_staging(target: Path) -> Path:
+    """Рабочая папка для дисков. msiexec читает .cab старым ANSI-API: кириллица в пути даёт ошибку 1311,
+    поэтому, если путь результата не латинский, берём временную папку или корень диска."""
+    import tempfile
+    cands = [target / "Extracted_discs", Path(tempfile.gettempdir()) / "pzp_discs",
+             Path(target.anchor or "/") / "pzp_discs"]
+    for c in cands:
+        if str(c).isascii():
+            return c
+    return cands[-1]
+
+
+def _portabilize_multi(sources, out_root, log, mode, manual_exe, job, info):
+    """Несколько дисков (папки, архивы, образы): раскладываем в Disc1, Disc2..., находим установщик
+    с информацией о дисках и дальше работаем как с одним msi. Образы дисков собираются для каждого диска."""
+    srcs = [Path(x) for x in sources]
+    if mode == "launcher":
+        log("Для нескольких дисков режим 'Только Launch.bat' не нужен: выберите готовую папку игры.")
+        return False
+    if mode == "install":
+        log("Для нескольких дисков доступна только распаковка.")
+        return False
+    first = srcs[0]
+    target = Path(out_root).resolve() / f"{clean_stem(first)}_portable"
+    if target.exists():
+        log(f"Папка уже есть: {target}")
+        return False
+    target.mkdir(parents=True, exist_ok=True)
+    try:
+        (target / MARKER).write_text(json.dumps(
+            {"tool": "Portabilizer " + APP_VERSION, "source": " | ".join(str(x) for x in srcs),
+             "created": now_iso()}, ensure_ascii=False), encoding="utf-8")
+    except OSError:
+        pass
+    info["set_target"](str(target))
+    info["target"] = str(target)
+    info["kind"] = tr("несколько дисков")
+    if len(srcs) == 1 and srcs[0].is_dir():
+        relic_root = pzp_relic.find_root(srcs[0])
+        if relic_root:
+            info["kind"] = tr("установщик Relic")
+            if info.get("radical"):
+                log("Режим R: файлы диска Relic переносятся из папки диска в App (без копии).")
+            return _portabilize_relic(relic_root, target, manual_exe, log, job, info,
+                                      consume=bool(info.get("radical")))
+    staging = ascii_staging(target)
+    outside = target not in staging.parents
+    keep = False
+    log(f"Дисков: {len(srcs)}. Рабочая папка: {staging}")
+    try:
+        if job:
+            job.stage = "Распаковка дисков"
+        stop = (lambda: job.cancelled) if job else None
+
+        def ex(f, d):
+            return extract(f, "archive", d, log, job)
+        roots = pzp_multi.stage_sources(srcs, staging, log, ex, stop)
+        if not roots:
+            log("Ни один диск не удалось подготовить.")
+            return False
+        info["search_root"] = str(staging)
+        info["disc_roots"] = roots
+        msi = None
+        for r in roots:
+            cand = find_disc_msi(r)
+            if cand:
+                msi = cand
+                break
+        if msi is None:
+            for r in roots:
+                msi = find_installer(r)
+                if msi:
+                    break
+        if msi is None:
+            if len(srcs) == 1:
+                log("В папке нет установщика (msi, Inno, NSIS, WiX). Готовые папки приложений пока не поддерживаются: "
+                    "подайте установщик или архив.")
+            else:
+                log("Установщик не найден ни на одном диске. Проверьте, что выбраны все диски игры.")
+            return False
+        log(f"Установщик: {msi.relative_to(staging)}")
+        ok = _portabilize(msi, out_root, log, mode, manual_exe, target, job, info)
+        keep = bool(ok)
+        return ok
+    finally:
+        # рабочая копия дисков нужна только для сборки: при успехе (и всегда, если она вне папки результата) удаляем,
+        # при ошибке внутри папки результата оставляем для разбора
+        if outside or keep:
+            shutil.rmtree(staging, ignore_errors=True)
+            if keep:
+                log("Рабочая копия дисков удалена: образы и игра уже собраны.")
+
+
+def _portabilize_relic(root, target, manual_exe, log, job, info, consume=False):
+    """Диск Relic (gameInst.exe + Data\\Install.lua, напр. Company of Heroes: Tales of Valor):
+    файлы раскладываются прямо из Data по списку установщика, без копии диска и без запуска gameInst.exe."""
+    app = target / "App"
+    log(f"Установщик Relic: {root}")
+    try:
+        if job:
+            job.stage = "Установка файлов Relic"
+        stop = (lambda: job.cancelled) if job else None
+
+        def prog(done, total):
+            if job:
+                job.progress = int(done * 100 / max(1, total))
+        res = pzp_relic.install(root, app, log, stop, prog, consume=consume)
+    except InterruptedError:
+        raise JobCancelled()
+    except (pzp_relic.RelicError, OSError) as e:
+        log(f"Установщик Relic: {e}")
+        return False
+    log(f"Relic: {res['total']} файлов, язык игры: {res['locale'] or '?'}.")
+    if res["missing"]:
+        log(f"Предупреждение: нет данных для {len(res['missing'])} файлов (например {res['missing'][0]}). "
+            "Проверьте, что папка диска скопирована целиком.")
+    if res["bad_md5"]:
+        log(f"Предупреждение: контрольная сумма не совпала у {len(res['bad_md5'])} файлов "
+            f"(например {res['bad_md5'][0]}). Диск или копия могут быть повреждены.")
+    # реестр: Relic-игры проверяют состояние установки в HKLM\\SOFTWARE\\THQ\\..., пишем эквивалент в HKCU
+    try:
+        text, key = pzp_relic.registry_text(res)
+        regdir = target / "Registry"
+        regdir.mkdir(exist_ok=True)
+        (regdir / f"{_safe_name(res['name'] or 'Relic')}.reg").write_text(text, encoding="utf-16")
+        (regdir / "keys.txt").write_text(key + "\r\n", encoding="utf-8")
+        log("Реестр: записан (HKCU). Ключ продукта, если игра попросит, введите один раз - он сохранится.")
+    except OSError as e:
+        log(f"Реестр: не удалось записать .reg ({e})")
+    main = resolve_manual(app, manual_exe, log)
+    if not main and res["exe"]:
+        hit = [x for x in app.rglob("*") if x.is_file() and x.name.lower() == res["exe"].lower()]
+        if hit:
+            main = min(hit, key=lambda x: len(x.parts)).resolve()
+    if main:
+        pzp_relic.vc80_runtime(root, main.parent, log)
+    main = main or find_main_exe(app, log, info.get("chooser"))
+    if not main:
+        log("Главный exe не найден.")
+        log_exe_candidates(app, log)
+        return False
+    return finish(target, app, main, log, info, direct_unreal=not (manual_exe or "").strip())
+
+
+SLIM_OPTIONS = {"trim": False, "compress": False}   # доп. настройки: убрать лишнее / сжать папку средствами NTFS
+
+_TRIM_RE = re.compile(
+    r"(?i)^(vcredist[^\\/]*\.(exe|msi)|vc_?redist[^\\/]*\.exe|dxsetup\.exe|dxwebsetup\.exe|dotnetfx[^\\/]*\.exe|"
+    r"uninstall[^\\/]*\.exe|unins\d*\.(exe|dat|msg)|removeFakeMSI\.bat|FakeCOHMSI[^\\/]*\.msi)$")
+_README_RE = re.compile(r"(?i)^readme_([^.]+)\.txt$")
+
+
+def trim_extras(app: Path, log) -> int:
+    """Убирает то, что в портативной папке не нужно: установщики вспомогательных пакетов (VC++, DirectX, .NET),
+    деинсталляторы и заготовки сервисных msi, а также Readme_<язык>.txt на чужих языках (английский остаётся).
+    Игровые данные не трогает. Возвращает освобождённое место, байт."""
+    freed = 0
+    removed = []
+    try:
+        top = [x for x in app.iterdir() if x.is_file()]
+    except OSError:
+        return 0
+    readmes = [x for x in top if _README_RE.match(x.name)]
+    keep_readme = {x for x in readmes if _README_RE.match(x.name).group(1).lower() == "english"}
+    if not keep_readme and readmes:
+        keep_readme = {min(readmes, key=lambda x: x.name.lower())}
+    for x in top:
+        drop = (_TRIM_RE.match(x.name) is not None) or (x in readmes and x not in keep_readme)
+        if not drop:
+            continue
+        try:
+            sz = x.stat().st_size
+            x.unlink()
+            freed += sz
+            removed.append(x.name)
+        except OSError:
+            pass
+    if removed:
+        log(f"Лишнее убрано: {len(removed)} файл(ов), {fmt_size(freed)} ({', '.join(removed[:5])}"
+            + (" ..." if len(removed) > 5 else "") + ").")
+    else:
+        log("Лишнего не нашлось: убирать нечего.")
+    return freed
+
+
+def compress_folder(folder: Path, log, job=None, run_cmd=None) -> bool:
+    """Сжатие NTFS (compact /c): игре прозрачно, прав администратора не нужно. На не-NTFS и вне Windows - пропуск."""
+    if run_cmd is None and not sys.platform.startswith("win"):
+        log("Сжатие NTFS: доступно только в Windows, пропускаю.")
+        return False
+    if job:
+        job.stage = "Сжатие NTFS"
+        job.progress = None
+    cmd = ["compact", "/c", "/s:" + str(folder), "/i", "/q"]
+    log("Сжимаю папку средствами NTFS (может занять несколько минут)...")
+    ok = run_cmd(cmd) if run_cmd else run(cmd, log, job=job)
+    if job and job.cancelled:
+        raise JobCancelled()
+    if not ok:
+        log("Сжатие NTFS не удалось (возможно, диск не NTFS). Папка осталась как есть.")
+        return False
+    log("Сжатие NTFS готово. Размер на диске уменьшился там, где данные сжимаются; игре это незаметно.")
+    return True
+
+
+def apply_slim(target: Path, log, job=None, options=None, run_cmd=None):
+    """Доп. настройки после успешной сборки: сначала убрать лишнее, потом сжать."""
+    o = options if options is not None else SLIM_OPTIONS
+    app = target / "App"
+    if o.get("trim") and app.is_dir():
+        trim_extras(app, log)
+    if o.get("compress") and app.is_dir():
+        compress_folder(app, log, job, run_cmd)
+
+
 def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, history=None,
                 chooser=None, radical=False, confirmed=False, dx_prompt=None, shortcut_prompt=None):
     """Главная функция: конвертация + учёт в истории + поддержка паузы/отмены через job.
 
     radical=True (режим R): после успешной сборки удаляет исходный файл и временные копии.
-    Результат создаётся рядом с исходником. Без confirmed=True ничего не делается."""
+    Результат создаётся рядом с исходником (файлом, папкой или первой из нескольких). Без confirmed=True ничего не делается."""
+    multi = (list(exe_path) if isinstance(exe_path, (list, tuple))
+             and (len(exe_path) > 1 or (len(exe_path) == 1 and Path(str(exe_path[0])).is_dir())) else None)
+    if multi is None and not isinstance(exe_path, (list, tuple)) and str(exe_path).strip() and Path(str(exe_path)).is_dir():
+        multi = [str(exe_path)]            # одиночная папка идёт тем же путём, что один диск
+    if isinstance(exe_path, (list, tuple)):
+        exe_path = exe_path[0] if exe_path else ""
     exe = Path(exe_path) if str(exe_path).strip() else None
     EXTRACT_WARNINGS.clear()
     if radical and mode == "launcher":
@@ -2671,17 +3108,25 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
         if not confirmed:
             log("Радикальный режим не подтверждён: ничего не делаю.")
             return False
-        if exe is None or not exe.is_file():
+        if multi:
+            for x in multi:
+                why = radical_unsafe_source(Path(x))
+                if why:
+                    log(f"Радикальный режим: {Path(x).name}: {why}. Ничего не делаю.")
+                    return False
+            out_root = str(Path(multi[0]).parent)
+        elif exe is None or not exe.is_file():
             log("Файл не найден.")
             return False
-        out_root = str(exe.parent)           # «на месте»: результат рядом с исходным файлом
+        else:
+            out_root = str(exe.parent)       # «на месте»: результат рядом с исходным файлом
     rec = None
     if history is not None and exe is not None:
         try:
             size = exe.stat().st_size if exe.is_file() else 0
         except OSError:
             size = 0
-        rec = history.add(source=str(exe), source_size=size, target="", mode=mode,
+        rec = history.add(source=" | ".join(str(x) for x in multi) if multi else str(exe), source_size=size, target="", mode=mode,
                           kind="", status="running", started=now_iso(), finished="",
                           main_exe="", note="", radical=bool(radical))
     info = {"set_target": (lambda p: history.update(rec["id"], target=p)) if rec
@@ -2694,18 +3139,30 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
                 raise JobCancelled()
             if mode != "launcher":
                 job.watch(Path(out_root).resolve())
-        ok = _portabilize(exe_path, out_root, log, mode, manual_exe, None, job, info)
+        if multi:
+            ok = _portabilize_multi(multi, out_root, log, mode, manual_exe, job, info)
+        else:
+            ok = _portabilize(exe_path, out_root, log, mode, manual_exe, None, job, info)
         if job and job.cancelled:
             status = "canceled"
         else:
             status = "done" if ok else "failed"
         if ok and radical and status == "done" and info.get("target"):
-            res = radical_cleanup(exe, Path(info["target"]), info, log, job)
+            res = (radical_cleanup_multi(multi, Path(info["target"]), info, log, job) if multi
+                   else radical_cleanup(exe, Path(info["target"]), info, log, job))
             if job is not None:
                 job.radical_result = res
             if rec:
                 history.update(rec["id"], freed=res["freed"], source_deleted=bool(res["deleted"]),
                                note_radical=res["kept_reason"])
+        if ok and mode != "launcher" and info.get("target") and (SLIM_OPTIONS["trim"] or SLIM_OPTIONS["compress"]) \
+                and not (job and job.cancelled):
+            try:
+                apply_slim(Path(info["target"]), log, job)
+            except JobCancelled:
+                raise
+            except Exception as e:  # noqa: доп. настройки не должны ронять уже собранный результат
+                log(f"Доп. настройки не применены: {e}")
         if ok and mode == "launcher" and rec:
             history.update(rec["id"], target=str((Path(out_root).resolve()
                                                    / f"{clean_stem(exe)}_portable")))
@@ -2730,8 +3187,21 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "10.2"
+APP_VERSION = "10.3"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
+
+
+UPDATE_CHECK_EVERY = 24 * 3600      # автопроверка новой версии не чаще раза в сутки (меньше запросов к GitHub)
+
+
+def update_check_due(settings: dict, now=None) -> bool:
+    import time
+    now = time.time() if now is None else now
+    try:
+        last = float(settings.get("last_update_check", 0))
+    except (TypeError, ValueError):
+        last = 0
+    return now - last >= UPDATE_CHECK_EVERY or last > now
 
 
 def _ver_tuple(tag) -> tuple:
@@ -3221,7 +3691,7 @@ def gui(_hook=None, start_radical=False):
     run_var = tk.StringVar(value=next(iter(run_names)))
     status_var = tk.StringVar(value=tr("Готов к работе."))
     main_tab.grid_columnconfigure(1, weight=1)
-    main_tab.grid_rowconfigure(9, weight=1)
+    main_tab.grid_rowconfigure(10, weight=1)
 
     def row(r, label, var, cmd):
         ttk.Label(main_tab, text=label).grid(row=r, column=0, sticky="w", padx=8, pady=6)
@@ -3232,6 +3702,48 @@ def gui(_hook=None, start_radical=False):
                 "*.rar *.zip *.7z *.tar *.gz *.tgz *.xz *.bz2 *.cab *.iso")
     row(0, tr("Файл:"), src, lambda: src.set(filedialog.askopenfilename(
         filetypes=[(tr("Установщики, пакеты, архивы"), patterns), (tr("Все"), "*.*")]) or src.get()))
+    SRC_SEP = " | "
+
+    def multi_dialog():
+        """Список источников для игры на нескольких дисках: папки, архивы и образы добавляются по одному."""
+        items = [x for x in src.get().split(SRC_SEP) if x.strip()]
+        win = tk.Toplevel(root)
+        win.title(tr("Диски игры"))
+        win.transient(root)
+        win.grab_set()
+        ttk.Label(win, wraplength=520, justify="left", text=tr(
+            "Добавьте все диски игры: папки, архивы (zip, 7z, rar) или образы iso. "
+            "Порядок не важен: программа сама найдёт установщик и разложит диски.")).pack(padx=12, pady=(12, 6))
+        lb = tk.Listbox(win, width=80, height=8, selectmode="extended")
+        lb.pack(padx=12, pady=4, fill="both", expand=True)
+        for x in items:
+            lb.insert("end", x)
+
+        def add_dir():
+            d = filedialog.askdirectory(parent=win)
+            if d:
+                lb.insert("end", d)
+
+        def add_files():
+            for f in filedialog.askopenfilenames(parent=win, filetypes=[(tr("Архивы и образы"), patterns),
+                                                                          (tr("Все"), "*.*")]):
+                lb.insert("end", f)
+
+        def remove():
+            for i in reversed(lb.curselection()):
+                lb.delete(i)
+
+        def ok():
+            vals = list(lb.get(0, "end"))
+            src.set(SRC_SEP.join(vals))
+            win.destroy()
+        bar = ttk.Frame(win)
+        bar.pack(padx=12, pady=8, fill="x")
+        ttk.Button(bar, text=tr("Добавить папку"), command=add_dir).pack(side="left", padx=2)
+        ttk.Button(bar, text=tr("Добавить файлы"), command=add_files).pack(side="left", padx=2)
+        ttk.Button(bar, text=tr("Убрать"), command=remove).pack(side="left", padx=2)
+        ttk.Button(bar, text=tr("Готово"), command=ok).pack(side="right", padx=2)
+    ttk.Button(main_tab, text=tr("Несколько дисков..."), command=multi_dialog).grid(row=0, column=3, padx=4)
     row(1, tr("Куда:"), dst, lambda: dst.set(filedialog.askdirectory() or dst.get()))
     row(2, tr("Главный exe:"), mexe, lambda: mexe.set(filedialog.askopenfilename(
         filetypes=[(tr("Программы"), "*.exe"), (tr("Все"), "*.*")]) or mexe.get()))
@@ -3247,15 +3759,23 @@ def gui(_hook=None, start_radical=False):
     combos.append(ttk.Combobox(mrow, textvariable=run_var, values=list(run_names),
                                state="readonly", width=40))
     combos[-1].pack(side="left", padx=4)
+    shots_var = tk.BooleanVar(value=bool(settings.get("tga_png", False)))
+    ttk.Checkbutton(mrow, text=tr("Скриншоты игры: TGA в PNG после выхода"), variable=shots_var).pack(side="left", padx=8)
+    orow = ttk.Frame(main_tab)
+    orow.grid(row=4, column=0, columnspan=3, sticky="w", padx=8)
+    trim_var = tk.BooleanVar(value=bool(settings.get("slim_trim", False)))
+    ttk.Checkbutton(orow, text=tr("Убрать лишнее (установщики VC/DirectX, чужие Readme)"), variable=trim_var).pack(side="left")
+    comp_var = tk.BooleanVar(value=bool(settings.get("slim_compress", False)))
+    ttk.Checkbutton(orow, text=tr("Сжать папку средствами NTFS"), variable=comp_var).pack(side="left", padx=12)
 
     hint = (tr("Файл: exe, msi, msix/appx, архив (rar, zip, 7z...). Главный exe - необязательно: "
             "имя (App.exe), путь внутри App или файл из папки App. "
             "Лог сохраняется в portabilizer.log."))
     hint_lbl = ttk.Label(main_tab, text=hint, wraplength=820, style="Muted.TLabel")
-    hint_lbl.grid(row=4, column=0, columnspan=3, sticky="w", padx=8)
+    hint_lbl.grid(row=5, column=0, columnspan=3, sticky="w", padx=8)
 
     bf = ttk.Frame(main_tab)
-    bf.grid(row=5, column=0, columnspan=3, pady=6)
+    bf.grid(row=6, column=0, columnspan=3, pady=6)
     btn_start = ttk.Button(bf, text=tr("Сделать портативным"), style="Accent.TButton")
     btn_pause = ttk.Button(bf, text=tr("Пауза"))
     btn_resume = ttk.Button(bf, text=tr("Продолжить"))
@@ -3264,12 +3784,12 @@ def gui(_hook=None, start_radical=False):
         b.pack(side="left", padx=4)
 
     pb = ttk.Progressbar(main_tab, mode="determinate", maximum=100)
-    pb.grid(row=6, column=0, columnspan=3, sticky="ew", padx=8)
+    pb.grid(row=7, column=0, columnspan=3, sticky="ew", padx=8)
     ttk.Label(main_tab, textvariable=status_var, style="Muted.TLabel").grid(
-        row=7, column=0, columnspan=3, sticky="w", padx=8, pady=2)
+        row=8, column=0, columnspan=3, sticky="w", padx=8, pady=2)
 
     tipf = ttk.LabelFrame(main_tab, text=tr("Рекомендации"))
-    tipf.grid(row=8, column=0, columnspan=3, sticky="ew", padx=8, pady=4)
+    tipf.grid(row=9, column=0, columnspan=3, sticky="ew", padx=8, pady=4)
     tips = tk.Text(tipf, height=5, wrap="word", state="disabled", relief="flat")
     tips.pack(fill="x", padx=4, pady=2)
     tips.tag_config("info", foreground="#555555")
@@ -3277,7 +3797,7 @@ def gui(_hook=None, start_radical=False):
     tips.tag_config("danger", foreground="#b00020")
 
     logf = ttk.Frame(main_tab)
-    logf.grid(row=9, column=0, columnspan=3, sticky="nsew", padx=8, pady=6)
+    logf.grid(row=10, column=0, columnspan=3, sticky="nsew", padx=8, pady=6)
     box = tk.Text(logf, height=10, state="disabled", wrap="word")
     sb = ttk.Scrollbar(logf, command=box.yview)
     box.config(yscrollcommand=sb.set)
@@ -3473,8 +3993,38 @@ def gui(_hook=None, start_radical=False):
             return
         mode = mode_names.get(mode_var.get(), "auto")
         RUN_POLICY["value"] = run_names.get(run_var.get(), "auto")
+        SHOT_OPTIONS["png"] = bool(shots_var.get())
+        if settings.get("tga_png", False) != SHOT_OPTIONS["png"]:
+            settings["tga_png"] = SHOT_OPTIONS["png"]
+            save_settings(settings)
+        SLIM_OPTIONS["trim"] = bool(trim_var.get())
+        SLIM_OPTIONS["compress"] = bool(comp_var.get())
+        if (settings.get("slim_trim", False), settings.get("slim_compress", False)) != (SLIM_OPTIONS["trim"], SLIM_OPTIONS["compress"]):
+            settings["slim_trim"], settings["slim_compress"] = SLIM_OPTIONS["trim"], SLIM_OPTIONS["compress"]
+            save_settings(settings)
         radical = ver["radical"] and mode != "launcher"
-        if radical:
+        parts = [x.strip() for x in src_p.split(SRC_SEP) if x.strip()]
+        if len(parts) > 1 or (len(parts) == 1 and Path(parts[0]).is_dir()):
+            src_p = parts
+            if radical:
+                paths = [Path(x) for x in parts]
+                for x in paths:
+                    why = radical_unsafe_source(x)
+                    if why:
+                        messagebox.showwarning("Portabilizer (R)", tr("{0}: {1}. Режим R для такого пути отключён.", x.name, trx(why)), parent=root)
+                        return
+                total = radical_sources_size(paths)
+                listing = "\n".join(f"  {x.name}  ({'папка' if x.is_dir() else 'файл'})" for x in paths[:8])
+                if len(paths) > 8:
+                    listing += tr("\n  ... и ещё {0}", len(paths) - 8)
+                if not messagebox.askyesno(
+                        tr("Portabilizer (R): исходные папки и файлы будут удалены"),
+                        tr("Вы правда хотите сделать это портативным в радикальном режиме?\n\nПосле успешной сборки будут УДАЛЕНЫ НАВСЕГДА (мимо корзины):\n{0}\nвсего {1}.\n\nЕсли это диск Relic (gameInst.exe и Data), его файлы не копируются, а ПЕРЕНОСЯТСЯ в App: если прервать работу посередине, папка диска останется неполной.\n\nУдаление произойдёт только если сборка удалась и всё проверено. Результат будет создан рядом с первой папкой.\n\nПродолжить?", listing, fmt_size(total)),
+                        icon="warning", default="no", parent=root):
+                    return
+                dst_p = str(paths[0].parent)
+                dst.set(dst_p)
+        if radical and not isinstance(src_p, list):
             sp = Path(src_p)
             if not sp.is_file():
                 messagebox.showwarning("Portabilizer (R)", tr("Файл не найден."), parent=root)
@@ -3510,7 +4060,7 @@ def gui(_hook=None, start_radical=False):
         def work():
             ok = False
             try:
-                if mode != "launcher" and Path(src_p).is_file():
+                if mode != "launcher" and not isinstance(src_p, list) and Path(src_p).is_file():
                     job.stage = tr("Оценка нужного места")
                     pre = preflight(Path(src_p), Path(dst_p), mode, radical)
                     if pre.get("exact"):
@@ -3968,12 +4518,18 @@ def gui(_hook=None, start_radical=False):
               ).pack(anchor="w", padx=10, pady=10)
     ttk.Label(card_r, wraplength=380, justify="left", style="Danger.TLabel", text=(
         tr("Радикальная версия (риск).\n\n"
-        "После успешной сборки УДАЛЯЕТ исходный файл (все тома архива) и временные копии, "
-        "поэтому итог занимает меньше места. Портативная папка создаётся рядом с исходником.\n\n"
-        "Важно: пока идёт работа, места нужно столько же, как в обычной версии: исходник "
-        "удаляется только в самом конце, после проверки. Вернуть удалённый файл нельзя: если "
-        "что-то пойдёт не так позже, его придётся скачивать или ставить с платформы заново.\n\n"
-        "Перед каждым запуском программа просит подтверждение."))
+        "Исходник не остаётся: после успешной сборки УДАЛЯЮТСЯ исходный файл (все тома архива), "
+        "исходные папки и несколько дисков, а также временные копии. Портативная папка создаётся "
+        "рядом с исходником. Работает с файлом, папкой и несколькими дисками сразу.\n\n"
+        "Как это экономит место: обычный exe и диск Relic (gameInst.exe + Data) не копируются, а "
+        "ПЕРЕНОСЯТСЯ в App. Архивы и остальные установщики сначала распаковываются, поэтому на время "
+        "работы нужно столько же места, как в обычной версии.\n\n"
+        "Безопасность: удаление идёт только после проверки (Launch.bat создан, App не пуста, "
+        "распаковщик без предупреждений). Корень диска и папки пользователя (Загрузки, Рабочий стол, "
+        "Документы) никогда не удаляются. Но если прервать перенос посередине, исходная папка "
+        "останется неполной, а вернуть удалённое нельзя.\n\n"
+        "Режим «Только Launch.bat» тоже работает, ничего не удаляя. Перед каждым запуском программа "
+        "просит подтверждение."))
               ).pack(anchor="w", padx=10, pady=10)
     upd_var = tk.BooleanVar(value=bool(settings.get("check_updates", True)))
     upd_state = {"res": None, "done": True, "manual": False}
@@ -3981,6 +4537,11 @@ def gui(_hook=None, start_radical=False):
     def start_update_check(manual=False):
         if not upd_state["done"]:
             return
+        if not manual:
+            if not update_check_due(settings):
+                return
+            settings["last_update_check"] = time.time()
+            save_settings(settings)
         upd_state.update(res=None, done=False, manual=manual)
 
         def work():
@@ -4018,9 +4579,10 @@ def gui(_hook=None, start_radical=False):
     btn_ver_r = ttk.Button(card_r, text=tr("Включить версию (R)"))
     btn_ver_n.pack(padx=10, pady=(0, 10))
     btn_ver_r.pack(padx=10, pady=(0, 10))
-    R_HINT = (tr("РЕЖИМ (R): обычный exe просто ПЕРЕНОСИТСЯ в папку App (копии нет, место не нужно). "
-              "Архивы и установщики сначала распаковываются, и только потом исходник удаляется: "
-              "на время работы нужно место под распакованное. Перед стартом будет подтверждение."))
+    R_HINT = (tr("РЕЖИМ (R): исходник не остаётся. Обычный exe и диск Relic ПЕРЕНОСЯТСЯ в папку App без копии "
+              "(место не нужно). Архивы и остальные установщики сначала распаковываются, и только потом "
+              "исходник удаляется: на время работы нужно место под распакованное. Работает и с папками, и "
+              "с несколькими дисками. Перед стартом будет подтверждение."))
 
     # --------------------------------------------------------- вкладка «Оформление»
     themes = load_themes()
