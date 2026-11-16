@@ -126,6 +126,7 @@ from pzp_i18n import LANGS, detect_lang, get_lang, lang_name, set_lang, tr, trx
 from pzp_iso import IsoError, build_iso
 from pzp_msi import missing_source_files
 import pzp_disc
+import pzp_isc
 import pzp_multi
 import pzp_relic
 import pzp_sxs
@@ -280,11 +281,13 @@ def dir_size(folder: Path) -> int:
 def detect_type(exe: Path) -> str:
     """Определение типа по расширению, затем по сигнатурам в файле.
 
-    Возвращает: msi, msix, archive, inno, nsis, wix или plain.
+    Возвращает: msi, msix, archive, inno, nsis, wix, installshield или plain.
     """
     suffix = exe.suffix.lower()
     if suffix == ".msi":
         return "msi"
+    if suffix in (".exe", ".hdr", ".cab") and pzp_isc.looks_like_installshield(exe):
+        return "installshield"          # setup.exe + data1.hdr/data1.cab (InstallScript), читаем сами
     if suffix in MSIX_EXT:
         return "msix"
     if suffix in ARCHIVE_EXT:
@@ -1190,6 +1193,8 @@ def extract(exe: Path, kind: str, out: Path, log, job=None) -> bool:
     if kind in ("msi", "wix") and os.name == "nt" and exe.suffix.lower() == ".msi":
         # административная распаковка, ничего не ставит в систему
         return msi_admin_extract(exe, out, log, job)
+    if kind == "installshield":
+        return extract_installshield(exe, out, log, job)
     tool = find_tool("7z.exe", "7za.exe", "7z", "7zz")
     if not tool:
         log("Нужен 7z.exe: не найден ни рядом с программой, ни в установленном 7-Zip. "
@@ -1208,6 +1213,73 @@ def extract(exe: Path, kind: str, out: Path, log, job=None) -> bool:
         log("Файл защищён паролем. Portabilizer пароли не вводит: распакуйте его вручную "
             "(7-Zip сам спросит пароль), затем выберите распакованную папку или установщик.")
     return ok
+
+
+ISC_OPTIONS = {"language": "en"}      # язык игры из диска InstallShield (en, fr, de, it, es...)
+ISC_NOTES = []                        # заметки для итогового отчёта (чистятся в portabilize)
+
+
+def extract_installshield(setup: Path, out: Path, log, job=None) -> bool:
+    """Диск InstallShield (setup.exe + data1.hdr + dataN.cab): файлы игры раскладываются из кабинетов
+    по таблице, без запуска установщика и без прав администратора. У каждого файла проверяется MD5."""
+    try:
+        cab = pzp_isc.open_cabinet(setup)
+    except (pzp_isc.ISCError, OSError) as e:
+        log(f"InstallShield: {e}")
+        return False
+    lang = ISC_OPTIONS.get("language", "en")
+    log(f"Установщик InstallShield {cab.major}: файлов в кабинете {len(cab.entries)}, язык игры: {lang}. "
+        "Установщик не запускается, файлы читаются из кабинетов.")
+    if job:
+        job.stage = "Распаковка InstallShield"
+
+    def prog(frac):
+        if job:
+            job.progress = int(frac * 100)
+
+    try:
+        count, size, errors = pzp_isc.extract_game(
+            cab, out, lang, log, progress=prog, cancelled=(lambda: job.cancelled) if job else None)
+    except pzp_isc.ISCError as e:
+        if job and job.cancelled:
+            raise JobCancelled()
+        log(f"InstallShield: {e}")
+        return False
+    if job:
+        job.progress = None
+    log(f"Из кабинетов извлечено файлов: {count} ({fmt_size(size)}), MD5 каждого проверен.")
+    # переносится только игра: остальное (другие языки, DirectX, Adobe Reader) остаётся на диске
+    EXTRACT_WARNINGS.append("диск InstallShield: перенесена только игра")
+    if errors:
+        log(f"Не удалось извлечь файлов: {len(errors)}. Проверьте, что все тома (data1.cab, data2.cab...) "
+            "на месте и скачаны целиком.")
+        return False
+    if (out / "_redist").is_dir():
+        ISC_NOTES.append("в папке App\\_redist лежат установщики, которые игре нужны в системе "
+                         "(например PhysX): поставьте их один раз на компьютере, где будете играть")
+    ISC_NOTES.append("файлы раскладывались по структуре кабинета (скрипт установщика зашифрован): "
+                     "если игре чего-то не хватает, пришлите лог")
+    return True
+
+
+def find_installshield(folder: Path):
+    """Установщик InstallShield внутри папки диска: setup.exe (или другой exe) рядом с data1.hdr/data1.cab."""
+    best = None
+    try:
+        for p in folder.rglob("*"):
+            if not p.is_file() or p.name.lower() not in ("data1.hdr", "data1.cab"):
+                continue
+            parts = p.relative_to(folder).parts
+            if len(parts) > 4 or not pzp_isc.looks_like_installshield(p):
+                continue
+            exes = sorted(p.parent.glob("*.exe"), key=lambda x: (x.name.lower() != "setup.exe", x.name.lower()))
+            cand = exes[0] if exes else p
+            key = (len(parts), p.suffix.lower() != ".hdr")
+            if best is None or key < best[0]:
+                best = (key, cand)
+    except OSError:
+        return None
+    return best[1] if best else None
 
 
 SKIP = ("unins", "uninst", "uninstall", "setup", "vcredist", "vc_redist",
@@ -1400,7 +1472,10 @@ def log_exe_candidates(folder: Path, log, limit=30):
 
 
 def find_installer(folder: Path):
-    """Ищет внутри распакованного архива установщик (exe Inno/NSIS/WiX, msi, msix)."""
+    """Ищет внутри распакованного архива установщик (exe Inno/NSIS/WiX, msi, msix, диск InstallShield)."""
+    isx = find_installshield(folder)
+    if isx:
+        return isx
     cands = []
     for p in folder.rglob("*"):
         try:
@@ -2759,7 +2834,7 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
             return ok
         disc_inner = None
         try:
-            cand = find_disc_msi(app)
+            cand = find_disc_msi(app) or find_installshield(app)
             if cand:
                 disc_inner = cand
         except Exception:
@@ -2813,6 +2888,8 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
                 log("Не удалось распаковать. Возможно, установщик нестандартный "
                     "(тогда нужен виртуализатор вроде Cameyo / Turbo Studio).")
                 return False
+            if kind == "installshield":
+                info.setdefault("notes", []).extend(ISC_NOTES)
             for c in info.pop("placed_cabs", []):      # чужие кабинеты нужны были только msiexec, в образ диска 1 не попадут
                 try:
                     Path(c).unlink()
@@ -2918,6 +2995,12 @@ def _portabilize_multi(sources, out_root, log, mode, manual_exe, job, info):
                 log("Режим R: файлы диска Relic переносятся из папки диска в App (без копии).")
             return _portabilize_relic(relic_root, target, manual_exe, log, job, info,
                                       consume=bool(info.get("radical")))
+    if len(srcs) == 1 and srcs[0].is_dir():
+        isx = find_installshield(srcs[0])
+        if isx:
+            info["kind"] = "InstallShield"
+            log(f"Диск InstallShield: {isx}. Читаю на месте, рабочая копия диска не нужна.")
+            return _portabilize(isx, out_root, log, mode, manual_exe, target, job, info)
     staging = ascii_staging(target)
     outside = target not in staging.parents
     keep = False
@@ -3102,6 +3185,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
         exe_path = exe_path[0] if exe_path else ""
     exe = Path(exe_path) if str(exe_path).strip() else None
     EXTRACT_WARNINGS.clear()
+    ISC_NOTES.clear()
     if radical and mode == "launcher":
         radical = False                      # Launch.bat не создаёт копий: удалять нечего
     if radical:
