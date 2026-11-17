@@ -327,6 +327,13 @@ _SKIP_FILES = re.compile(r"(?i)(installerutil|installhelper|instancechecker|unin
 _GROUP_SUBDIR = {"commonsettings": "settings"}
 # программы, которые полезно сохранить отдельно (ставятся один раз вручную)
 _REDIST_GROUPS = re.compile(r"^(ageia|physx)", re.I)
+# файлы движка, которые InstallShield кладёт в служебные группы "<Support>..."
+# вперемешку с настоящим мусором инсталлятора (фоновые картинки, EULA, _IsRes.dll
+# и т.п.) - такие группы в целом пропускаются (см. ниже), но эти конкретные файлы
+# нужны самой игре и должны извлекаться всегда, даже из пропускаемой группы.
+# corecomp.ini обнаружен в GRAW2 в "<Support>Misc Support Files" - без него движок
+# не может загрузить конфигурацию сцены ("Failed loading scene config file!").
+_FORCE_KEEP_FILES = re.compile(r"(?i)^(corecomp\.ini)$")
 
 
 def language_of(name: str):
@@ -353,9 +360,17 @@ def select_files(cab: Cabinet, language: str = "en"):
         if not entries:
             continue
         if name.startswith("<") or _SKIP_GROUPS.match(name):
+            keep = [e for e in entries if _FORCE_KEEP_FILES.match(e.name)]
+            rest = [e for e in entries if e not in keep]
+            for e in keep:
+                rel = e.relpath
+                if ".." in rel.replace("\\", "/").split("/") or ":" in rel or rel.startswith(("/", "\\")):
+                    continue
+                files.append((e, rel.replace("\\", os.sep)))
             if _REDIST_GROUPS.match(name):
-                redist.extend((e, e.name) for e in entries)
-            skipped.append((name, len(entries)))
+                redist.extend((e, e.name) for e in rest)
+            if rest:
+                skipped.append((name, len(rest)))
             continue
         lg = language_of(name)
         if lg and len(families.get(lg[0].lower(), [])) > 1 and lg[1].upper() not in want:

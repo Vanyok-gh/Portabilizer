@@ -112,13 +112,14 @@ FILES = [
     dict(name="PhysX_Setup.exe", dir="", data=b"MZ" + b"P" * 500, vol=1, kind="loose"),
     dict(name="Reader.exe", dir="", data=b"MZ" + b"R" * 400, vol=1, kind="loose"),
     dict(name="InstallerUtil.dll", dir="", data=b"dll", vol=2, kind="z"),
+    dict(name="corecomp.ini", dir="", data=b"<core/>", vol=2, kind="z"),
     dict(name="setup.inx", dir="", data=b"inx", vol=1, kind="loose"),
     dict(name="dx.cab", dir="", data=b"dx", vol=2, kind="z"),
     dict(name="menu.xml", dir="strings", data=b"<de/>", vol=2, kind="z"),
 ]
 GROUPS = [("CommonBundles", 1, 1), ("CommonData", 2, 2), ("CommonSettings", 3, 3), ("DataFR", 4, 4),
           ("ContextUK", 5, 5), ("ContextFR", 6, 6), ("Arch", 7, 7), ("Ageia", 8, 8), ("Acrobat", 9, 9),
-          ("CommonDll", 10, 10), ("<Support>Script", 11, 11), ("DirectX", 12, 12), ("DataGer", 13, 13)]
+          ("CommonDll", 10, 10), ("<Support>Script", 11, 12), ("DirectX", 13, 13), ("DataGer", 14, 14)]
 DIRS = ["", "movies", "strings"]
 
 
@@ -145,10 +146,14 @@ with tempfile.TemporaryDirectory() as t:
     # --- выбор файлов
     files, redist, skipped = I.select_files(cab, "en")
     got = sorted(r.replace(os.sep, "/") for _, r in files)
-    check(got == ["context.xml", "graw2.exe", "movies/ESRB.bik", "quick.bundle", "settings/hud.xml"], f"en: {got}")
+    check(got == ["context.xml", "corecomp.ini", "graw2.exe", "movies/ESRB.bik", "quick.bundle", "settings/hud.xml"],
+          f"en: {got}")
     check([r for _, r in redist] == ["PhysX_Setup.exe"], "PhysX в redist")
     sk = [s[0] for s in skipped]
     check("DataFR" in sk and "Acrobat" in sk and "DirectX" in sk and "<Support>Script" in sk and "CommonDll" in sk, f"пропущены: {sk}")
+    sk_counts = dict(skipped)
+    check(sk_counts["<Support>Script"] == 1,
+          f"из <Support>Script должен остаться пропущенным только InstallerUtil.dll: {sk_counts['<Support>Script']}")
     fr, _, _ = I.select_files(cab, "fr")
     frs = sorted(r.replace(os.sep, "/") for _, r in fr)
     check("strings/menu.xml" in frs and dict((r.replace(os.sep, '/'), e) for e, r in fr)["context.xml"].size == 3, f"fr: {frs}")
@@ -157,12 +162,15 @@ with tempfile.TemporaryDirectory() as t:
     out = t / "App"
     logs = []
     count, size, errors = I.extract_game(cab, out, "en", logs.append)
-    check(count == 5 and not errors, f"извлечено {count}, ошибки {errors}")
+    check(count == 6 and not errors, f"извлечено {count}, ошибки {errors}")
     check((out / "quick.bundle").read_bytes() == BIG, "большой файл в несколько кусков")
     check((out / "graw2.exe").read_bytes() == FILES[7]["data"], "внешний файл найден в подпапках/в корне")
     check((out / "settings" / "hud.xml").read_bytes() == b"<hud/>", "CommonSettings в settings")
+    check((out / "corecomp.ini").read_bytes() == b"<core/>",
+          "corecomp.ini извлечён даже из пропускаемой группы <Support>Script")
     check((out / "_redist" / "PhysX_Setup.exe").is_file(), "redist")
-    check(not (out / "Reader.exe").exists() and not (out / "setup.inx").exists(), "лишнего нет")
+    check(not (out / "InstallerUtil.dll").exists() and not (out / "Reader.exe").exists()
+          and not (out / "setup.inx").exists(), "лишнего нет")
 
     # --- повреждение данных ловится по MD5, недописанный файл удаляется
     raw = bytearray((disc / "data2.cab").read_bytes())
@@ -175,7 +183,7 @@ with tempfile.TemporaryDirectory() as t:
         check(True, "")
     check(not (t / "bad" / "x.bik").exists(), "недописанный файл удалён")
     count2, _, errs2 = I.extract_game(cab, t / "App2", "en", lambda *_: None)
-    check(len(errs2) == 1 and "ESRB.bik" in errs2[0] and count2 == 4, f"порча одного файла: {errs2}")
+    check(len(errs2) == 1 and "ESRB.bik" in errs2[0] and count2 == 5, f"порча одного файла: {errs2}")
 
     # --- нет тома / нет внешнего файла
     disc2 = t / "disc2"; disc2.mkdir()
