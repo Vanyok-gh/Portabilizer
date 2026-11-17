@@ -549,6 +549,8 @@ def run(cmd, log, ok_codes=(0,), job=None, track_progress=False):
     if job:
         job.attach(proc)
     tail = ""
+    part = ""                  # неполная последняя строка между чтениями
+    run.errors = run.sym_errors = 0
     try:
         while True:
             data = proc.stdout.read1(4096)
@@ -556,6 +558,13 @@ def run(cmd, log, ok_codes=(0,), job=None, track_progress=False):
                 break
             text = dec.decode(data)
             tail = (tail + text)[-8000:]
+            lines = (part + text).replace("\r", "\n").split("\n")
+            part = lines.pop()
+            for ln in lines:
+                if ln.startswith("ERROR:"):
+                    run.errors += 1
+                    if "symbolic link" in ln.lower():
+                        run.sym_errors += 1
             if track_progress and job:
                 found = PROGRESS_RE.findall(text)
                 if found:
@@ -564,6 +573,10 @@ def run(cmd, log, ok_codes=(0,), job=None, track_progress=False):
     finally:
         if job:
             job.detach()
+    if part.startswith("ERROR:"):
+        run.errors += 1
+        if "symbolic link" in part.lower():
+            run.sym_errors += 1
     if job and job.cancelled:
         raise JobCancelled()
     # убираем строки прогресса вида " 37% 12 - file" из лога
@@ -578,6 +591,8 @@ def run(cmd, log, ok_codes=(0,), job=None, track_progress=False):
 
 run.last = ""
 run.rc = 0
+run.errors = 0          # строк ERROR: в выводе последнего запуска
+run.sym_errors = 0      # из них про символические ссылки
 
 
 def archive_unpacked_size(src: Path):
@@ -1207,6 +1222,13 @@ def extract(exe: Path, kind: str, out: Path, log, job=None) -> bool:
     if not ok and run.rc == 7:      # старый 7z не знает ключ -bsp1 (прогресс)
         cmd.remove("-bsp1")
         ok = run(cmd, log, ok_codes=(0, 1), job=job)
+    if not ok and run.rc == 2 and run.errors and run.errors == run.sym_errors:
+        # zip/tar с macOS и Linux содержат символические ссылки (.dylib, .sh). Без прав администратора
+        # Windows их не создаёт, 7-Zip завершается с кодом 2, хотя остальные файлы распакованы.
+        log(f"Не созданы символические ссылки: {run.sym_errors} (файлы для macOS/Linux). "
+            "В Windows они не нужны, остальные файлы распакованы, права администратора не требуются.")
+        EXTRACT_WARNINGS.append("символические ссылки не созданы")
+        ok = True
     if ok and run.rc == 1:
         EXTRACT_WARNINGS.append("7-Zip, код 1")
     if not ok and "password" in run.last.lower():
