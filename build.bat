@@ -49,12 +49,22 @@ if not exist "7z.exe" if not exist "tools\7z.exe" echo ВНИМАНИЕ: 7z.exe 
 echo [2/3] Собираю exe, это займёт минуту-две...
 python -m PyInstaller --noconfirm --clean --onefile --windowed --name Portabilizer --icon "assets\portabilizer.ico" %ADD% portabilizer_v8.py
 if errorlevel 1 goto fail
-echo [3/3] Готовлю ярлык Portabilizer (R)...
+echo [3/3] Готовлю ярлык Portabilizer (R) и запасной запуск через bat...
 copy /Y "assets\portabilizer_R.ico" "dist\portabilizer_R.ico" >nul
 powershell -NoProfile -ExecutionPolicy Bypass -Command "$d=(Resolve-Path 'dist').Path; $s=(New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path $d 'Portabilizer (R).lnk')); $s.TargetPath=(Join-Path $d 'Portabilizer.exe'); $s.Arguments='--r'; $s.IconLocation=(Join-Path $d 'portabilizer_R.ico'); $s.WorkingDirectory=$d; $s.Save()" >nul 2>&1
+(
+  echo @echo off
+  echo start "" "%%~dp0Portabilizer.exe"
+) > "dist\Portabilizer.bat"
+(
+  echo @echo off
+  echo start "" "%%~dp0Portabilizer.exe" --r
+) > "dist\Portabilizer (R).bat"
 echo.
 echo Готово: dist\Portabilizer.exe
-echo Рядом лежат ярлык Portabilizer (R).lnk и portabilizer_R.ico. Иконку не удаляйте: ярлык берёт её оттуда.
+echo Рядом лежат ярлык Portabilizer (R).lnk, portabilizer_R.ico и запасные Portabilizer.bat / Portabilizer (R).bat
+echo (если exe не открывается двойным кликом - запустите bat, это обычно помогает на ограниченных компьютерах).
+echo Иконку portabilizer_R.ico не удаляйте: ярлык берёт её оттуда.
 pause
 exit /b 0
 :fail
