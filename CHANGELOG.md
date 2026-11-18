@@ -3,6 +3,13 @@
 Лаунчер показывает этот текст на вкладке «Что нового», если у релиза на GitHub нет своего описания.
 Заголовок каждой версии: `## v8.9`.
 
+## v10.6
+
+- Диск InstallShield: файл `corecomp.ini` (конфигурация базовых компонентов движка) больше не теряется. Он лежит в
+  служебной группе `<Support>Misc Support Files` вместе с настоящим мусором инсталлятора, и такие группы пропускались
+  целиком. Без этого файла некоторые игры на движке Diesel (например Ghost Recon Advanced Warfighter 2) падали при
+  запуске с `[Application::setup_scenes] Failed loading scene config file!`
+
 ## v10.5
 
 - Ошибка 7-Zip «Cannot create symbolic link» (архивы с macOS/Linux, например Xonotic) больше не останавливает
