@@ -92,6 +92,10 @@ Portabilizer делает из установщика готовую папку:
 с `Portabilizer.exe` в архиве лежат `Portabilizer.bat` и `Portabilizer (R).bat` - запасной способ запустить
 программу тем же способом.
 
+Если не открывается и `Portabilizer.exe` через bat (политика запрещает любые неподписанные exe), а на компьютере
+установлен Python с Tkinter, запустите `Portabilizer-py.bat`: он стартует `portabilizer_v8.py` напрямую, без exe.
+Нужна вся папка с исходниками (на GitHub: Code -> Download ZIP). Параметры передаются дальше (`Portabilizer-py.bat --r`).
+
 ## Для автора: как выпустить версию
 
 1. Поднять `APP_VERSION` в `portabilizer_v8.py`, дописать раздел `## vX.Y` в `CHANGELOG.md`.
