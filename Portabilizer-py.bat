@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 rem Запуск Portabilizer из исходников, без Portabilizer.exe (для компьютеров, где exe блокируется).
 rem Нужен установленный Python с Tkinter. Параметры передаются дальше, например: Portabilizer-py.bat --r
 rem Исходники ищутся рядом с этим файлом или в подпапке source.
