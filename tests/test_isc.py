@@ -146,14 +146,14 @@ with tempfile.TemporaryDirectory() as t:
     # --- выбор файлов
     files, redist, skipped = I.select_files(cab, "en")
     got = sorted(r.replace(os.sep, "/") for _, r in files)
-    check(got == ["context.xml", "corecomp.ini", "graw2.exe", "movies/ESRB.bik", "quick.bundle", "settings/hud.xml"],
+    check(got == ["bundles/quick.bundle", "context.xml", "graw2.exe", "movies/ESRB.bik", "settings/hud.xml"],
           f"en: {got}")
     check([r for _, r in redist] == ["PhysX_Setup.exe"], "PhysX в redist")
     sk = [s[0] for s in skipped]
     check("DataFR" in sk and "Acrobat" in sk and "DirectX" in sk and "<Support>Script" in sk and "CommonDll" in sk, f"пропущены: {sk}")
     sk_counts = dict(skipped)
-    check(sk_counts["<Support>Script"] == 1,
-          f"из <Support>Script должен остаться пропущенным только InstallerUtil.dll: {sk_counts['<Support>Script']}")
+    check(sk_counts["<Support>Script"] == 2,
+          f"<Support>Script пропускается целиком (InstallerUtil.dll и corecomp.ini): {sk_counts['<Support>Script']}")
     fr, _, _ = I.select_files(cab, "fr")
     frs = sorted(r.replace(os.sep, "/") for _, r in fr)
     check("strings/menu.xml" in frs and dict((r.replace(os.sep, '/'), e) for e, r in fr)["context.xml"].size == 3, f"fr: {frs}")
@@ -162,12 +162,12 @@ with tempfile.TemporaryDirectory() as t:
     out = t / "App"
     logs = []
     count, size, errors = I.extract_game(cab, out, "en", logs.append)
-    check(count == 6 and not errors, f"извлечено {count}, ошибки {errors}")
-    check((out / "quick.bundle").read_bytes() == BIG, "большой файл в несколько кусков")
+    check(count == 5 and not errors, f"извлечено {count}, ошибки {errors}")
+    check((out / "bundles" / "quick.bundle").read_bytes() == BIG, "CommonBundles в bundles, большой файл в несколько кусков")
+    check(not (out / "quick.bundle").exists(), "quick.bundle не лежит в корне App")
     check((out / "graw2.exe").read_bytes() == FILES[7]["data"], "внешний файл найден в подпапках/в корне")
     check((out / "settings" / "hud.xml").read_bytes() == b"<hud/>", "CommonSettings в settings")
-    check((out / "corecomp.ini").read_bytes() == b"<core/>",
-          "corecomp.ini извлечён даже из пропускаемой группы <Support>Script")
+    check(not (out / "corecomp.ini").exists(), "файлы служебной группы <Support> не извлекаются")
     check((out / "_redist" / "PhysX_Setup.exe").is_file(), "redist")
     check(not (out / "InstallerUtil.dll").exists() and not (out / "Reader.exe").exists()
           and not (out / "setup.inx").exists(), "лишнего нет")
@@ -183,7 +183,7 @@ with tempfile.TemporaryDirectory() as t:
         check(True, "")
     check(not (t / "bad" / "x.bik").exists(), "недописанный файл удалён")
     count2, _, errs2 = I.extract_game(cab, t / "App2", "en", lambda *_: None)
-    check(len(errs2) == 1 and "ESRB.bik" in errs2[0] and count2 == 5, f"порча одного файла: {errs2}")
+    check(len(errs2) == 1 and "ESRB.bik" in errs2[0] and count2 == 4, f"порча одного файла: {errs2}")
 
     # --- нет тома / нет внешнего файла
     disc2 = t / "disc2"; disc2.mkdir()
