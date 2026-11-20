@@ -35,12 +35,10 @@ jobs:
           New-Item -ItemType Directory $n | Out-Null
           Copy-Item dist\Portabilizer.exe $n\
           Copy-Item assets\portabilizer_R.ico $n\
-          # запасной запуск через bat: помогает, когда exe не открывается двойным кликом
-          # (встречается на компьютерах с ограничениями, например рабочих)
-          $batNormal = '@echo off' + "`r`n" + 'start "" "%~dp0Portabilizer.exe"' + "`r`n"
-          Set-Content -Path "$n\Portabilizer.bat" -Value $batNormal -NoNewline -Encoding ascii
-          $batR = '@echo off' + "`r`n" + 'start "" "%~dp0Portabilizer.exe" --r' + "`r`n"
-          Set-Content -Path "$n\Portabilizer (R).bat" -Value $batR -NoNewline -Encoding ascii
+          # запасные bat (хранятся в assets\bat): запускают exe, а если компьютер его блокирует,
+          # сообщают об этом и открывают программу через Python из исходников
+          Copy-Item "assets\bat\Portabilizer.bat" $n\
+          Copy-Item "assets\bat\Portabilizer (R).bat" $n\
           Compress-Archive -Path $n -DestinationPath "$n.zip"
       - name: Publish release
         shell: pwsh
