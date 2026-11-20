@@ -3,6 +3,12 @@
 Лаунчер показывает этот текст на вкладке «Что нового», если у релиза на GitHub нет своего описания.
 Заголовок каждой версии: `## v8.9`.
 
+## v10.9
+
+- Диск InstallShield: файлы группы `CommonBundles` (например, `quick.bundle` в Ghost Recon Advanced Warfighter 2) теперь кладутся в подпапку `bundles`, как их кладёт сам установщик. Игра ищет `bundles\quick.bundle`, а при файле в корне `App` падала с `[Application::setup_scenes] Failed loading scene config file!`
+- Исправление из v10.6 про `corecomp.ini` было ошибочным: это список системных файлов Windows, к этой ошибке он отношения не имел. Файлы служебных групп `<Support>` снова не извлекаются
+- Если после этого GRAW2 пишет про Ageia PhysX: один раз поставьте `PhysX_7.05.17_SystemSoftware.exe` из `App\_redist` (нужны права администратора)
+
 ## v10.8
 
 - Запасные `Portabilizer.bat` и `Portabilizer (R).bat` стали умнее. Они запускают `Portabilizer.exe`, а если компьютер его блокирует (`Access is denied` на учебных и рабочих компьютерах), пишут об этом и сами открывают Portabilizer через Python. Для этого нужны установленный Python с Tkinter и `portabilizer_v8.py` рядом, в подпапке `source`, в `..\source` или на уровень выше (лаунчер кладёт исходники в `source` сам)
