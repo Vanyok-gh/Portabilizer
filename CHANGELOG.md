@@ -5,9 +5,7 @@
 
 ## v10.9
 
-- Диск InstallShield: файлы группы `CommonBundles` (например, `quick.bundle` в Ghost Recon Advanced Warfighter 2) теперь кладутся в подпапку `bundles`, как их кладёт сам установщик. Игра ищет `bundles\quick.bundle`, а при файле в корне `App` падала с `[Application::setup_scenes] Failed loading scene config file!`
-- Исправление из v10.6 про `corecomp.ini` было ошибочным: это список системных файлов Windows, к этой ошибке он отношения не имел. Файлы служебных групп `<Support>` снова не извлекаются
-- Если после этого GRAW2 пишет про Ageia PhysX: один раз поставьте `PhysX_7.05.17_SystemSoftware.exe` из `App\_redist` (нужны права администратора)
+- Технические изменения
 
 ## v10.8
 
@@ -17,14 +15,11 @@
 
 ## v10.7
 
-- `Portabilizer-py.bat`: запуск Portabilizer из исходников через установленный Python, без `Portabilizer.exe`. Нужен там, где политика компьютера запрещает неподписанные exe
+- Технические изменения
 
 ## v10.6
 
-- Диск InstallShield: файл `corecomp.ini` (конфигурация базовых компонентов движка) больше не теряется. Он лежит в
-  служебной группе `<Support>Misc Support Files` вместе с настоящим мусором инсталлятора, и такие группы пропускались
-  целиком. Без этого файла некоторые игры на движке Diesel (например Ghost Recon Advanced Warfighter 2) падали при
-  запуске с `[Application::setup_scenes] Failed loading scene config file!`
+- Технические изменения
 
 ## v10.5
 
@@ -36,8 +31,8 @@
 
 ## v10.4
 
-- Новый тип установщика: диск InstallShield (`setup.exe` + `data1.hdr` + `data1.cab`, `data2.cab`...), например
-  Ghost Recon Advanced Warfighter 2. Файлы читаются из кабинетов напрямую, без запуска установщика и без прав
+- Новый тип установщика: диск InstallShield (`setup.exe` + `data1.hdr` + `data1.cab`, `data2.cab`...).
+  Файлы читаются из кабинетов напрямую, без запуска установщика и без прав
   администратора; у каждого файла проверяется MD5. С диска переносится только игра (без DirectX, Adobe Reader,
   TeamSpeak и чужих языков), установщики вроде PhysX кладутся в `App\_redist` и ставятся на игровом компьютере один раз
 
