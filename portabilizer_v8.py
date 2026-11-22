@@ -1493,6 +1493,24 @@ def log_exe_candidates(folder: Path, log, limit=30):
     log("Скопируйте нужное имя в поле «Главный exe» и запустите режим «Только Launch.bat».")
 
 
+def _natural_key(p: Path):
+    """Диск 2 раньше Диск 10: числа в имени сравниваются как числа."""
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", p.name)]
+
+
+def find_disc_images(folder: Path, min_size=1024 * 1024):
+    """Образы дисков (.iso) внутри распакованного архива, по порядку номеров в имени."""
+    found = []
+    for p in folder.rglob("*"):
+        try:
+            if p.suffix.lower() == ".iso" and p.is_file() \
+                    and len(p.relative_to(folder).parts) <= 4 and p.stat().st_size >= min_size:
+                found.append(p)
+        except OSError:
+            continue
+    return sorted(found, key=_natural_key)
+
+
 def find_installer(folder: Path):
     """Ищет внутри распакованного архива установщик (exe Inno/NSIS/WiX, msi, msix, диск InstallShield)."""
     isx = find_installshield(folder)
@@ -2882,6 +2900,24 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
                     log(f"Папку {staging.name} можно удалить после проверки: "
                         "она нужна только как источник установщика.")
                 return ok
+            imgs = find_disc_images(app)
+            if imgs:
+                staging = target / "Extracted_archive"
+                log(f"В архиве нет готовой программы и установщика, но есть образы дисков: "
+                    f"{', '.join(i.name for i in imgs)}. Разбираю их как диски игры. "
+                    f"Содержимое архива сохранено в {staging}.")
+                try:
+                    app.rename(staging)
+                except OSError as e:
+                    log(f"Не удалось переместить распакованный архив: {e}")
+                    return False
+                imgs = [staging / i.relative_to(app) for i in imgs]
+                info["kind"] = f"{info['kind']} > {tr('образы дисков')}" if info.get("kind") else tr("образы дисков")
+                ok = _portabilize_disc_set(imgs, out_root, log, mode, manual_exe, target, job, info)
+                if ok:
+                    log(f"Папку {staging.name} можно удалить после проверки: "
+                        "в ней только исходные образы дисков.")
+                return ok
 
     else:
         can_install = kind in ("inno", "nsis") and os.name == "nt"
@@ -3023,6 +3059,12 @@ def _portabilize_multi(sources, out_root, log, mode, manual_exe, job, info):
             info["kind"] = "InstallShield"
             log(f"Диск InstallShield: {isx}. Читаю на месте, рабочая копия диска не нужна.")
             return _portabilize(isx, out_root, log, mode, manual_exe, target, job, info)
+    return _portabilize_disc_set(srcs, out_root, log, mode, manual_exe, target, job, info)
+
+
+def _portabilize_disc_set(srcs, out_root, log, mode, manual_exe, target, job, info):
+    """Диски (папки, архивы, образы) -> рабочая копия, установщик, дальше как с одним msi.
+    target уже создан: так вызывает и _portabilize_multi, и архив, внутри которого лежат образы дисков."""
     staging = ascii_staging(target)
     outside = target not in staging.parents
     keep = False
