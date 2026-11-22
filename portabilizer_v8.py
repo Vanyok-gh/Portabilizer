@@ -32,6 +32,8 @@ Portabilizer v8.9 - превращает установщик, пакет или
     только если всё проверено: Launch.bat создан, распаковщик не сообщал о предупреждениях,
     размер сходится; при ошибке и отмене исходник остаётся. Места на время работы нужно
     столько же, как в обычной версии. Командная строка: --radical --yes;
+  - галочка «Отключить оптимизацию во весь экран» (командная строка: --nofso): Launch.bat задаёт
+    для игры слой совместимости DISABLEDXMAXIMIZEDWINDOWEDMODE через __COMPAT_LAYER, реестр не меняется;
   - игры на Unreal Engine: Launch.bat запускает ...-Shipping.exe напрямую (Launch_stub.bat -
     запуск через корневой exe); если в системе нет xinput1_3.dll (DirectX June 2010), создаётся
     DX_fix.bat: он кладёт нужные библиотеки рядом с игрой без прав администратора;
@@ -847,6 +849,9 @@ TIP_RULES = [
     (re.compile(r"похоже на репак"), "info",
      "Данные лежат во внешних .bin файлах, их ставит сам установщик. Для этого может понадобиться "
      "установка, а для неё - права администратора."),
+    (re.compile(r"использует старую графику"), "info",
+     "Игра использует старую графику (DirectDraw/Direct3D 8). Если на Windows 10/11 экран чернеет или "
+     "мигает, включите галочку «Отключить оптимизацию во весь экран» и запустите режим «Только Launch.bat»."),
     (re.compile(r"Установщик не найден ни на одном диске|В папке нет установщика"), "warn",
      "На дисках нет установщика, который Portabilizer умеет разбирать (msi, Inno Setup, NSIS, WiX, "
      "InstallShield, Relic). Откройте папку Extracted_discs, посмотрите, что лежит на первом диске "
@@ -1843,6 +1848,25 @@ SHOT_OPTIONS = {"png": False}      # создавать флаг конверт�
 INVOKER_LINE = 'rem exe requires admin: run without UAC prompt (RunAsInvoker)\r\nset "__COMPAT_LAYER=RunAsInvoker"\r\n'
 
 
+COMPAT_OPTIONS = {"nofso": False}   # отключить оптимизацию во весь экран (чёрный экран у старых игр на Windows 10/11)
+FSO_LAYER = "DISABLEDXMAXIMIZEDWINDOWEDMODE"
+
+
+def compat_line(invoker: bool, nofso: bool) -> str:
+    """Строка Launch.bat с __COMPAT_LAYER: слои задаются только для процесса игры, реестр не меняется."""
+    layers = (["RunAsInvoker"] if invoker else []) + ([FSO_LAYER] if nofso else [])
+    if not layers:
+        return ""
+    if layers == ["RunAsInvoker"]:
+        return INVOKER_LINE
+    note = []
+    if invoker:
+        note.append("run without UAC prompt (RunAsInvoker)")
+    if nofso:
+        note.append("fullscreen optimizations off")
+    return 'rem ' + ", ".join(note) + '\r\nset "__COMPAT_LAYER=' + " ".join(layers) + '"\r\n'
+
+
 RUN_POLICY = {"value": "auto"}      # auto | noadmin | admin (как запускать exe, которому нужен админ)
 RUN_POLICIES = ("auto", "noadmin", "admin")
 
@@ -2477,7 +2501,7 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
         (target / name).write_text(
             LAUNCHER.format(rel_exe=str(exe_rel).replace("/", "\\"), rel_dir=rel_dir,
                             dir_arg=("App\\" + rel_dir) if rel_dir else "App",
-                            invoker=INVOKER_LINE.replace("\r\n", "\n") if invoker else ""),
+                            invoker=compat_line(invoker, bool(COMPAT_OPTIONS.get("nofso"))).replace("\r\n", "\n")),
             encoding="utf-8")
 
     rel_exe = launch.relative_to(base)
@@ -2489,6 +2513,10 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
         if hints["registry"] and not (target / "Registry").is_dir():
             log("Подсказка: exe читает реестр: " + "; ".join(hints["registry"][:4])
                 + ". Если игра не запускается, нужные значения можно положить в Registry\\*.reg (HKCU).")
+        if hints.get("legacy_gfx") and not COMPAT_OPTIONS.get("nofso"):
+            log("Подсказка: exe использует старую графику (DirectDraw/Direct3D 8). Если на Windows 10/11 экран "
+                "чернеет или мигает, включите «Отключить оптимизацию во весь экран» и запустите режим "
+                "«Только Launch.bat».")
         if hints["disc_check"]:
             log("Подсказка: exe проверяет диск (GetVolumeInformation/GetDriveType). Если игра просит диск, "
                 "соберите образ диска во вкладке ISO (метка тома как у диска) и положите его в папку Discs.")
@@ -3951,6 +3979,8 @@ def gui(_hook=None, start_radical=False):
     combos[-1].pack(side="left", padx=4)
     shots_var = tk.BooleanVar(value=bool(settings.get("tga_png", False)))
     ttk.Checkbutton(mrow, text=tr("Скриншоты игры: TGA в PNG после выхода"), variable=shots_var).pack(side="left", padx=8)
+    fso_var = tk.BooleanVar(value=bool(settings.get("nofso", False)))
+    ttk.Checkbutton(mrow, text=tr("Отключить оптимизацию во весь экран (старые игры)"), variable=fso_var).pack(side="left", padx=8)
     orow = ttk.Frame(main_tab)
     orow.grid(row=4, column=0, columnspan=3, sticky="w", padx=8)
     trim_var = tk.BooleanVar(value=bool(settings.get("slim_trim", False)))
@@ -4183,6 +4213,10 @@ def gui(_hook=None, start_radical=False):
             return
         mode = mode_names.get(mode_var.get(), "auto")
         RUN_POLICY["value"] = run_names.get(run_var.get(), "auto")
+        COMPAT_OPTIONS["nofso"] = bool(fso_var.get())
+        if settings.get("nofso", False) != COMPAT_OPTIONS["nofso"]:
+            settings["nofso"] = COMPAT_OPTIONS["nofso"]
+            save_settings(settings)
         SHOT_OPTIONS["png"] = bool(shots_var.get())
         if settings.get("tga_png", False) != SHOT_OPTIONS["png"]:
             settings["tga_png"] = SHOT_OPTIONS["png"]
@@ -5239,6 +5273,7 @@ def cli(argv):
     if RUN_POLICY["value"] not in RUN_POLICIES:
         print("--run принимает: auto, noadmin, admin")
         return 1
+    COMPAT_OPTIONS["nofso"] = "nofso" in opts
     log = make_logger(print)
     radical = "radical" in opts
     if radical and "yes" not in opts:
