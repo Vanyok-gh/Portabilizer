@@ -847,6 +847,19 @@ TIP_RULES = [
     (re.compile(r"похоже на репак"), "info",
      "Данные лежат во внешних .bin файлах, их ставит сам установщик. Для этого может понадобиться "
      "установка, а для неё - права администратора."),
+    (re.compile(r"Установщик не найден ни на одном диске|В папке нет установщика"), "warn",
+     "На дисках нет установщика, который Portabilizer умеет разбирать (msi, Inno Setup, NSIS, WiX, "
+     "InstallShield, Relic). Откройте папку Extracted_discs, посмотрите, что лежит на первом диске "
+     "(Setup.exe, Install.exe), и подайте этот установщик отдельно. Если там свой установщик игры, "
+     "пришлите лог разработчику."),
+    (re.compile(r"Установка не удалась"), "warn",
+     "Тихая установка не удалась, распакованные файлы возвращены в App. Проверьте, запускается ли "
+     "программа из App. Если установщик требует права администратора, поможет только установка "
+     "с паролем администратора на компьютере, где такие права есть."),
+    (re.compile(r"Внутри App лежат установщики системных компонентов"), "info",
+     "Внутри App лежат установщики системных компонентов (PhysX, Visual C++, DirectX, .NET). Если игра "
+     "не запустится с ошибкой про dll, поставьте их один раз на компьютере, где будете играть "
+     "(нужны права администратора)."),
     (re.compile(r"Прервано пользователем"), "info",
      "Частично созданные файлы остались на диске. Удалить их можно во вкладке «История»."),
 ]
@@ -2425,6 +2438,28 @@ def write_portable_ps(target: Path, log) -> bool:
     return True
 
 
+SYSTEM_INSTALLERS = ("physx", "vcredist", "vc_redist", "dxsetup", "dxwebsetup", "directx",
+                     "dotnet", "ndp", "oalinst", "xnafx", "msxml")
+
+
+def system_installers(app: Path, limit=6):
+    """Установщики системных компонентов (PhysX, vcredist, DirectX, .NET, OpenAL...) внутри App.
+    Портативной папке они не нужны для работы Portabilizer, но игре могут понадобиться в системе."""
+    found = []
+    try:
+        for p in sorted(app.rglob("*"), key=lambda x: (len(x.relative_to(app).parts), str(x).lower())):
+            if p.suffix.lower() not in (".exe", ".msi") or len(p.relative_to(app).parts) > 4:
+                continue
+            low = p.name.lower()
+            if any(w in low for w in SYSTEM_INSTALLERS) and p.is_file():
+                found.append(str(p.relative_to(app)))
+                if len(found) >= limit:
+                    break
+    except OSError:
+        pass
+    return found
+
+
 def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=True,
            system_root=None) -> bool:
     """Пишет Launch.bat. Для игр на Unreal Engine запускает ...-Shipping.exe напрямую
@@ -2530,6 +2565,13 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
     if needs_admin:
         notes.append("exe требует админа: Launch.bat идёт через RunAsInvoker")
     dotnet_check(main, target, log)
+    sysinst = system_installers(app)
+    if sysinst:
+        log("Внутри App лежат установщики системных компонентов: " + ", ".join(sysinst)
+            + ". Если игра не запустится с ошибкой про отсутствующую dll или библиотеку, поставьте их "
+              "один раз на компьютере, где будете играть (нужны права администратора). "
+              "Сами они в портативную папку не ставятся.")
+        notes.append("в App есть установщики системных компонентов")
     try:
         bat, sc_name, icon = write_shortcut_script(target, app, main)
         if info is not None:
@@ -4225,6 +4267,7 @@ def gui(_hook=None, start_radical=False):
                             job.finished = True
                             return
                 job.stage = tr("Подготовка")
+                state["t0"] = time.time()
                 ok = portabilize(src_p, dst_p, log, mode, mexe.get(), job=job, history=history,
                                  chooser=choose_exe_ui, radical=radical, confirmed=radical,
                                  dx_prompt=dx_ui, shortcut_prompt=shortcut_ui)
@@ -4255,6 +4298,12 @@ def gui(_hook=None, start_radical=False):
             else:
                 status_var.set(tr("Готово. Результат - во вкладке «История».") if ok
                                else tr("Не получилось. Подробности - в логе и в рекомендациях."))
+                if not ok and not any(it[0] >= state.get("t0", 0) for it in advisor.items):
+                    # ни одно правило не сработало: панель не должна молчать
+                    advisor.add("warn", tr("Не получилось, и для этой причины готовой подсказки нет. "
+                                           "Причина обычно в последних строках лога выше. Если непонятно, "
+                                           "пришлите portabilizer.log разработчику."),
+                                key="fail-generic", cooldown=0)
         refresh_history()
 
     def do_pause():
