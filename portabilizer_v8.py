@@ -3377,7 +3377,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "10.9"
+APP_VERSION = "11.0"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
