@@ -384,3 +384,113 @@
 384	Klaar: {0} ({1})
 385	Image maken... {0}%
 386	Image is niet gemaakt.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Het spel gebruikt oude graphics (DirectDraw/Direct3D 8). Als het scherm onder Windows 10/11 zwart wordt of flikkert, schakel dan «Optimalisaties voor volledig scherm uitschakelen» in en start de modus «Alleen Launch.bat».
+389	Op de schijven staat geen installatieprogramma dat Portabilizer kan verwerken (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Open de map Extracted_discs, kijk wat er op de eerste schijf staat (Setup.exe, Install.exe) en geef dat installatieprogramma afzonderlijk op. Is het het eigen installatieprogramma van het spel, stuur dan het logboek naar de ontwikkelaar.
+390	De stille installatie is mislukt, de uitgepakte bestanden zijn teruggezet in App. Controleer of het programma vanuit App start. Als het installatieprogramma beheerdersrechten vereist, helpt alleen installeren met het beheerderswachtwoord op een computer waar u die rechten hebt.
+391	In App staan installatieprogramma's voor systeemcomponenten (PhysX, Visual C++, DirectX, .NET). Als het spel niet start met een dll-fout, installeer ze dan één keer op de computer waarop u gaat spelen (beheerdersrechten nodig).
+392	msiexec: code {0}, bestanden in het resultaat: {1}. Gedetailleerd logboek: {2}
+393	InstallShield-installatieprogramma {0}: bestanden in de cabinets: {1}, taal van het spel: {2}. Het installatieprogramma wordt niet gestart, de bestanden worden uit de cabinets gelezen.
+394	InstallShield uitpakken
+395	Uit de cabinets gehaalde bestanden: {0} ({1}), MD5 van elk bestand gecontroleerd.
+396	InstallShield-schijf: alleen het spel overgebracht
+397	de bestanden zijn volgens de cabinetstructuur neergezet (het script van het installatieprogramma is versleuteld): als het spel iets mist, stuur dan het logboek
+398	niet gevonden
+399	dit is de hoofdmap van een schijf
+400	dit is een gebruikersmap
+401	dit is een gedeelde gebruikersmap
+402	meerdere schijven
+403	Schijven: {0}. Werkmap: {1}
+404	Relic-installatieprogramma: {0}
+405	Relic: {0} bestanden, taal van het spel: {1}.
+406	NTFS-compressie
+407	Map wordt gecomprimeerd met NTFS (dit kan enkele minuten duren)...
+408	NTFS-compressie voltooid. De grootte op schijf is afgenomen waar gegevens te comprimeren zijn; het spel merkt hier niets van.
+409	MODUS (R): de bron blijft niet bewaard. Een gewone exe en een Relic-schijf worden zonder kopie naar de map App VERPLAATST (geen ruimte nodig). Archieven en overige installatieprogramma's worden eerst uitgepakt en pas daarna wordt de bron verwijderd: tijdens het werk is ruimte nodig voor het uitgepakte. Werkt ook met mappen en meerdere schijven. Vóór de start wordt om bevestiging gevraagd.
+410	Nieuwe poging zonder InstallScript-acties (op een tijdelijke kopie van de msi)
+411	Schijfspel: schijven {0}; bestanden van de schijf: {1}.
+412	Symbolische koppelingen zijn niet gemaakt: {0} (bestanden voor macOS/Linux). Onder Windows zijn ze niet nodig, de overige bestanden zijn uitgepakt en beheerdersrechten zijn niet nodig.
+413	symbolische koppelingen niet gemaakt
+414	Bestanden konden niet worden uitgepakt: {0}. Controleer of alle volumes (data1.cab, data2.cab...) aanwezig en volledig gedownload zijn.
+415	in de map App\\_redist staan installatieprogramma's die het spel in het systeem nodig heeft (bijvoorbeeld PhysX): installeer ze één keer op de computer waarop u gaat spelen
+416	images uit Discs worden vóór de start gekoppeld en na het afsluiten losgekoppeld
+417	instellingen uit Registry worden vóór de start in het register van de gebruiker geladen
+418	na het afsluiten van het spel worden nieuwe .tga-schermafbeeldingen omgezet naar .png (de originelen blijven bestaan; uitschakelen door Screenshots_PNG.txt te verwijderen)
+419	in App staan installatieprogramma's voor systeemcomponenten
+420	pad niet leesbaar
+421	Voor meerdere schijven is de modus «Alleen Launch.bat» niet nodig: kies de kant-en-klare spelmap.
+422	Voor meerdere schijven is alleen uitpakken beschikbaar.
+423	Schijven uitpakken
+424	Installatieprogramma: {0}
+425	Installatie van Relic-bestanden
+426	Waarschuwing: geen gegevens voor {0} bestanden (bijvoorbeeld {1}). Controleer of de schijfmap volledig is gekopieerd.
+427	Waarschuwing: de controlesom komt niet overeen bij {0} bestanden (bijvoorbeeld {1}). De schijf of de kopie is mogelijk beschadigd.
+428	Register: geschreven (HKCU). Als het spel om de productsleutel vraagt, voer die dan één keer in: hij wordt bewaard.
+429	Niets overbodigs gevonden: er valt niets te verwijderen.
+430	NTFS-compressie: alleen beschikbaar onder Windows, overgeslagen.
+431	NTFS-compressie is mislukt (mogelijk is de schijf geen NTFS). De map is ongewijzigd gebleven.
+432	msi: kopie kon niet worden voorbereid: {0}
+433	Digitalisering: het installatieprogramma kon niet worden geanalyseerd ({0})
+434	INI: de items van het installatieprogramma konden niet worden geanalyseerd ({0})
+435	Register: Registry\\{0}.reg ({1} items, in HKCU).
+436	Het spel heeft mogelijk andere schijven nodig ({0}): maak in het tabblad ISO images met de volumelabels {1} en plaats ze in de map Discs.
+437	Portable.ps1 kon niet worden gemaakt: {0}
+438	Tip: de exe gebruikt oude graphics (DirectDraw/Direct3D 8). Als het scherm onder Windows 10/11 zwart wordt of flikkert, schakel dan «Optimalisaties voor volledig scherm uitschakelen» in en start de modus «Alleen Launch.bat».
+439	Tip: de exe controleert de schijf (GetVolumeInformation/GetDriveType). Als het spel om een schijf vraagt, maak dan in het tabblad ISO een image van de schijf (volumelabel gelijk aan dat van de schijf) en plaats die in de map Discs.
+440	De map dx met de DirectX-bibliotheken is niet gevonden. Plaats hem naast Portabilizer.exe (hij zit in het archief part2) en bouw opnieuw: de bibliotheken komen dan vanzelf naast het spel te staan.
+441	Het spel heeft {0} {1} ({2}) nodig, maar die versie zit niet in Portabilizer. Als het spel niet start met een side-by-side-configuratiefout, installeer dan de Microsoft Visual C++ Redistributable van het juiste jaar in het systeem of stuur de ontwikkelaar een vcredist met die versie.
+442	{0} {1} ontbreekt
+443	. Als het spel niet start met een fout over een ontbrekende dll of bibliotheek, installeer ze dan één keer op de computer waarop u gaat spelen (beheerdersrechten nodig). Zelf worden ze niet in de portable map geïnstalleerd.
+444	{0}: bron en resultaat staan in elkaar
+445	Bron verwijderd: {0} ({1})
+446	De bron {0} is niet volledig verwijderd (er zijn bestanden in gebruik gebleven).
+447	Relic-installatieprogramma
+448	InstallShield-schijf: {0}. Wordt ter plekke gelezen, een werkkopie van de schijf is niet nodig.
+449	Geen enkele schijf kon worden voorbereid.
+450	Register: het .reg-bestand kon niet worden geschreven ({0})
+451	Spelschijven
+452	aanwezig
+453	msi: de aanwezigheid van de bronbestanden kon niet worden gecontroleerd ({0})
+454	Geen bronbestanden naast de msi: {0} (ze worden overgeslagen): {1}
+455	Instellingenbestanden uit het installatieprogramma gemaakt: 
+456	. Als het spel niet start, kunt u de benodigde waarden in Registry\\*.reg (HKCU) plaatsen.
+457	In App staan installatieprogramma's voor systeemcomponenten: 
+458	De bronnen zijn NIET verwijderd: 
+459	Modus R: de bestanden van de Relic-schijf worden uit de schijfmap naar App verplaatst (zonder kopie).
+460	In de map staat geen installatieprogramma (msi, Inno, NSIS, WiX). Kant-en-klare toepassingsmappen worden nog niet ondersteund: geef een installatieprogramma of archief op.
+461	Op geen enkele schijf is een installatieprogramma gevonden. Controleer of alle schijven van het spel zijn geselecteerd.
+462	De werkkopie van de schijven is verwijderd: de images en het spel zijn al gebouwd.
+463	Overbodige bestanden verwijderd: {0} bestand(en), {1} ({2}
+464	Schijflabels niet bepaald: {0}
+465	Schijfimage {0}: wordt gebouwd uit {1} (volumelabel {2}).
+466	Schijfimage: {0}, {1}.
+467	De schijfimage bestaat al: {0}
+468	Tip: de exe leest het register: 
+469	Radicale modus: {0}: {1}. Er wordt niets gedaan.
+470	Extra instellingen niet toegepast: {0}
+471	Meerdere schijven...
+472	Schermafbeeldingen van het spel: TGA naar PNG na afsluiten
+473	Optimalisaties voor volledig scherm uitschakelen (oude spellen)
+474	Overbodige bestanden verwijderen (VC/DirectX-installatieprogramma's, vreemde Readme)
+475	Map comprimeren met NTFS
+476	Radicale versie (riskant).\n\nDe bron blijft niet bewaard: na een geslaagde build worden het bronbestand (alle delen van het archief), de bronmappen en meerdere schijven, evenals tijdelijke kopieën VERWIJDERD. De portable map wordt naast de bron gemaakt. Werkt met een bestand, een map en meerdere schijven tegelijk.\n\nHoe dit ruimte bespaart: een gewone exe en een Relic-schijf (gameInst.exe + Data) worden niet gekopieerd, maar naar App VERPLAATST. Archieven en overige installatieprogramma's worden eerst uitgepakt, dus tijdens het werk is evenveel ruimte nodig als bij de gewone versie.\n\nVeiligheid: verwijderen gebeurt pas na controle (Launch.bat gemaakt, App niet leeg, uitpakprogramma zonder waarschuwingen). De hoofdmap van een schijf en gebruikersmappen (Downloads, Bureaublad, Documenten) worden nooit verwijderd. Maar als het verplaatsen halverwege wordt onderbroken, blijft de bronmap onvolledig en kan het verwijderde niet worden hersteld.\n\nDe modus «Alleen Launch.bat» werkt ook en verwijdert niets. Vóór elke start vraagt het programma om bevestiging.
+477	Schijfimage niet gemaakt: {0}
+478	Het uitgepakte archief is verwijderd: het spel staat al in App.
+479	Het uitgepakte archief is in {0} bewaard voor analyse.
+480	In het archief zit geen kant-en-klaar programma en geen installatieprogramma, maar wel schijfimages: {0}. Ik verwerk ze als spelschijven. De inhoud van het archief is opgeslagen in {1}.
+481	Voor het schijfspel is {0} als hoofdbestand gekozen (de originele Launcher.exe start niet zonder beheerdersrechten).
+482	Voeg alle schijven van het spel toe: mappen, archieven (zip, 7z, rar) of iso-images. De volgorde maakt niet uit: het programma vindt zelf het installatieprogramma en zet de schijven neer.
+483	Map toevoegen
+484	Bestanden toevoegen
+485	Verwijderen
+486	Klaar
+487	Portabilizer (R): bronmappen en -bestanden worden verwijderd
+488	Wilt u dit echt in de radicale modus portable maken?\n\nNa een geslaagde build worden VOOR ALTIJD VERWIJDERD (buiten de prullenbak om):\n{0}\nin totaal {1}.\n\nAls het een Relic-schijf is (gameInst.exe en Data), worden de bestanden niet gekopieerd maar naar App VERPLAATST: als het werk halverwege wordt onderbroken, blijft de schijfmap onvolledig.\n\nVerwijderen gebeurt alleen als de build is geslaagd en alles is gecontroleerd. Het resultaat wordt naast de eerste map gemaakt.\n\nDoorgaan?
+489	schijfimages
+490	De map {0} kan na controle worden verwijderd: er staan alleen de oorspronkelijke schijfimages in.
+491	Archieven en images
+492	{0}: {1}. Modus R is voor zo'n pad uitgeschakeld.
+493	Controle van de cabinets overgeslagen: {0}
+494	map
+495	bestand
+496	Dat is niet gelukt, en voor deze oorzaak is er geen kant-en-klare tip. De oorzaak staat meestal in de laatste regels van het logboek hierboven. Als het onduidelijk is, stuur portabilizer.log naar de ontwikkelaar.

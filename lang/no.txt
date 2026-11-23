@@ -384,3 +384,113 @@
 384	Ferdig: {0} ({1})
 385	Lager avbilde... {0}%
 386	Avbildet ble ikke opprettet.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Spillet bruker eldre grafikk (DirectDraw/Direct3D 8). Hvis skjermen blir svart eller blinker i Windows 10/11, slå på «Deaktiver fullskjermoptimalisering» og kjør modusen «Bare Launch.bat».
+389	Det finnes ikke noe installasjonsprogram på diskene som Portabilizer kan pakke ut (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Åpne mappen Extracted_discs, se hva som ligger på den første disken (Setup.exe, Install.exe), og oppgi dette installasjonsprogrammet separat. Hvis det er spillets eget installasjonsprogram, send loggen til utvikleren.
+390	Stille installasjon mislyktes, de utpakkede filene er lagt tilbake i App. Sjekk om programmet starter fra App. Hvis installasjonsprogrammet krever administratorrettigheter, hjelper bare installasjon med administratorpassord på en datamaskin der du har slike rettigheter.
+391	Inne i App ligger installasjonsprogrammer for systemkomponenter (PhysX, Visual C++, DirectX, .NET). Hvis spillet ikke starter og gir en dll-feil, installer dem én gang på datamaskinen der du skal spille (krever administratorrettigheter).
+392	msiexec: kode {0}, filer i resultatet {1}. Detaljert logg: {2}
+393	InstallShield-installasjonsprogram {0}: filer i kabinettene {1}, spillspråk: {2}. Installasjonsprogrammet startes ikke, filene leses fra kabinettene.
+394	InstallShield-utpakking
+395	Pakket ut fra kabinettene: {0} filer ({1}), MD5 er kontrollert for hver.
+396	InstallShield-disk: bare spillet er flyttet
+397	filene ble lagt ut etter kabinettets struktur (installasjonsskriptet er kryptert): hvis noe mangler i spillet, send loggen
+398	ikke funnet
+399	dette er diskens rot
+400	dette er brukermappen
+401	dette er den felles brukermappen
+402	flere disker
+403	Disker: {0}. Arbeidsmappe: {1}
+404	Relic-installasjonsprogram: {0}
+405	Relic: {0} filer, spillspråk: {1}.
+406	NTFS-komprimering
+407	Komprimerer mappen med NTFS (kan ta noen minutter)...
+408	NTFS-komprimering er ferdig. Plassbruken på disken er redusert der dataene lar seg komprimere; spillet merker ingenting.
+409	MODUS (R): kilden blir ikke igjen. En vanlig exe og en Relic-disk FLYTTES til mappen App uten kopi (plass trengs ikke). Arkiver og andre installasjonsprogrammer pakkes først ut, og først deretter slettes kilden: mens arbeidet pågår trengs det plass til de utpakkede filene. Fungerer både med mapper og med flere disker. Du må bekrefte før start.
+410	Nytt forsøk uten InstallScript-handlinger (på en midlertidig kopi av msi)
+411	Diskspill: disker {0}; filer fra disken: {1}.
+412	Symbolske lenker ble ikke opprettet: {0} (filer for macOS/Linux). De trengs ikke i Windows, de øvrige filene er pakket ut, administratorrettigheter er ikke nødvendig.
+413	symbolske lenker ble ikke opprettet
+414	Kunne ikke pakke ut filer: {0}. Sjekk at alle delene (data1.cab, data2.cab...) finnes og er lastet ned i sin helhet.
+415	i mappen App\\_redist ligger installasjonsprogrammer som spillet trenger i systemet (for eksempel PhysX): installer dem én gang på datamaskinen der du skal spille
+416	avbildene fra Discs monteres før start og demonteres etter avslutning
+417	innstillingene fra Registry lastes inn i brukerregisteret før start
+418	etter at spillet er avsluttet, konverteres nye .tga-skjermbilder til .png (originalene beholdes; slås av ved å slette Screenshots_PNG.txt)
+419	det finnes installasjonsprogrammer for systemkomponenter i App
+420	stien kan ikke leses
+421	For flere disker trengs ikke modusen «Bare Launch.bat»: velg en ferdig spillmappe.
+422	For flere disker er bare utpakking tilgjengelig.
+423	Utpakking av disker
+424	Installasjonsprogram: {0}
+425	Installasjon av Relic-filer
+426	Advarsel: mangler data for {0} filer (for eksempel {1}). Sjekk at diskmappen er kopiert i sin helhet.
+427	Advarsel: sjekksummen stemmer ikke for {0} filer (for eksempel {1}). Disken eller kopien kan være skadet.
+428	Register: skrevet (HKCU). Hvis spillet ber om produktnøkkel, skriv den inn én gang - den blir lagret.
+429	Ingenting overflødig ble funnet: det er ingenting å fjerne.
+430	NTFS-komprimering: bare tilgjengelig i Windows, hoppes over.
+431	NTFS-komprimering mislyktes (disken er kanskje ikke NTFS). Mappen er uendret.
+432	msi: kunne ikke klargjøre kopien: {0}
+433	Digitalisering: kunne ikke analysere installasjonsprogrammet ({0})
+434	INI: kunne ikke analysere installasjonsprogrammets oppføringer ({0})
+435	Register: Registry\\{0}.reg ({1} oppføringer, i HKCU).
+436	Spillet kan trenge andre disker ({0}): lag avbilder i fanen ISO med volumetikettene {1} og legg dem i mappen Discs.
+437	Kunne ikke opprette Portable.ps1: {0}
+438	Tips: exe-filen bruker eldre grafikk (DirectDraw/Direct3D 8). Hvis skjermen blir svart eller blinker i Windows 10/11, slå på «Deaktiver fullskjermoptimalisering» og kjør modusen «Bare Launch.bat».
+439	Tips: exe-filen sjekker disken (GetVolumeInformation/GetDriveType). Hvis spillet ber om en disk, lag et diskavbilde i fanen ISO (volumetikett som på disken) og legg det i mappen Discs.
+440	Mappen dx med DirectX-biblioteker ble ikke funnet. Legg den ved siden av Portabilizer.exe (den finnes i arkivet part2) og bygg på nytt: da legges bibliotekene ved siden av spillet automatisk.
+441	Spillet trenger {0} {1} ({2}), men Portabilizer har ikke denne versjonen. Hvis spillet ikke starter og gir en side-by-side-feil (parallell konfigurasjon), installer Microsoft Visual C++ Redistributable for riktig år i systemet, eller send utvikleren en vcredist med denne versjonen.
+442	mangler {0} {1}
+443	. Hvis spillet ikke starter og gir en feil om manglende dll eller bibliotek, installer dem én gang på datamaskinen der du skal spille (krever administratorrettigheter). De installeres ikke selv i den bærbare mappen.
+444	{0}: kilden og resultatet ligger inni hverandre
+445	Kilden er slettet: {0} ({1})
+446	Kilden {0} ble ikke slettet helt (opptatte filer ble igjen).
+447	Relic-installasjonsprogram
+448	InstallShield-disk: {0}. Leser på stedet, en arbeidskopi av disken trengs ikke.
+449	Ingen av diskene kunne klargjøres.
+450	Register: kunne ikke skrive .reg ({0})
+451	Spilldisker
+452	finnes
+453	msi: kunne ikke kontrollere om kildefilene finnes ({0})
+454	Det finnes ingen kildefiler ved siden av msi: {0} (de hoppes over): {1}
+455	Innstillingsfiler fra installasjonsprogrammet er opprettet: 
+456	. Hvis spillet ikke starter, kan nødvendige verdier legges i Registry\\*.reg (HKCU).
+457	Inne i App ligger installasjonsprogrammer for systemkomponenter: 
+458	Kildene er IKKE slettet: 
+459	Modus R: filene på Relic-disken flyttes fra diskmappen til App (uten kopi).
+460	Mappen inneholder ikke noe installasjonsprogram (msi, Inno, NSIS, WiX). Ferdige programmapper støttes foreløpig ikke: oppgi et installasjonsprogram eller et arkiv.
+461	Installasjonsprogram ble ikke funnet på noen av diskene. Sjekk at alle spillets disker er valgt.
+462	Arbeidskopien av diskene er slettet: avbildene og spillet er allerede bygget.
+463	Overflødig fjernet: {0} fil(er), {1} ({2}
+464	Diskettikettene ble ikke funnet: {0}
+465	Diskavbilde {0}: bygger fra {1} (volumetikett {2}).
+466	Diskavbilde: {0}, {1}.
+467	Diskavbildet finnes allerede: {0}
+468	Tips: exe-filen leser registeret: 
+469	Radikal modus: {0}: {1}. Gjør ingenting.
+470	Tilleggsinnstillinger ble ikke brukt: {0}
+471	Flere disker...
+472	Skjermbilder fra spillet: TGA til PNG etter avslutning
+473	Deaktiver fullskjermoptimalisering (gamle spill)
+474	Fjern overflødig (VC/DirectX-installasjonsprogrammer, fremmede Readme)
+475	Komprimer mappen med NTFS
+476	Radikal versjon (risiko).\n\nKilden blir ikke igjen: etter vellykket bygging SLETTES kildefilen (alle delene av arkivet), kildemapper og flere disker, samt midlertidige kopier. Den bærbare mappen opprettes ved siden av kilden. Fungerer med fil, mappe og flere disker samtidig.\n\nSlik sparer det plass: en vanlig exe og en Relic-disk (gameInst.exe + Data) kopieres ikke, men FLYTTES til App. Arkiver og andre installasjonsprogrammer pakkes først ut, så under arbeidet trengs like mye plass som i den vanlige versjonen.\n\nSikkerhet: sletting skjer bare etter kontroll (Launch.bat er opprettet, App er ikke tom, utpakkeren ga ingen advarsler). Diskens rot og brukermapper (Nedlastinger, Skrivebord, Dokumenter) slettes aldri. Men hvis flyttingen avbrytes midt i, blir kildemappen ufullstendig, og det slettede kan ikke gjenopprettes.\n\nModusen «Bare Launch.bat» fungerer også uten å slette noe. Programmet ber om bekreftelse før hver kjøring.
+477	Diskavbildet ble ikke opprettet: {0}
+478	Det utpakkede arkivet er slettet: spillet er allerede lagt ut i App.
+479	Det utpakkede arkivet er beholdt i {0} for gjennomgang.
+480	Arkivet inneholder ikke noe ferdig program eller installasjonsprogram, men har diskavbilder: {0}. Behandler dem som spilldisker. Innholdet i arkivet er lagret i {1}.
+481	For diskspillet er {0} valgt som hovedfil (den originale Launcher.exe starter ikke uten administratorrettigheter).
+482	Legg til alle spillets disker: mapper, arkiver (zip, 7z, rar) eller iso-avbilder. Rekkefølgen spiller ingen rolle: programmet finner selv installasjonsprogrammet og legger ut diskene.
+483	Legg til mappe
+484	Legg til filer
+485	Fjern
+486	Ferdig
+487	Portabilizer (R): kildemapper og filer blir slettet
+488	Vil du virkelig gjøre dette bærbart i radikal modus?\n\nEtter vellykket bygging blir følgende SLETTET FOR GOD (uten om papirkurven):\n{0}\ntotalt {1}.\n\nHvis dette er en Relic-disk (gameInst.exe og Data), kopieres ikke filene, men FLYTTES til App: hvis arbeidet avbrytes midt i, blir diskmappen ufullstendig.\n\nSlettingen skjer bare hvis byggingen lyktes og alt er kontrollert. Resultatet opprettes ved siden av den første mappen.\n\nFortsette?
+489	diskavbilder
+490	Mappen {0} kan slettes etter kontroll: den inneholder bare kildeavbilder av disker.
+491	Arkiver og avbilder
+492	{0}: {1}. Modus R er slått av for en slik sti.
+493	Kontroll av kabinettene ble hoppet over: {0}
+494	mappe
+495	fil
+496	Det mislyktes, og det finnes ikke noe ferdig tips for denne årsaken. Årsaken står vanligvis i de siste linjene i loggen ovenfor. Hvis det er uklart, send portabilizer.log til utvikleren.

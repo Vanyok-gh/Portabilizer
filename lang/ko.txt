@@ -384,3 +384,113 @@
 384	완료: {0} ({1})
 385	이미지 생성 중... {0}%
 386	이미지가 생성되지 않았습니다.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	이 게임은 오래된 그래픽(DirectDraw/Direct3D 8)을 사용합니다. Windows 10/11에서 화면이 검게 변하거나 깜박이면 '전체 화면 최적화 사용 안 함'을 선택하고 'Launch.bat만' 모드로 실행하세요.
+389	디스크에 Portabilizer가 처리할 수 있는 설치 프로그램(msi, Inno Setup, NSIS, WiX, InstallShield, Relic)이 없습니다. Extracted_discs 폴더를 열어 첫 번째 디스크의 내용(Setup.exe, Install.exe)을 확인하고, 해당 설치 프로그램을 따로 지정하세요. 게임 자체 설치 프로그램이라면 로그를 개발자에게 보내 주세요.
+390	무인 설치에 실패하여 압축을 푼 파일을 App으로 되돌렸습니다. App에서 프로그램이 실행되는지 확인하세요. 설치 프로그램이 관리자 권한을 요구하면, 해당 권한이 있는 컴퓨터에서 관리자 암호로 설치하는 방법밖에 없습니다.
+391	App 안에 시스템 구성 요소 설치 프로그램(PhysX, Visual C++, DirectX, .NET)이 있습니다. dll 오류로 게임이 실행되지 않으면, 게임을 할 컴퓨터에 한 번 설치하세요(관리자 권한 필요).
+392	msiexec: 코드 {0}, 결과 파일 수 {1}. 상세 로그: {2}
+393	InstallShield 설치 프로그램 {0}: 캐비닛의 파일 수 {1}, 게임 언어: {2}. 설치 프로그램은 실행하지 않고 캐비닛에서 파일을 읽습니다.
+394	InstallShield 압축 풀기
+395	캐비닛에서 추출한 파일: {0}개({1}), 모든 파일의 MD5를 확인했습니다.
+396	InstallShield 디스크: 게임만 옮겼습니다
+397	파일을 캐비닛 구조에 따라 배치했습니다(설치 프로그램 스크립트가 암호화되어 있음). 게임에 부족한 것이 있으면 로그를 보내 주세요
+398	찾을 수 없음
+399	드라이브의 루트입니다
+400	사용자 폴더입니다
+401	공용 사용자 폴더입니다
+402	여러 디스크
+403	디스크: {0}개. 작업 폴더: {1}
+404	Relic 설치 프로그램: {0}
+405	Relic: 파일 {0}개, 게임 언어: {1}.
+406	NTFS 압축
+407	NTFS 기능으로 폴더를 압축하는 중입니다(몇 분 걸릴 수 있음)...
+408	NTFS 압축을 완료했습니다. 압축 가능한 데이터만큼 디스크 사용량이 줄었으며, 게임에는 영향이 없습니다.
+409	모드 (R): 원본이 남지 않습니다. 일반 exe와 Relic 디스크는 복사 없이 App 폴더로 이동됩니다(여유 공간 불필요). 압축 파일과 나머지 설치 프로그램은 먼저 압축을 푼 다음 원본을 삭제하므로, 작업 중에는 압축을 푼 데이터를 담을 공간이 필요합니다. 폴더와 여러 디스크에서도 작동합니다. 시작 전에 확인을 요청합니다.
+410	InstallScript 동작 없이 다시 시도(msi 임시 복사본 사용)
+411	디스크 게임: 디스크 {0}, 디스크 파일: {1}.
+412	심볼릭 링크를 만들지 못했습니다: {0}(macOS/Linux용 파일). Windows에서는 필요하지 않으며, 나머지 파일은 압축이 풀렸습니다. 관리자 권한은 필요하지 않습니다.
+413	심볼릭 링크가 만들어지지 않음
+414	추출하지 못한 파일: {0}개. 모든 볼륨(data1.cab, data2.cab...)이 있고 완전히 다운로드되었는지 확인하세요.
+415	App\\_redist 폴더에 게임이 시스템에 필요로 하는 설치 프로그램(예: PhysX)이 있습니다. 게임을 할 컴퓨터에 한 번 설치하세요
+416	Discs의 이미지는 실행 전에 마운트되고 종료 후에 마운트 해제됩니다
+417	Registry의 설정은 실행 전에 사용자 레지스트리로 불러옵니다
+418	게임 종료 후 새 .tga 스크린샷이 .png로 변환됩니다(원본은 유지되며, Screenshots_PNG.txt를 삭제하면 꺼집니다)
+419	App에 시스템 구성 요소 설치 프로그램이 있습니다
+420	경로를 읽을 수 없음
+421	여러 디스크에는 'Launch.bat만' 모드가 필요하지 않습니다. 완성된 게임 폴더를 선택하세요.
+422	여러 디스크에서는 압축 풀기만 사용할 수 있습니다.
+423	디스크 압축 풀기
+424	설치 프로그램: {0}
+425	Relic 파일 설치
+426	경고: 파일 {0}개의 데이터가 없습니다(예: {1}). 디스크 폴더가 통째로 복사되었는지 확인하세요.
+427	경고: 파일 {0}개의 체크섬이 일치하지 않습니다(예: {1}). 디스크 또는 복사본이 손상되었을 수 있습니다.
+428	레지스트리: 기록됨(HKCU). 게임이 제품 키를 요구하면 한 번 입력하세요. 저장됩니다.
+429	불필요한 항목이 없습니다. 정리할 것이 없습니다.
+430	NTFS 압축: Windows에서만 사용할 수 있어 건너뜁니다.
+431	NTFS 압축에 실패했습니다(디스크가 NTFS가 아닐 수 있음). 폴더는 그대로 남아 있습니다.
+432	msi: 복사본을 준비하지 못했습니다: {0}
+433	디지털화: 설치 프로그램을 분석하지 못했습니다({0})
+434	INI: 설치 프로그램의 항목을 분석하지 못했습니다({0})
+435	레지스트리: Registry\\{0}.reg(항목 {1}개, HKCU).
+436	게임에 다른 디스크({0})가 필요할 수 있습니다. ISO 탭에서 볼륨 레이블 {1}(으)로 이미지를 만들어 Discs 폴더에 넣으세요.
+437	Portable.ps1을 만들지 못했습니다: {0}
+438	팁: 이 exe는 오래된 그래픽(DirectDraw/Direct3D 8)을 사용합니다. Windows 10/11에서 화면이 검게 변하거나 깜박이면 '전체 화면 최적화 사용 안 함'을 선택하고 'Launch.bat만' 모드로 실행하세요.
+439	팁: 이 exe는 디스크를 확인합니다(GetVolumeInformation/GetDriveType). 게임이 디스크를 요구하면 ISO 탭에서 디스크 이미지(볼륨 레이블은 디스크와 동일)를 만들어 Discs 폴더에 넣으세요.
+440	DirectX 라이브러리가 들어 있는 dx 폴더를 찾을 수 없습니다. Portabilizer.exe 옆에 두고(part2 압축 파일에 있음) 다시 만드세요. 그러면 라이브러리가 게임 옆에 자동으로 배치됩니다.
+441	게임에 {0} {1}({2})이(가) 필요하지만 Portabilizer에 이 버전이 없습니다. 병렬 구성(side-by-side) 오류로 게임이 실행되지 않으면 해당 연도의 Microsoft Visual C++ Redistributable을 시스템에 설치하거나, 이 버전이 들어 있는 vcredist를 개발자에게 보내 주세요.
+442	{0} {1} 없음
+443	. dll이나 라이브러리가 없다는 오류로 게임이 실행되지 않으면, 게임을 할 컴퓨터에 한 번 설치하세요(관리자 권한 필요). 이것들은 휴대용 폴더에는 설치되지 않습니다.
+444	{0}: 원본과 결과가 서로 안에 들어 있습니다
+445	원본을 삭제했습니다: {0}({1})
+446	원본 {0}을(를) 완전히 삭제하지 못했습니다(사용 중인 파일이 남음).
+447	Relic 설치 프로그램
+448	InstallShield 디스크: {0}. 제자리에서 읽으므로 디스크의 작업 복사본이 필요하지 않습니다.
+449	준비할 수 있는 디스크가 없습니다.
+450	레지스트리: .reg를 기록하지 못했습니다({0})
+451	게임 디스크
+452	있음
+453	msi: 원본 파일이 있는지 확인하지 못했습니다({0})
+454	msi 옆에 원본 파일이 없습니다: {0}(건너뜁니다): {1}
+455	설치 프로그램의 설정 파일을 만들었습니다: 
+456	. 게임이 실행되지 않으면 필요한 값을 Registry\\*.reg(HKCU)에 넣을 수 있습니다.
+457	App에 시스템 구성 요소 설치 프로그램이 있습니다: 
+458	원본이 삭제되지 않았습니다: 
+459	R 모드: Relic 디스크 파일이 디스크 폴더에서 App으로 이동됩니다(복사 없음).
+460	폴더에 설치 프로그램(msi, Inno, NSIS, WiX)이 없습니다. 완성된 앱 폴더는 아직 지원되지 않습니다. 설치 프로그램이나 압축 파일을 지정하세요.
+461	어떤 디스크에서도 설치 프로그램을 찾지 못했습니다. 게임의 모든 디스크를 선택했는지 확인하세요.
+462	디스크의 작업 복사본을 삭제했습니다. 이미지와 게임은 이미 만들어졌습니다.
+463	불필요한 항목 정리: 파일 {0}개, {1}({2}
+464	디스크 레이블을 확인하지 못했습니다: {0}
+465	디스크 이미지 {0}: {1}에서 만드는 중(볼륨 레이블 {2}).
+466	디스크 이미지: {0}, {1}.
+467	디스크 이미지가 이미 있습니다: {0}
+468	팁: 이 exe는 레지스트리를 읽습니다: 
+469	급진 모드: {0}: {1}. 아무 작업도 하지 않습니다.
+470	추가 설정이 적용되지 않았습니다: {0}
+471	여러 디스크...
+472	게임 스크린샷: 종료 후 TGA를 PNG로
+473	전체 화면 최적화 사용 안 함(오래된 게임)
+474	불필요한 항목 제거(VC/DirectX 설치 프로그램, 다른 Readme)
+475	NTFS 기능으로 폴더 압축
+476	급진 버전(위험).\n\n원본이 남지 않습니다. 빌드가 성공하면 원본 파일(압축 파일의 모든 볼륨), 원본 폴더와 여러 디스크, 그리고 임시 복사본이 삭제됩니다. 휴대용 폴더는 원본 옆에 만들어집니다. 파일, 폴더, 여러 디스크를 한꺼번에 처리할 수 있습니다.\n\n공간 절약 방법: 일반 exe와 Relic 디스크(gameInst.exe + Data)는 복사하지 않고 App으로 이동합니다. 압축 파일과 나머지 설치 프로그램은 먼저 압축을 풀기 때문에, 작업 중에는 일반 버전과 같은 공간이 필요합니다.\n\n안전성: 삭제는 확인 후에만 진행됩니다(Launch.bat 생성됨, App이 비어 있지 않음, 압축 해제 경고 없음). 드라이브 루트와 사용자 폴더(다운로드, 바탕 화면, 문서)는 절대 삭제되지 않습니다. 하지만 이동 도중에 중단하면 원본 폴더가 불완전한 상태로 남으며, 삭제된 것은 복구할 수 없습니다.\n\n'Launch.bat만' 모드도 사용할 수 있으며 아무것도 삭제하지 않습니다. 실행할 때마다 프로그램이 확인을 요청합니다.
+477	디스크 이미지를 만들지 못했습니다: {0}
+478	압축을 푼 압축 파일을 삭제했습니다. 게임은 이미 App에 배치되었습니다.
+479	압축을 푼 압축 파일을 분석용으로 {0}에 남겨 두었습니다.
+480	압축 파일에 완성된 프로그램이나 설치 프로그램은 없지만 디스크 이미지가 있습니다: {0}. 이를 게임 디스크로 처리합니다. 압축 파일의 내용은 {1}에 저장했습니다.
+481	디스크 게임의 기본 실행 파일로 {0}을(를) 선택했습니다(원본 Launcher.exe는 관리자 권한 없이는 실행되지 않음).
+482	게임의 모든 디스크를 추가하세요. 폴더, 압축 파일(zip, 7z, rar) 또는 iso 이미지를 사용할 수 있습니다. 순서는 상관없으며, 프로그램이 설치 프로그램을 찾아 디스크를 배치합니다.
+483	폴더 추가
+484	파일 추가
+485	제거
+486	완료
+487	Portabilizer (R): 원본 폴더와 파일이 삭제됩니다
+488	정말 급진 모드로 휴대용으로 만드시겠습니까?\n\n빌드가 성공하면 다음 항목이 영구적으로 삭제됩니다(휴지통을 거치지 않음):\n{0}\n총 {1}.\n\nRelic 디스크(gameInst.exe 및 Data)인 경우 파일은 복사되지 않고 App으로 이동됩니다. 도중에 중단하면 디스크 폴더가 불완전한 상태로 남습니다.\n\n삭제는 빌드가 성공하고 모든 것이 확인된 경우에만 진행됩니다. 결과는 첫 번째 폴더 옆에 만들어집니다.\n\n계속하시겠습니까?
+489	디스크 이미지
+490	확인 후 {0} 폴더를 삭제해도 됩니다. 이 폴더에는 원본 디스크 이미지만 있습니다.
+491	압축 파일 및 이미지
+492	{0}: {1}. 이 경로에서는 R 모드를 사용할 수 없습니다.
+493	캐비닛 확인을 건너뜀: {0}
+494	폴더
+495	파일
+496	실패했으며, 이 원인에 대한 준비된 안내가 없습니다. 원인은 보통 위쪽 로그의 마지막 줄에 있습니다. 잘 모르겠으면 portabilizer.log를 개발자에게 보내 주세요.

@@ -384,3 +384,113 @@
 384	Fatto: {0} ({1})
 385	Creazione dell'immagine... {0}%
 386	Immagine non creata.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Il gioco usa una grafica datata (DirectDraw/Direct3D 8). Se su Windows 10/11 lo schermo diventa nero o lampeggia, attivate «Disattiva le ottimizzazioni a schermo intero» e avviate la modalità «Solo Launch.bat».
+389	Sui dischi non c'è alcun programma di installazione che Portabilizer sappia elaborare (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Aprite la cartella Extracted_discs, guardate cosa c'è sul primo disco (Setup.exe, Install.exe) e fornite quel programma di installazione separatamente. Se è l'installer proprio del gioco, inviate il log allo sviluppatore.
+390	L'installazione silenziosa non è riuscita, i file estratti sono stati rimessi in App. Controllate se il programma si avvia da App. Se il programma di installazione richiede i privilegi di amministratore, aiuterà solo un'installazione con la password di amministratore su un computer in cui avete tali privilegi.
+391	In App ci sono programmi di installazione di componenti di sistema (PhysX, Visual C++, DirectX, .NET). Se il gioco non si avvia con un errore relativo a una dll, installateli una volta sul computer su cui giocherete (servono i privilegi di amministratore).
+392	msiexec: codice {0}, file nel risultato: {1}. Log dettagliato: {2}
+393	Programma di installazione InstallShield {0}: file nei cabinet: {1}, lingua del gioco: {2}. Il programma di installazione non viene avviato, i file vengono letti dai cabinet.
+394	Estrazione InstallShield
+395	File estratti dai cabinet: {0} ({1}), MD5 di ciascuno verificato.
+396	disco InstallShield: trasferito solo il gioco
+397	i file sono stati disposti secondo la struttura dei cabinet (lo script del programma di installazione è cifrato): se al gioco manca qualcosa, inviate il log
+398	non trovato
+399	è la radice di un disco
+400	è una cartella utente
+401	è una cartella utente condivisa
+402	più dischi
+403	Dischi: {0}. Cartella di lavoro: {1}
+404	Programma di installazione Relic: {0}
+405	Relic: {0} file, lingua del gioco: {1}.
+406	Compressione NTFS
+407	Compressione della cartella con NTFS (può richiedere alcuni minuti)...
+408	Compressione NTFS completata. Lo spazio occupato sul disco è diminuito dove i dati si comprimono; il gioco non se ne accorge.
+409	MODALITÀ (R): l'origine non viene conservata. Un normale exe e un disco Relic vengono SPOSTATI nella cartella App senza copia (non serve spazio). Gli archivi e gli altri programmi di installazione vengono prima estratti e solo dopo l'origine viene eliminata: durante il lavoro serve spazio per i file estratti. Funziona anche con cartelle e più dischi. Prima dell'avvio verrà chiesta conferma.
+410	Nuovo tentativo senza azioni InstallScript (su una copia temporanea del msi)
+411	Gioco su disco: dischi {0}; file dal disco: {1}.
+412	Collegamenti simbolici non creati: {0} (file per macOS/Linux). In Windows non servono, gli altri file sono stati estratti e i privilegi di amministratore non sono necessari.
+413	collegamenti simbolici non creati
+414	Impossibile estrarre i file: {0}. Verificate che tutti i volumi (data1.cab, data2.cab...) siano presenti e scaricati per intero.
+415	nella cartella App\\_redist ci sono programmi di installazione necessari al gioco nel sistema (ad esempio PhysX): installateli una volta sul computer su cui giocherete
+416	le immagini da Discs verranno montate prima dell'avvio e smontate dopo l'uscita
+417	le impostazioni da Registry verranno caricate nel registro dell'utente prima dell'avvio
+418	dopo l'uscita dal gioco i nuovi screenshot .tga verranno convertiti in .png (gli originali restano; si disattiva eliminando Screenshots_PNG.txt)
+419	in App ci sono programmi di installazione di componenti di sistema
+420	percorso non leggibile
+421	Per più dischi la modalità «Solo Launch.bat» non serve: scegliete la cartella del gioco già pronta.
+422	Per più dischi è disponibile solo l'estrazione.
+423	Estrazione dei dischi
+424	Programma di installazione: {0}
+425	Installazione dei file Relic
+426	Avviso: nessun dato per {0} file (ad esempio {1}). Verificate che la cartella del disco sia stata copiata per intero.
+427	Avviso: il checksum non corrisponde per {0} file (ad esempio {1}). Il disco o la copia potrebbero essere danneggiati.
+428	Registro: scritto (HKCU). Se il gioco chiede il codice prodotto, inseritelo una volta: verrà salvato.
+429	Non è stato trovato nulla di superfluo: niente da rimuovere.
+430	Compressione NTFS: disponibile solo in Windows, saltata.
+431	Compressione NTFS non riuscita (forse il disco non è NTFS). La cartella è rimasta com'era.
+432	msi: impossibile preparare la copia: {0}
+433	Digitalizzazione: impossibile analizzare il programma di installazione ({0})
+434	INI: impossibile analizzare le voci del programma di installazione ({0})
+435	Registro: Registry\\{0}.reg ({1} voci, in HKCU).
+436	Al gioco potrebbero servire altri dischi ({0}): create le immagini nella scheda ISO con le etichette di volume {1} e mettetele nella cartella Discs.
+437	Impossibile creare Portable.ps1: {0}
+438	Suggerimento: l'exe usa una grafica datata (DirectDraw/Direct3D 8). Se su Windows 10/11 lo schermo diventa nero o lampeggia, attivate «Disattiva le ottimizzazioni a schermo intero» e avviate la modalità «Solo Launch.bat».
+439	Suggerimento: l'exe controlla il disco (GetVolumeInformation/GetDriveType). Se il gioco chiede un disco, create un'immagine del disco nella scheda ISO (etichetta di volume uguale a quella del disco) e mettetela nella cartella Discs.
+440	Cartella dx con le librerie DirectX non trovata. Mettetela accanto a Portabilizer.exe (si trova nell'archivio part2) e rifate la creazione: le librerie verranno poi collocate da sole accanto al gioco.
+441	Al gioco serve {0} {1} ({2}), ma questa versione non è inclusa in Portabilizer. Se il gioco non si avvia con un errore di configurazione side-by-side, installate nel sistema il Microsoft Visual C++ Redistributable dell'anno necessario oppure inviate allo sviluppatore un vcredist con questa versione.
+442	manca {0} {1}
+443	. Se il gioco non si avvia con un errore su una dll o una libreria mancante, installatele una volta sul computer su cui giocherete (servono i privilegi di amministratore). Non vengono installate nella cartella portatile stessa.
+444	{0}: origine e risultato sono uno dentro l'altro
+445	Origine eliminata: {0} ({1})
+446	L'origine {0} non è stata eliminata del tutto (restano file in uso).
+447	programma di installazione Relic
+448	Disco InstallShield: {0}. Lettura sul posto, la copia di lavoro del disco non serve.
+449	Nessun disco è stato preparato.
+450	Registro: impossibile scrivere il .reg ({0})
+451	Dischi del gioco
+452	presente
+453	msi: impossibile verificare la presenza dei file di origine ({0})
+454	Nessun file di origine accanto al msi: {0} (verranno saltati): {1}
+455	File di impostazioni dal programma di installazione creati: 
+456	. Se il gioco non si avvia, i valori necessari si possono mettere in Registry\\*.reg (HKCU).
+457	In App ci sono programmi di installazione di componenti di sistema: 
+458	Le origini NON sono state eliminate: 
+459	Modalità R: i file del disco Relic vengono spostati dalla cartella del disco in App (senza copia).
+460	Nella cartella non c'è un programma di installazione (msi, Inno, NSIS, WiX). Le cartelle di applicazioni già pronte non sono ancora supportate: fornite un programma di installazione o un archivio.
+461	Nessun programma di installazione trovato su nessun disco. Verificate che siano selezionati tutti i dischi del gioco.
+462	La copia di lavoro dei dischi è stata eliminata: le immagini e il gioco sono già pronti.
+463	Superfluo rimosso: {0} file, {1} ({2}
+464	Etichette dei dischi non determinate: {0}
+465	Immagine del disco {0}: creazione da {1} (etichetta di volume {2}).
+466	Immagine del disco: {0}, {1}.
+467	L'immagine del disco esiste già: {0}
+468	Suggerimento: l'exe legge il registro: 
+469	Modalità radicale: {0}: {1}. Non faccio nulla.
+470	Impostazioni aggiuntive non applicate: {0}
+471	Più dischi...
+472	Screenshot del gioco: da TGA a PNG dopo l'uscita
+473	Disattiva le ottimizzazioni a schermo intero (giochi datati)
+474	Rimuovi il superfluo (installer VC/DirectX, Readme di altri)
+475	Comprimi la cartella con NTFS
+476	Versione radicale (rischiosa).\n\nL'origine non viene conservata: dopo una creazione riuscita vengono ELIMINATI il file di origine (tutti i volumi dell'archivio), le cartelle di origine e più dischi, nonché le copie temporanee. La cartella portatile viene creata accanto all'origine. Funziona con un file, una cartella e più dischi insieme.\n\nCome si risparmia spazio: un normale exe e un disco Relic (gameInst.exe + Data) non vengono copiati ma SPOSTATI in App. Gli archivi e gli altri programmi di installazione vengono prima estratti, quindi durante il lavoro serve lo stesso spazio della versione normale.\n\nSicurezza: l'eliminazione avviene solo dopo la verifica (Launch.bat creato, App non vuota, estrattore senza avvisi). La radice di un disco e le cartelle utente (Download, Desktop, Documenti) non vengono mai eliminate. Ma se lo spostamento viene interrotto a metà, la cartella di origine resterà incompleta e ciò che è stato eliminato non si può ripristinare.\n\nAnche la modalità «Solo Launch.bat» funziona e non elimina nulla. Prima di ogni avvio il programma chiede conferma.
+477	Immagine del disco non creata: {0}
+478	L'archivio estratto è stato eliminato: il gioco è già disposto in App.
+479	L'archivio estratto è stato lasciato in {0} per l'analisi.
+480	Nell'archivio non c'è un programma pronto né un programma di installazione, ma ci sono immagini di disco: {0}. Le elaboro come dischi del gioco. Il contenuto dell'archivio è stato salvato in {1}.
+481	Per il gioco su disco è stato scelto {0} come file principale (il Launcher.exe originale non si avvia senza privilegi di amministratore).
+482	Aggiungete tutti i dischi del gioco: cartelle, archivi (zip, 7z, rar) o immagini iso. L'ordine non conta: il programma troverà da solo il programma di installazione e disporrà i dischi.
+483	Aggiungi cartella
+484	Aggiungi file
+485	Rimuovi
+486	Fatto
+487	Portabilizer (R): le cartelle e i file di origine verranno eliminati
+488	Volete davvero renderlo portatile in modalità radicale?\n\nDopo una creazione riuscita verranno ELIMINATI DEFINITIVAMENTE (senza passare dal cestino):\n{0}\nin totale {1}.\n\nSe è un disco Relic (gameInst.exe e Data), i suoi file non vengono copiati ma SPOSTATI in App: se il lavoro viene interrotto a metà, la cartella del disco resterà incompleta.\n\nL'eliminazione avverrà solo se la creazione è riuscita e tutto è stato verificato. Il risultato verrà creato accanto alla prima cartella.\n\nContinuare?
+489	immagini di disco
+490	La cartella {0} può essere eliminata dopo la verifica: contiene solo le immagini di disco di origine.
+491	Archivi e immagini
+492	{0}: {1}. La modalità R è disattivata per un percorso di questo tipo.
+493	Verifica dei cabinet saltata: {0}
+494	cartella
+495	file
+496	Non è riuscito e per questo motivo non c'è un suggerimento pronto. Il motivo di solito si trova nelle ultime righe del log qui sopra. Se non è chiaro, inviate portabilizer.log allo sviluppatore.

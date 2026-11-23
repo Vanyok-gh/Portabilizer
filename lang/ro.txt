@@ -384,3 +384,113 @@
 384	Gata: {0} ({1})
 385	Se construiește imaginea... {0}%
 386	Imaginea nu a fost creată.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Jocul folosește grafică veche (DirectDraw/Direct3D 8). Dacă în Windows 10/11 ecranul se înnegrește sau clipește, bifați «Dezactivează optimizările pentru ecran complet» și porniți modul «Doar Launch.bat».
+389	Pe discuri nu există un program de instalare pe care Portabilizer să îl poată procesa (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Deschideți folderul Extracted_discs, vedeți ce se află pe primul disc (Setup.exe, Install.exe) și furnizați acel program de instalare separat. Dacă acolo este programul de instalare propriu al jocului, trimiteți jurnalul dezvoltatorului.
+390	Instalarea silențioasă a eșuat, fișierele dezarhivate au fost returnate în App. Verificați dacă programul pornește din App. Dacă programul de instalare cere drepturi de administrator, ajută doar instalarea cu parola de administrator pe un calculator unde aveți astfel de drepturi.
+391	În App se află programe de instalare pentru componente de sistem (PhysX, Visual C++, DirectX, .NET). Dacă jocul nu pornește și apare o eroare despre dll, instalați-le o singură dată pe calculatorul pe care veți juca (sunt necesare drepturi de administrator).
+392	msiexec: cod {0}, fișiere în rezultat {1}. Jurnal detaliat: {2}
+393	Program de instalare InstallShield {0}: fișiere în cabinete {1}, limba jocului: {2}. Programul de instalare nu se pornește, fișierele sunt citite din cabinete.
+394	Dezarhivare InstallShield
+395	Fișiere extrase din cabinete: {0} ({1}), MD5 verificat pentru fiecare.
+396	disc InstallShield: a fost transferat doar jocul
+397	fișierele au fost aranjate după structura cabinetului (scriptul programului de instalare este criptat): dacă jocului îi lipsește ceva, trimiteți jurnalul
+398	negăsit
+399	aceasta este rădăcina unui disc
+400	acesta este un folder de utilizator
+401	acesta este un folder comun de utilizator
+402	mai multe discuri
+403	Discuri: {0}. Folder de lucru: {1}
+404	Program de instalare Relic: {0}
+405	Relic: {0} fișiere, limba jocului: {1}.
+406	Comprimare NTFS
+407	Comprim folderul cu NTFS (poate dura câteva minute)...
+408	Comprimarea NTFS s-a încheiat. Dimensiunea pe disc a scăzut acolo unde datele se comprimă; jocul nu observă asta.
+409	MODUL (R): sursa nu rămâne. Un exe obișnuit și un disc Relic sunt MUTATE în folderul App fără copie (nu este nevoie de spațiu). Arhivele și celelalte programe de instalare se dezarhivează mai întâi și abia apoi sursa este ștearsă: pe durata lucrului este nevoie de spațiu pentru fișierele dezarhivate. Funcționează și cu foldere, și cu mai multe discuri. Înainte de pornire se cere confirmare.
+410	Reîncercare fără acțiunile InstallScript (pe o copie temporară a msi)
+411	Joc pe discuri: discuri {0}; fișiere de pe disc: {1}.
+412	Legăturile simbolice nu au fost create: {0} (fișiere pentru macOS/Linux). În Windows nu sunt necesare, restul fișierelor au fost dezarhivate, drepturile de administrator nu sunt necesare.
+413	legăturile simbolice nu au fost create
+414	Nu s-au putut extrage fișiere: {0}. Verificați că toate volumele (data1.cab, data2.cab...) sunt la locul lor și descărcate complet.
+415	în folderul App\\_redist se află programe de instalare de care jocul are nevoie în sistem (de exemplu PhysX): instalați-le o singură dată pe calculatorul pe care veți juca
+416	imaginile din Discs vor fi montate înainte de pornire și demontate după ieșire
+417	setările din Registry vor fi încărcate în registrul utilizatorului înainte de pornire
+418	după ieșirea din joc, capturile de ecran .tga noi vor fi convertite în .png (originalele rămân; se dezactivează ștergând Screenshots_PNG.txt)
+419	în App există programe de instalare pentru componente de sistem
+420	calea nu poate fi citită
+421	Pentru mai multe discuri modul «Doar Launch.bat» nu este necesar: alegeți folderul gata făcut al jocului.
+422	Pentru mai multe discuri este disponibilă doar dezarhivarea.
+423	Dezarhivarea discurilor
+424	Program de instalare: {0}
+425	Instalarea fișierelor Relic
+426	Avertisment: lipsesc date pentru {0} fișiere (de exemplu {1}). Verificați că folderul discului a fost copiat complet.
+427	Avertisment: suma de control nu se potrivește la {0} fișiere (de exemplu {1}). Discul sau copia pot fi deteriorate.
+428	Registru: scris (HKCU). Dacă jocul cere o cheie de produs, introduceți-o o singură dată - va fi salvată.
+429	Nu s-a găsit nimic în plus: nu e nimic de eliminat.
+430	Comprimare NTFS: disponibilă doar în Windows, se omite.
+431	Comprimarea NTFS a eșuat (poate discul nu este NTFS). Folderul a rămas neschimbat.
+432	msi: nu s-a putut pregăti o copie: {0}
+433	Digitizare: nu s-a putut analiza programul de instalare ({0})
+434	INI: nu s-au putut analiza înregistrările programului de instalare ({0})
+435	Registru: Registry\\{0}.reg ({1} înregistrări, în HKCU).
+436	Jocul poate avea nevoie de alte discuri ({0}): creați imaginile în fila ISO cu etichetele de volum {1} și puneți-le în folderul Discs.
+437	Nu s-a putut crea Portable.ps1: {0}
+438	Sugestie: exe folosește grafică veche (DirectDraw/Direct3D 8). Dacă în Windows 10/11 ecranul se înnegrește sau clipește, bifați «Dezactivează optimizările pentru ecran complet» și porniți modul «Doar Launch.bat».
+439	Sugestie: exe verifică discul (GetVolumeInformation/GetDriveType). Dacă jocul cere un disc, creați o imagine a discului în fila ISO (eticheta de volum ca a discului) și puneți-o în folderul Discs.
+440	Folderul dx cu bibliotecile DirectX nu a fost găsit. Puneți-l lângă Portabilizer.exe (se află în arhiva part2) și refaceți construirea: bibliotecile vor ajunge atunci singure lângă joc.
+441	Jocul are nevoie de {0} {1} ({2}), dar această versiune nu există în Portabilizer. Dacă jocul nu pornește și apare o eroare de configurație side-by-side, instalați în sistem Microsoft Visual C++ Redistributable pentru anul necesar sau trimiteți dezvoltatorului un vcredist cu această versiune.
+442	lipsește {0} {1}
+443	. Dacă jocul nu pornește și apare o eroare despre un dll sau o bibliotecă lipsă, instalați-le o singură dată pe calculatorul pe care veți juca (sunt necesare drepturi de administrator). Ele nu se instalează în folderul portativ propriu-zis.
+444	{0}: sursa și rezultatul se află unul în celălalt
+445	Sursă ștearsă: {0} ({1})
+446	Sursa {0} nu a fost ștearsă complet (au rămas fișiere ocupate).
+447	program de instalare Relic
+448	Disc InstallShield: {0}. Citesc pe loc, nu este nevoie de o copie de lucru a discului.
+449	Niciun disc nu a putut fi pregătit.
+450	Registru: nu s-a putut scrie .reg ({0})
+451	Discurile jocului
+452	există
+453	msi: nu s-a putut verifica existența fișierelor sursă ({0})
+454	Lângă msi lipsesc fișierele sursă: {0} (vor fi omise): {1}
+455	Fișierele de setări din programul de instalare au fost create: 
+456	. Dacă jocul nu pornește, valorile necesare pot fi puse în Registry\\*.reg (HKCU).
+457	În App se află programe de instalare pentru componente de sistem: 
+458	Sursele NU au fost șterse: 
+459	Modul R: fișierele discului Relic sunt mutate din folderul discului în App (fără copie).
+460	În folder nu există un program de instalare (msi, Inno, NSIS, WiX). Folderele de aplicații gata făcute nu sunt încă acceptate: furnizați un program de instalare sau o arhivă.
+461	Programul de instalare nu a fost găsit pe niciun disc. Verificați că sunt selectate toate discurile jocului.
+462	Copia de lucru a discurilor a fost ștearsă: imaginile și jocul sunt deja construite.
+463	Fișiere în plus eliminate: {0}, {1} ({2}
+464	Etichetele discurilor nu au fost determinate: {0}
+465	Imaginea discului {0}: construiesc din {1} (eticheta de volum {2}).
+466	Imaginea discului: {0}, {1}.
+467	Imaginea discului există deja: {0}
+468	Sugestie: exe citește registrul: 
+469	Mod radical: {0}: {1}. Nu fac nimic.
+470	Setările suplimentare nu au fost aplicate: {0}
+471	Mai multe discuri...
+472	Capturi de ecran ale jocului: TGA în PNG după ieșire
+473	Dezactivează optimizările pentru ecran complet (jocuri vechi)
+474	Elimină ce este în plus (programe de instalare VC/DirectX, Readme străine)
+475	Comprimă folderul cu NTFS
+476	Versiune radicală (risc).\n\nSursa nu rămâne: după o construire reușită sunt ȘTERSE fișierul sursă (toate volumele arhivei), folderele sursă și mai multe discuri, precum și copiile temporare. Folderul portativ se creează lângă sursă. Funcționează cu un fișier, un folder și mai multe discuri deodată.\n\nCum se economisește spațiu: un exe obișnuit și un disc Relic (gameInst.exe + Data) nu se copiază, ci se MUTĂ în App. Arhivele și celelalte programe de instalare se dezarhivează mai întâi, așa că pe durata lucrului este nevoie de tot atâta spațiu ca în versiunea obișnuită.\n\nSiguranță: ștergerea are loc doar după verificare (Launch.bat creat, App nu este goală, dezarhivatorul fără avertismente). Rădăcina discului și folderele de utilizator (Descărcări, Desktop, Documente) nu se șterg niciodată. Dar dacă mutarea este întreruptă la mijloc, folderul sursă rămâne incomplet, iar ce a fost șters nu poate fi readus.\n\nModul «Doar Launch.bat» funcționează și el, fără a șterge nimic. Înainte de fiecare pornire, programul cere confirmare.
+477	Imaginea discului nu a fost creată: {0}
+478	Arhiva dezarhivată a fost ștearsă: jocul este deja aranjat în App.
+479	Arhiva dezarhivată a rămas în {0} pentru analiză.
+480	În arhivă nu există un program gata făcut sau un program de instalare, dar există imagini de disc: {0}. Le procesez ca discuri ale jocului. Conținutul arhivei a fost salvat în {1}.
+481	Pentru jocul pe discuri a fost ales ca principal {0} (Launcher.exe original nu pornește fără drepturi de administrator).
+482	Adăugați toate discurile jocului: foldere, arhive (zip, 7z, rar) sau imagini iso. Ordinea nu contează: programul găsește singur programul de instalare și aranjează discurile.
+483	Adaugă folder
+484	Adaugă fișiere
+485	Elimină
+486	Gata
+487	Portabilizer (R): folderele și fișierele sursă vor fi șterse
+488	Chiar doriți să faceți aceasta portativă în modul radical?\n\nDupă o construire reușită vor fi ȘTERSE DEFINITIV (ocolind Coșul de reciclare):\n{0}\nîn total {1}.\n\nDacă este un disc Relic (gameInst.exe și Data), fișierele lui nu se copiază, ci se MUTĂ în App: dacă lucrul este întrerupt la mijloc, folderul discului rămâne incomplet.\n\nȘtergerea are loc doar dacă construirea a reușit și totul a fost verificat. Rezultatul va fi creat lângă primul folder.\n\nContinuați?
+489	imagini de disc
+490	Folderul {0} poate fi șters după verificare: conține doar imaginile de disc sursă.
+491	Arhive și imagini
+492	{0}: {1}. Modul R este dezactivat pentru o astfel de cale.
+493	Verificarea cabinetelor a fost omisă: {0}
+494	folder
+495	fișier
+496	Nu a reușit, iar pentru această cauză nu există o sugestie gata făcută. Cauza se află de obicei în ultimele rânduri ale jurnalului de mai sus. Dacă nu e clar, trimiteți portabilizer.log dezvoltatorului.

@@ -384,3 +384,113 @@
 384	Paruošta: {0} ({1})
 385	Kuriu atvaizdą... {0}%
 386	Atvaizdas nesukurtas.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Žaidimas naudoja senąją grafiką (DirectDraw/Direct3D 8). Jei sistemoje Windows 10/11 ekranas pajuoduoja arba mirga, įjunkite «Išjungti viso ekrano optimizavimą» ir paleiskite režimą «Tik Launch.bat».
+389	Diskuose nėra diegimo programos, kurią Portabilizer gali išskleisti (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Atidarykite aplanką Extracted_discs, pažiūrėkite, kas yra pirmame diske (Setup.exe, Install.exe), ir pateikite tą diegimo programą atskirai. Jei ten žaidimo savoji diegimo programa, atsiųskite žurnalą kūrėjui.
+390	Tylusis diegimas nepavyko, išskleisti failai grąžinti į App. Patikrinkite, ar programa paleidžiama iš App. Jei diegimo programai reikalingos administratoriaus teisės, padės tik diegimas su administratoriaus slaptažodžiu kompiuteryje, kuriame tokios teisės yra.
+391	App viduje yra sistemos komponentų diegimo programos (PhysX, Visual C++, DirectX, .NET). Jei žaidimas nepasileidžia dėl dll klaidos, įdiekite jas vieną kartą kompiuteryje, kuriame žaisite (reikia administratoriaus teisių).
+392	msiexec: kodas {0}, failų rezultate {1}. Išsamus žurnalas: {2}
+393	InstallShield diegimo programa {0}: failų kabinetuose {1}, žaidimo kalba: {2}. Diegimo programa nepaleidžiama, failai skaitomi iš kabinetų.
+394	InstallShield išskleidimas
+395	Iš kabinetų išskleista failų: {0} ({1}), kiekvieno MD5 patikrintas.
+396	InstallShield diskas: perkeltas tik žaidimas
+397	failai išdėstyti pagal kabineto struktūrą (diegimo scenarijus užšifruotas): jei žaidimui ko nors trūksta, atsiųskite žurnalą
+398	nerasta
+399	tai disko šaknis
+400	tai naudotojo aplankas
+401	tai bendrasis naudotojo aplankas
+402	keli diskai
+403	Diskų: {0}. Darbo aplankas: {1}
+404	Relic diegimo programa: {0}
+405	Relic: failų {0}, žaidimo kalba: {1}.
+406	NTFS glaudinimas
+407	Glaudinu aplanką NTFS priemonėmis (gali užtrukti kelias minutes)...
+408	NTFS glaudinimas baigtas. Vietos diske sumažėjo ten, kur duomenis galima suglaudinti; žaidimas to nepastebi.
+409	REŽIMAS (R): šaltinio failas nelieka. Įprastas exe ir Relic diskas PERKELIAMI į aplanką App be kopijos (vietos nereikia). Archyvai ir kitos diegimo programos pirmiausia išskleidžiami ir tik tada šaltinis ištrinamas: darbo metu reikia vietos išskleistiems failams. Veikia ir su aplankais, ir su keliais diskais. Prieš pradedant bus paprašyta patvirtinimo.
+410	Pakartojimas be InstallScript veiksmų (laikinoje msi kopijoje)
+411	Disko žaidimas: diskai {0}; failai iš disko: {1}.
+412	Nesukurtos simbolinės nuorodos: {0} (failai macOS/Linux). Sistemoje Windows jų nereikia, kiti failai išskleisti, administratoriaus teisių nereikia.
+413	simbolinės nuorodos nesukurtos
+414	Nepavyko išskleisti failų: {0}. Patikrinkite, ar yra visi tomai (data1.cab, data2.cab...) ir ar jie atsisiųsti iki galo.
+415	aplanke App\\_redist yra diegimo programos, kurių žaidimui reikia sistemoje (pvz., PhysX): įdiekite jas vieną kartą kompiuteryje, kuriame žaisite
+416	atvaizdai iš Discs bus prijungiami prieš paleidžiant ir atjungiami išėjus
+417	nustatymai iš Registry bus įkelti į naudotojo registrą prieš paleidžiant
+418	išėjus iš žaidimo nauji .tga ekrano vaizdai bus paversti į .png (originalai liks; išjungiama ištrynus Screenshots_PNG.txt)
+419	App yra sistemos komponentų diegimo programos
+420	kelias neskaitomas
+421	Keliems diskams režimas «Tik Launch.bat» nereikalingas: pasirinkite paruoštą žaidimo aplanką.
+422	Keliems diskams galimas tik išskleidimas.
+423	Diskų išskleidimas
+424	Diegimo programa: {0}
+425	Relic failų diegimas
+426	Įspėjimas: nėra duomenų {0} failų (pvz., {1}). Patikrinkite, ar disko aplankas nukopijuotas visas.
+427	Įspėjimas: {0} failų kontrolinė suma nesutampa (pvz., {1}). Diskas arba kopija gali būti sugadinti.
+428	Registras: įrašytas (HKCU). Produkto raktą, jei žaidimas paprašys, įveskite vieną kartą - jis bus išsaugotas.
+429	Nieko nereikalingo nerasta: nėra ką šalinti.
+430	NTFS glaudinimas: galimas tik sistemoje Windows, praleidžiu.
+431	NTFS glaudinimas nepavyko (galbūt diskas ne NTFS). Aplankas liko nepakeistas.
+432	msi: nepavyko paruošti kopijos: {0}
+433	Skaitmeninimas: nepavyko išanalizuoti diegimo programos ({0})
+434	INI: nepavyko išanalizuoti diegimo programos įrašų ({0})
+435	Registras: Registry\\{0}.reg ({1} įrašų, į HKCU).
+436	Žaidimui gali prireikti kitų diskų ({0}): sukurkite atvaizdus skirtuke ISO su tomo žymėmis {1} ir padėkite į aplanką Discs.
+437	Nepavyko sukurti Portable.ps1: {0}
+438	Patarimas: exe naudoja senąją grafiką (DirectDraw/Direct3D 8). Jei sistemoje Windows 10/11 ekranas pajuoduoja arba mirga, įjunkite «Išjungti viso ekrano optimizavimą» ir paleiskite režimą «Tik Launch.bat».
+439	Patarimas: exe tikrina diską (GetVolumeInformation/GetDriveType). Jei žaidimas prašo disko, sukurkite disko atvaizdą skirtuke ISO (tomo žymė tokia pati kaip disko) ir padėkite jį į aplanką Discs.
+440	Aplankas dx su DirectX bibliotekomis nerastas. Padėkite jį šalia Portabilizer.exe (jis yra archyve part2) ir surinkite iš naujo: tada bibliotekos atsidurs šalia žaidimo savaime.
+441	Žaidimui reikia {0} {1} ({2}), bet tokios versijos Portabilizer nėra. Jei žaidimas nepasileidžia dėl lygiagrečios konfigūracijos (side-by-side) klaidos, įdiekite sistemoje reikiamų metų Microsoft Visual C++ Redistributable arba atsiųskite kūrėjui vcredist su ta versija.
+442	nėra {0} {1}
+443	. Jei žaidimas nepasileidžia dėl trūkstamos dll ar bibliotekos klaidos, įdiekite jas vieną kartą kompiuteryje, kuriame žaisite (reikia administratoriaus teisių). Į nešiojamąjį aplanką jos pačios neįdiegiamos.
+444	{0}: šaltinis ir rezultatas yra vienas kitame
+445	Ištrintas šaltinis: {0} ({1})
+446	Šaltinis {0} ištrintas ne visas (liko užimtų failų).
+447	Relic diegimo programa
+448	InstallShield diskas: {0}. Skaitau vietoje, disko darbo kopijos nereikia.
+449	Nepavyko paruošti nė vieno disko.
+450	Registras: nepavyko įrašyti .reg ({0})
+451	Žaidimo diskai
+452	yra
+453	msi: nepavyko patikrinti, ar yra šaltinio failų ({0})
+454	Šalia msi nėra šaltinio failų: {0} (jie bus praleisti): {1}
+455	Sukurti diegimo programos nustatymų failai: 
+456	. Jei žaidimas nepasileidžia, reikiamas reikšmes galima padėti į Registry\\*.reg (HKCU).
+457	App viduje yra sistemos komponentų diegimo programos: 
+458	Šaltiniai NEIŠTRINTI: 
+459	Režimas R: Relic disko failai perkeliami iš disko aplanko į App (be kopijos).
+460	Aplanke nėra diegimo programos (msi, Inno, NSIS, WiX). Paruošti programų aplankai kol kas nepalaikomi: pateikite diegimo programą arba archyvą.
+461	Diegimo programa nerasta nė viename diske. Patikrinkite, ar pasirinkti visi žaidimo diskai.
+462	Darbo disko kopija ištrinta: atvaizdai ir žaidimas jau surinkti.
+463	Nereikalingi failai pašalinti: {0} failų, {1} ({2}
+464	Disko žymės nenustatytos: {0}
+465	Disko atvaizdas {0}: renku iš {1} (tomo žymė {2}).
+466	Disko atvaizdas: {0}, {1}.
+467	Disko atvaizdas jau yra: {0}
+468	Patarimas: exe skaito registrą: 
+469	Radikalusis režimas: {0}: {1}. Nieko nedarau.
+470	Papildomi nustatymai netaikyti: {0}
+471	Keli diskai...
+472	Žaidimo ekrano vaizdai: TGA į PNG išėjus
+473	Išjungti viso ekrano optimizavimą (senieji žaidimai)
+474	Pašalinti nereikalingą (VC/DirectX diegimo programas, svetimus Readme)
+475	Suglaudinti aplanką NTFS priemonėmis
+476	Radikalioji versija (rizika).\n\nŠaltinis nelieka: po sėkmingo surinkimo IŠTRINAMI šaltinio failas (visi archyvo tomai), šaltinio aplankai ir keli diskai, taip pat laikinos kopijos. Nešiojamasis aplankas sukuriamas šalia šaltinio. Veikia su failu, aplanku ir keliais diskais vienu metu.\n\nKaip tai taupo vietą: įprastas exe ir Relic diskas (gameInst.exe + Data) nekopijuojami, o PERKELIAMI į App. Archyvai ir kitos diegimo programos pirmiausia išskleidžiami, todėl darbo metu reikia tiek pat vietos kaip įprastoje versijoje.\n\nSaugumas: trynimas vyksta tik po patikrinimo (Launch.bat sukurtas, App ne tuščias, išskleidimo programa be įspėjimų). Disko šaknis ir naudotojo aplankai (Atsisiuntimai, Darbalaukis, Dokumentai) niekada netrinami. Tačiau jei perkėlimas nutrauktas viduryje, šaltinio aplankas liks nepilnas, o ištrinto grąžinti neįmanoma.\n\nRežimas «Tik Launch.bat» taip pat veikia nieko netrindamas. Prieš kiekvieną paleidimą programa prašo patvirtinimo.
+477	Disko atvaizdas nesukurtas: {0}
+478	Išskleistas archyvas ištrintas: žaidimas jau išdėstytas App.
+479	Išskleistas archyvas paliktas {0} peržiūrai.
+480	Archyve nėra paruoštos programos ir diegimo programos, bet yra disko atvaizdų: {0}. Nagrinėju juos kaip žaidimo diskus. Archyvo turinys išsaugotas {1}.
+481	Disko žaidimui pagrindiniu pasirinktas {0} (originalus Launcher.exe be administratoriaus teisių nepasileidžia).
+482	Pridėkite visus žaidimo diskus: aplankus, archyvus (zip, 7z, rar) arba iso atvaizdus. Tvarka nesvarbi: programa pati suras diegimo programą ir išdėstys diskus.
+483	Pridėti aplanką
+484	Pridėti failus
+485	Pašalinti
+486	Atlikta
+487	Portabilizer (R): šaltinio aplankai ir failai bus ištrinti
+488	Ar tikrai norite tai padaryti nešiojamu radikaliuoju režimu?\n\nPo sėkmingo surinkimo bus IŠTRINTA VISAM LAIKUI (apeinant šiukšlinę):\n{0}\niš viso {1}.\n\nJei tai Relic diskas (gameInst.exe ir Data), jo failai nekopijuojami, o PERKELIAMI į App: jei darbas bus nutrauktas viduryje, disko aplankas liks nepilnas.\n\nTrynimas įvyks tik jei surinkimas pavyko ir viskas patikrinta. Rezultatas bus sukurtas šalia pirmojo aplanko.\n\nTęsti?
+489	disko atvaizdai
+490	Aplanką {0} galima ištrinti po patikrinimo: jame tik šaltiniai disko atvaizdai.
+491	Archyvai ir atvaizdai
+492	{0}: {1}. Režimas R tokiam keliui išjungtas.
+493	Kabinetų patikra praleista: {0}
+494	aplankas
+495	failas
+496	Nepavyko, o šiai priežasčiai paruošto patarimo nėra. Priežastis dažniausiai yra paskutinėse žurnalo eilutėse aukščiau. Jei neaišku, atsiųskite portabilizer.log kūrėjui.

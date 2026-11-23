@@ -384,3 +384,113 @@
 384	Gatavs: {0} ({1})
 385	Veidoju attēlu... {0}%
 386	Attēls nav izveidots.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Spēle izmanto vecu grafiku (DirectDraw/Direct3D 8). Ja operētājsistēmā Windows 10/11 ekrāns kļūst melns vai mirgo, ieslēdziet atzīmi „Atspējot pilnekrāna optimizāciju“ un palaidiet režīmu „Tikai Launch.bat“.
+389	Diskos nav instalētāja, ko Portabilizer spēj apstrādāt (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Atveriet mapi Extracted_discs, apskatiet, kas atrodas pirmajā diskā (Setup.exe, Install.exe), un pievienojiet šo instalētāju atsevišķi. Ja tas ir pašas spēles instalētājs, nosūtiet žurnālu izstrādātājam.
+390	Kluso instalēšanu neizdevās veikt, izvilktie faili atgriezti mapē App. Pārbaudiet, vai programma startē no App. Ja instalētājam vajadzīgas administratora tiesības, palīdz tikai instalēšana ar administratora paroli datorā, kur šādas tiesības ir.
+391	Mapē App ir sistēmas komponentu instalētāji (PhysX, Visual C++, DirectX, .NET). Ja spēle nestartē un parādās kļūda par dll, instalējiet tos vienreiz datorā, kurā spēlēsiet (vajadzīgas administratora tiesības).
+392	msiexec: kods {0}, failu rezultātā: {1}. Detalizēts žurnāls: {2}
+393	InstallShield instalētājs {0}: failu kabinetos: {1}, spēles valoda: {2}. Instalētājs netiek palaists, faili tiek lasīti no kabinetiem.
+394	InstallShield izvēršana
+395	No kabinetiem izvilkti faili: {0} ({1}), katra faila MD5 pārbaudīts.
+396	InstallShield disks: pārnesta tikai spēle
+397	faili izvietoti pēc kabineta struktūras (instalētāja skripts ir šifrēts): ja spēlei kaut kā trūkst, nosūtiet žurnālu
+398	nav atrasts
+399	šī ir diska sakne
+400	šī ir lietotāja mape
+401	šī ir kopīgā lietotāju mape
+402	vairāki diski
+403	Disku: {0}. Darba mape: {1}
+404	Relic instalētājs: {0}
+405	Relic: {0} faili, spēles valoda: {1}.
+406	NTFS saspiešana
+407	Saspiežu mapi ar NTFS līdzekļiem (var aizņemt vairākas minūtes)...
+408	NTFS saspiešana pabeigta. Izmērs diskā ir samazinājies tur, kur dati saspiežas; spēle to nemana.
+409	REŽĪMS (R): avota fails neatliek. Parasts exe un Relic disks TIEK PĀRVIETOTI mapē App bez kopijas (vieta nav vajadzīga). Arhīvi un pārējie instalētāji vispirms tiek izvērsti, un tikai pēc tam avota fails tiek dzēsts: darba laikā vajadzīga vieta izvērstajam saturam. Darbojas gan ar mapēm, gan ar vairākiem diskiem. Pirms sākšanas tiks prasīts apstiprinājums.
+410	Atkārtojums bez InstallScript darbībām (uz msi pagaidu kopijas)
+411	Diska spēle: diski {0}; faili no diska: {1}.
+412	Simboliskās saites nav izveidotas: {0} (faili macOS/Linux sistēmām). Operētājsistēmā Windows tās nav vajadzīgas, pārējie faili izvērsti, administratora tiesības nav vajadzīgas.
+413	simboliskās saites nav izveidotas
+414	Neizdevās izvilkt failus: {0}. Pārbaudiet, vai visi sējumi (data1.cab, data2.cab...) ir klāt un pilnībā lejupielādēti.
+415	mapē App\\_redist ir instalētāji, kas spēlei vajadzīgi sistēmā (piemēram, PhysX): instalējiet tos vienreiz datorā, kurā spēlēsiet
+416	attēli no Discs tiks pievienoti pirms palaišanas un atvienoti pēc iziešanas
+417	iestatījumi no Registry tiks ielādēti lietotāja reģistrā pirms palaišanas
+418	pēc iziešanas no spēles jaunie ekrānuzņēmumi .tga tiks pārvērsti par .png (oriģināli paliks; izslēdz, dzēšot Screenshots_PNG.txt)
+419	mapē App ir sistēmas komponentu instalētāji
+420	ceļš nav nolasāms
+421	Vairākiem diskiem režīms „Tikai Launch.bat“ nav vajadzīgs: izvēlieties gatavo spēles mapi.
+422	Vairākiem diskiem pieejama tikai izvēršana.
+423	Disku izvēršana
+424	Instalētājs: {0}
+425	Relic failu instalēšana
+426	Brīdinājums: nav datu {0} failiem (piemēram, {1}). Pārbaudiet, vai diska mape nokopēta pilnībā.
+427	Brīdinājums: kontrolsumma nesakrīt {0} failiem (piemēram, {1}). Disks vai kopija var būt bojāta.
+428	Reģistrs: ierakstīts (HKCU). Ja spēle prasa produkta atslēgu, ievadiet to vienreiz: tā tiks saglabāta.
+429	Nekas lieks nav atrasts: nav ko noņemt.
+430	NTFS saspiešana: pieejama tikai operētājsistēmā Windows, izlaižu.
+431	NTFS saspiešana neizdevās (iespējams, disks nav NTFS). Mape palika kā bija.
+432	msi: neizdevās sagatavot kopiju: {0}
+433	Digitalizēšana: neizdevās analizēt instalētāju ({0})
+434	INI: neizdevās analizēt instalētāja ierakstus ({0})
+435	Reģistrs: Registry\\{0}.reg ({1} ieraksti, HKCU).
+436	Spēlei var būt vajadzīgi citi diski ({0}): izveidojiet attēlus cilnē ISO ar sējuma etiķetēm {1} un ievietojiet tos mapē Discs.
+437	Neizdevās izveidot Portable.ps1: {0}
+438	Padoms: exe izmanto vecu grafiku (DirectDraw/Direct3D 8). Ja operētājsistēmā Windows 10/11 ekrāns kļūst melns vai mirgo, ieslēdziet „Atspējot pilnekrāna optimizāciju“ un palaidiet režīmu „Tikai Launch.bat“.
+439	Padoms: exe pārbauda disku (GetVolumeInformation/GetDriveType). Ja spēle prasa disku, izveidojiet diska attēlu cilnē ISO (sējuma etiķete kā diskam) un ievietojiet to mapē Discs.
+440	Mape dx ar DirectX bibliotēkām nav atrasta. Novietojiet to blakus Portabilizer.exe (tā ir arhīvā part2) un veiciet izveidi vēlreiz: tad bibliotēkas nonāks blakus spēlei pašas.
+441	Spēlei vajadzīgs {0} {1} ({2}), bet šādas versijas Portabilizer nav. Ja spēle nestartē ar paralēlās konfigurācijas (side-by-side) kļūdu, instalējiet sistēmā vajadzīgā gada Microsoft Visual C++ Redistributable vai nosūtiet izstrādātājam vcredist ar šo versiju.
+442	nav {0} {1}
+443	. Ja spēle nestartē ar kļūdu par trūkstošu dll vai bibliotēku, instalējiet tās vienreiz datorā, kurā spēlēsiet (vajadzīgas administratora tiesības). Pašas tās portatīvajā mapē netiek instalētas.
+444	{0}: avots un rezultāts atrodas viens otrā
+445	Avots izdzēsts: {0} ({1})
+446	Avots {0} nav izdzēsts pilnībā (palikuši aizņemti faili).
+447	Relic instalētājs
+448	InstallShield disks: {0}. Lasu uz vietas, diska darba kopija nav vajadzīga.
+449	Nevienu disku neizdevās sagatavot.
+450	Reģistrs: neizdevās ierakstīt .reg ({0})
+451	Spēles diski
+452	ir
+453	msi: neizdevās pārbaudīt avota failu esamību ({0})
+454	Blakus msi nav avota failu: {0} (tie tiks izlaisti): {1}
+455	Iestatījumu faili no instalētāja izveidoti: 
+456	. Ja spēle nestartē, vajadzīgās vērtības var ievietot Registry\\*.reg (HKCU).
+457	Mapē App ir sistēmas komponentu instalētāji: 
+458	Avoti NAV izdzēsti: 
+459	Režīms R: Relic diska faili tiek pārvietoti no diska mapes uz App (bez kopijas).
+460	Mapē nav instalētāja (msi, Inno, NSIS, WiX). Gatavas lietojumprogrammu mapes pagaidām netiek atbalstītas: pievienojiet instalētāju vai arhīvu.
+461	Instalētājs nav atrasts nevienā diskā. Pārbaudiet, vai izvēlēti visi spēles diski.
+462	Disku darba kopija izdzēsta: attēli un spēle jau izveidoti.
+463	Lieks noņemts: {0} fails(i), {1} ({2}
+464	Disku etiķetes nav noteiktas: {0}
+465	Diska attēls {0}: veidoju no {1} (sējuma etiķete {2}).
+466	Diska attēls: {0}, {1}.
+467	Diska attēls jau pastāv: {0}
+468	Padoms: exe nolasa reģistru: 
+469	Radikālais režīms: {0}: {1}. Neko nedaru.
+470	Papildu iestatījumi nav lietoti: {0}
+471	Vairāki diski...
+472	Spēles ekrānuzņēmumi: TGA uz PNG pēc iziešanas
+473	Atspējot pilnekrāna optimizāciju (vecām spēlēm)
+474	Noņemt lieko (VC/DirectX instalētāji, svešie Readme)
+475	Saspiest mapi ar NTFS līdzekļiem
+476	Radikālā versija (risks).\n\nAvota fails neatliek: pēc sekmīgas izveides TIEK DZĒSTI avota fails (visi arhīva sējumi), avota mapes un vairāki diski, kā arī pagaidu kopijas. Portatīvā mape tiek izveidota blakus avotam. Darbojas ar failu, mapi un vairākiem diskiem vienlaikus.\n\nKā tiek ietaupīta vieta: parasts exe un Relic disks (gameInst.exe + Data) netiek kopēti, bet TIEK PĀRVIETOTI uz App. Arhīvi un pārējie instalētāji vispirms tiek izvērsti, tāpēc darba laikā vajadzīgs tikpat daudz vietas kā parastajā versijā.\n\nDrošība: dzēšana notiek tikai pēc pārbaudes (Launch.bat izveidots, App nav tukša, izvērsējs bez brīdinājumiem). Diska sakne un lietotāja mapes (Lejupielādes, Darbvirsma, Dokumenti) netiek dzēstas nekad. Taču, ja pārvietošana tiek pārtraukta pusceļā, avota mape paliks nepilnīga, un izdzēsto atjaunot nevar.\n\nRežīms „Tikai Launch.bat“ arī darbojas, neko neizdzēšot. Pirms katras palaišanas programma prasa apstiprinājumu.
+477	Diska attēls nav izveidots: {0}
+478	Izvērstais arhīvs izdzēsts: spēle jau izvietota mapē App.
+479	Izvērstais arhīvs atstāts mapē {0} izpētei.
+480	Arhīvā nav gatavas programmas un instalētāja, bet ir disku attēli: {0}. Apstrādāju tos kā spēles diskus. Arhīva saturs saglabāts mapē {1}.
+481	Diska spēlei kā galvenais izvēlēts {0} (oriģinālais Launcher.exe nestartē bez administratora tiesībām).
+482	Pievienojiet visus spēles diskus: mapes, arhīvus (zip, 7z, rar) vai iso attēlus. Secībai nav nozīmes: programma pati atradīs instalētāju un izvietos diskus.
+483	Pievienot mapi
+484	Pievienot failus
+485	Noņemt
+486	Gatavs
+487	Portabilizer (R): avota mapes un faili tiks izdzēsti
+488	Vai tiešām vēlaties padarīt šo portatīvu radikālajā režīmā?\n\nPēc sekmīgas izveides TIKS PAVISAM IZDZĒSTS (apejot atkritni):\n{0}\nkopā {1}.\n\nJa tas ir Relic disks (gameInst.exe un Data), tā faili netiek kopēti, bet TIEK PĀRVIETOTI uz App: ja darbs tiek pārtraukts pusceļā, diska mape paliks nepilnīga.\n\nDzēšana notiks tikai tad, ja izveide izdevusies un viss pārbaudīts. Rezultāts tiks izveidots blakus pirmajai mapei.\n\nTurpināt?
+489	disku attēli
+490	Mapi {0} var izdzēst pēc pārbaudes: tajā ir tikai avota disku attēli.
+491	Arhīvi un attēli
+492	{0}: {1}. Režīms R šādam ceļam ir atspējots.
+493	Kabinetu pārbaude izlaista: {0}
+494	mape
+495	fails
+496	Neizdevās, un šim iemeslam gatava padoma nav. Iemesls parasti ir žurnāla pēdējās rindās augstāk. Ja nav skaidrs, nosūtiet portabilizer.log izstrādātājam.

@@ -384,3 +384,113 @@
 384	Gotovo: {0} ({1})
 385	Izrađujem sliku... {0}%
 386	Slika nije izrađena.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Igra koristi staru grafiku (DirectDraw/Direct3D 8). Ako na sustavu Windows 10/11 zaslon pocrni ili treperi, uključite opciju „Onemogući optimizaciju preko cijelog zaslona“ i pokrenite način „Samo Launch.bat“.
+389	Na diskovima nema instalacijskog programa koji Portabilizer zna obraditi (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Otvorite mapu Extracted_discs, pogledajte što se nalazi na prvom disku (Setup.exe, Install.exe) i dodajte taj instalacijski program zasebno. Ako je to vlastiti instalacijski program igre, pošaljite zapisnik razvojnom programeru.
+390	Tiha instalacija nije uspjela, raspakirane datoteke vraćene su u App. Provjerite pokreće li se program iz App. Ako instalacijski program zahtijeva administratorska prava, pomaže samo instalacija s administratorskom lozinkom na računalu na kojem ta prava postoje.
+391	U App se nalaze instalacijski programi sistemskih komponenti (PhysX, Visual C++, DirectX, .NET). Ako se igra ne pokrene s pogreškom o dll-u, instalirajte ih jednom na računalu na kojem ćete igrati (potrebna su administratorska prava).
+392	msiexec: kod {0}, datoteka u rezultatu: {1}. Detaljan zapisnik: {2}
+393	Instalacijski program InstallShield {0}: datoteka u kabinetima: {1}, jezik igre: {2}. Instalacijski program se ne pokreće, datoteke se čitaju iz kabineta.
+394	Raspakiravanje InstallShielda
+395	Iz kabineta izvučeno datoteka: {0} ({1}), MD5 svake je provjeren.
+396	InstallShield disk: prenesena je samo igra
+397	datoteke su raspoređene prema strukturi kabineta (skripta instalacijskog programa je šifrirana): ako igri nešto nedostaje, pošaljite zapisnik
+398	nije pronađeno
+399	ovo je korijen diska
+400	ovo je korisnička mapa
+401	ovo je zajednička korisnička mapa
+402	više diskova
+403	Diskova: {0}. Radna mapa: {1}
+404	Instalacijski program Relic: {0}
+405	Relic: {0} datoteka, jezik igre: {1}.
+406	NTFS sažimanje
+407	Sažimam mapu sredstvima NTFS-a (može potrajati nekoliko minuta)...
+408	NTFS sažimanje je gotovo. Veličina na disku smanjena je ondje gdje se podaci mogu sažeti; igra to ne primjećuje.
+409	NAČIN (R): izvornik ne ostaje. Obični exe i Relic disk PREMJEŠTAJU SE u mapu App bez kopije (prostor nije potreban). Arhive i ostali instalacijski programi prvo se raspakiraju, tek onda se izvornik briše: tijekom rada potreban je prostor za raspakirano. Radi i s mapama i s više diskova. Prije početka slijedi potvrda.
+410	Ponavljanje bez InstallScript radnji (na privremenoj kopiji msi-ja)
+411	Disk igra: diskovi {0}; datoteke s diska: {1}.
+412	Simboličke veze nisu stvorene: {0} (datoteke za macOS/Linux). U sustavu Windows nisu potrebne, ostale datoteke su raspakirane, administratorska prava nisu potrebna.
+413	simboličke veze nisu stvorene
+414	Nije uspjelo izvlačenje datoteka: {0}. Provjerite jesu li svi dijelovi (data1.cab, data2.cab...) na mjestu i u potpunosti preuzeti.
+415	u mapi App\\_redist nalaze se instalacijski programi koji su igri potrebni u sustavu (na primjer PhysX): instalirajte ih jednom na računalu na kojem ćete igrati
+416	slike iz Discs montirat će se prije pokretanja i demontirati nakon izlaska
+417	postavke iz Registry učitat će se u korisnički registar prije pokretanja
+418	nakon izlaska iz igre nove snimke zaslona .tga pretvorit će se u .png (originali ostaju; isključuje se brisanjem Screenshots_PNG.txt)
+419	u App se nalaze instalacijski programi sistemskih komponenti
+420	putanja se ne može pročitati
+421	Za više diskova način „Samo Launch.bat“ nije potreban: odaberite gotovu mapu igre.
+422	Za više diskova dostupno je samo raspakiravanje.
+423	Raspakiravanje diskova
+424	Instalacijski program: {0}
+425	Instalacija datoteka Relic
+426	Upozorenje: nema podataka za {0} datoteka (na primjer {1}). Provjerite je li mapa diska kopirana u cijelosti.
+427	Upozorenje: kontrolni zbroj ne podudara se kod {0} datoteka (na primjer {1}). Disk ili kopija možda su oštećeni.
+428	Registar: zapisan (HKCU). Ako igra zatraži ključ proizvoda, unesite ga jednom: bit će spremljen.
+429	Ništa suvišno nije pronađeno: nema se što ukloniti.
+430	NTFS sažimanje: dostupno samo u sustavu Windows, preskačem.
+431	NTFS sažimanje nije uspjelo (moguće je da disk nije NTFS). Mapa je ostala kakva jest.
+432	msi: priprema kopije nije uspjela: {0}
+433	Digitalizacija: analiza instalacijskog programa nije uspjela ({0})
+434	INI: analiza zapisa instalacijskog programa nije uspjela ({0})
+435	Registar: Registry\\{0}.reg ({1} zapisa, u HKCU).
+436	Igri mogu trebati drugi diskovi ({0}): izradite slike na kartici ISO s oznakama volumena {1} i stavite ih u mapu Discs.
+437	Izrada datoteke Portable.ps1 nije uspjela: {0}
+438	Savjet: exe koristi staru grafiku (DirectDraw/Direct3D 8). Ako na sustavu Windows 10/11 zaslon pocrni ili treperi, uključite „Onemogući optimizaciju preko cijelog zaslona“ i pokrenite način „Samo Launch.bat“.
+439	Savjet: exe provjerava disk (GetVolumeInformation/GetDriveType). Ako igra traži disk, izradite sliku diska na kartici ISO (oznaka volumena kao na disku) i stavite je u mapu Discs.
+440	Mapa dx s DirectX bibliotekama nije pronađena. Stavite je pored Portabilizer.exe (nalazi se u arhivi part2) i ponovno izradite: biblioteke će tada same završiti pored igre.
+441	Igri je potreban {0} {1} ({2}), ali te verzije u Portabilizeru nema. Ako se igra ne pokrene s pogreškom paralelne konfiguracije (side-by-side), instalirajte u sustav Microsoft Visual C++ Redistributable za odgovarajuću godinu ili pošaljite razvojnom programeru vcredist s tom verzijom.
+442	nema {0} {1}
+443	. Ako se igra ne pokrene s pogreškom o nedostajućem dll-u ili biblioteci, instalirajte ih jednom na računalu na kojem ćete igrati (potrebna su administratorska prava). Same se ne instaliraju u prijenosnu mapu.
+444	{0}: izvornik i rezultat nalaze se jedan u drugom
+445	Izvornik izbrisan: {0} ({1})
+446	Izvornik {0} nije u potpunosti izbrisan (ostale su zauzete datoteke).
+447	instalacijski program Relic
+448	InstallShield disk: {0}. Čita se na mjestu, radna kopija diska nije potrebna.
+449	Nijedan disk nije bilo moguće pripremiti.
+450	Registar: zapis .reg datoteke nije uspio ({0})
+451	Diskovi igre
+452	postoji
+453	msi: provjera prisutnosti izvornih datoteka nije uspjela ({0})
+454	Nema izvornih datoteka pored msi-ja: {0} (bit će preskočene): {1}
+455	Datoteke postavki iz instalacijskog programa stvorene su: 
+456	. Ako se igra ne pokreće, potrebne vrijednosti mogu se staviti u Registry\\*.reg (HKCU).
+457	U App se nalaze instalacijski programi sistemskih komponenti: 
+458	Izvornici NISU izbrisani: 
+459	Način R: datoteke Relic diska premještaju se iz mape diska u App (bez kopije).
+460	U mapi nema instalacijskog programa (msi, Inno, NSIS, WiX). Gotove mape aplikacija za sada nisu podržane: dodajte instalacijski program ili arhivu.
+461	Instalacijski program nije pronađen ni na jednom disku. Provjerite jesu li odabrani svi diskovi igre.
+462	Radna kopija diskova izbrisana je: slike i igra su već izrađeni.
+463	Suvišno je uklonjeno: {0} datoteka, {1} ({2}
+464	Oznake diskova nisu određene: {0}
+465	Slika diska {0}: izrada iz {1} (oznaka volumena {2}).
+466	Slika diska: {0}, {1}.
+467	Slika diska već postoji: {0}
+468	Savjet: exe čita registar: 
+469	Radikalni način: {0}: {1}. Ne radim ništa.
+470	Dodatne postavke nisu primijenjene: {0}
+471	Više diskova...
+472	Snimke zaslona igre: TGA u PNG nakon izlaska
+473	Onemogući optimizaciju preko cijelog zaslona (stare igre)
+474	Ukloni suvišno (VC/DirectX instalacijski programi, tuđi Readme)
+475	Sažmi mapu sredstvima NTFS-a
+476	Radikalna verzija (rizik).\n\nIzvornik ne ostaje: nakon uspješne izrade BRIŠU SE izvorna datoteka (svi dijelovi arhive), izvorne mape i više diskova, kao i privremene kopije. Prijenosna mapa stvara se pored izvornika. Radi s datotekom, mapom i s više diskova odjednom.\n\nKako se štedi prostor: obični exe i Relic disk (gameInst.exe + Data) ne kopiraju se, nego PREMJEŠTAJU u App. Arhive i ostali instalacijski programi prvo se raspakiraju, zato je tijekom rada potrebno jednako prostora kao kod obične verzije.\n\nSigurnost: brisanje se obavlja tek nakon provjere (Launch.bat je stvoren, App nije prazan, raspakiravač bez upozorenja). Korijen diska i korisničke mape (Preuzimanja, Radna površina, Dokumenti) nikad se ne brišu. Ali ako se premještanje prekine na pola, izvorna mapa ostat će nepotpuna, a izbrisano se ne može vratiti.\n\nNačin „Samo Launch.bat“ također radi, bez brisanja. Prije svakog pokretanja program traži potvrdu.
+477	Slika diska nije izrađena: {0}
+478	Raspakirana arhiva izbrisana je: igra je već raspoređena u App.
+479	Raspakirana arhiva ostavljena je u {0} radi analize.
+480	U arhivi nema gotovog programa ni instalacijskog programa, ali ima slika diskova: {0}. Obrađujem ih kao diskove igre. Sadržaj arhive spremljen je u {1}.
+481	Za disk igru kao glavni je odabran {0} (originalni Launcher.exe ne pokreće se bez administratorskih prava).
+482	Dodajte sve diskove igre: mape, arhive (zip, 7z, rar) ili iso slike. Redoslijed nije važan: program će sam pronaći instalacijski program i rasporediti diskove.
+483	Dodaj mapu
+484	Dodaj datoteke
+485	Ukloni
+486	Gotovo
+487	Portabilizer (R): izvorne mape i datoteke bit će izbrisane
+488	Želite li doista ovo učiniti prijenosnim u radikalnom načinu?\n\nNakon uspješne izrade bit će TRAJNO IZBRISANO (mimo koša za smeće):\n{0}\nukupno {1}.\n\nAko je to Relic disk (gameInst.exe i Data), njegove se datoteke ne kopiraju, nego PREMJEŠTAJU u App: ako se rad prekine na pola, mapa diska ostat će nepotpuna.\n\nBrisanje će se obaviti samo ako je izrada uspjela i sve je provjereno. Rezultat će biti stvoren pored prve mape.\n\nNastaviti?
+489	slike diskova
+490	Mapa {0} može se izbrisati nakon provjere: u njoj su samo izvorne slike diskova.
+491	Arhive i slike
+492	{0}: {1}. Način R za takvu je putanju isključen.
+493	Provjera kabineta preskočena je: {0}
+494	mapa
+495	datoteka
+496	Nije uspjelo, a za ovaj razlog nema gotovog savjeta. Razlog se obično nalazi u posljednjim redcima zapisnika iznad. Ako nije jasno, pošaljite portabilizer.log razvojnom programeru.
