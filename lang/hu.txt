@@ -384,3 +384,113 @@
 384	Kész: {0} ({1})
 385	Lemezkép összeállítása... {0}%
 386	A lemezkép nem jött létre.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	A játék régi grafikát használ (DirectDraw/Direct3D 8). Ha Windows 10/11 alatt a képernyő elsötétül vagy villog, jelölje be a „Teljes képernyős optimalizálás letiltása” négyzetet, és indítsa a „Csak Launch.bat” módot.
+389	A lemezeken nincs olyan telepítő, amelyet a Portabilizer fel tud dolgozni (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Nyissa meg az Extracted_discs mappát, nézze meg, mi van az első lemezen (Setup.exe, Install.exe), és adja meg ezt a telepítőt külön. Ha ott a játék saját telepítője van, küldje el a naplót a fejlesztőnek.
+390	A csendes telepítés nem sikerült, a kicsomagolt fájlok visszakerültek az App mappába. Ellenőrizze, hogy a program elindul-e az App mappából. Ha a telepítő rendszergazdai jogot kér, csak a rendszergazdai jelszóval végzett telepítés segít egy olyan számítógépen, ahol megvan ez a jog.
+391	Az App mappában rendszerkomponensek telepítői vannak (PhysX, Visual C++, DirectX, .NET). Ha a játék dll-hibával nem indul el, telepítse őket egyszer azon a számítógépen, ahol játszani fog (rendszergazdai jog szükséges).
+392	msiexec: kód: {0}, fájlok az eredményben: {1}. Részletes napló: {2}
+393	InstallShield telepítő {0}: fájlok a kabinetekben: {1}, a játék nyelve: {2}. A telepítő nem indul el, a fájlokat a kabinetekből olvassa be.
+394	InstallShield kicsomagolása
+395	A kabinetekből kinyert fájlok: {0} ({1}), mindegyik MD5-je ellenőrizve.
+396	InstallShield lemez: csak a játék lett átvive
+397	a fájlok a kabinet szerkezete szerint lettek elhelyezve (a telepítő szkriptje titkosított): ha a játékból hiányzik valami, küldje el a naplót
+398	nem található
+399	ez egy meghajtó gyökere
+400	ez egy felhasználói mappa
+401	ez egy közös felhasználói mappa
+402	több lemez
+403	Lemezek: {0}. Munkamappa: {1}
+404	Relic telepítő: {0}
+405	Relic: {0} fájl, a játék nyelve: {1}.
+406	NTFS-tömörítés
+407	A mappa tömörítése NTFS-sel (néhány percig tarthat)...
+408	Az NTFS-tömörítés kész. A lemezen foglalt méret ott csökkent, ahol az adatok tömöríthetők; a játék ezt nem érzékeli.
+409	MÓD (R): a forrás nem marad meg. A hagyományos exe és a Relic lemez másolat nélkül ÁTKERÜL az App mappába (nincs szükség helyre). Az archívumokat és a többi telepítőt először kicsomagolja, és csak utána törli a forrást: a munka idejére hely kell a kicsomagolt fájloknak. Mappákkal és több lemezzel is működik. Indítás előtt megerősítést kér.
+410	Újrapróbálás InstallScript műveletek nélkül (az msi ideiglenes másolatán)
+411	Lemezes játék: lemezek: {0}; a lemez fájljai: {1}.
+412	A szimbolikus hivatkozások nem jöttek létre: {0} (macOS/Linux fájlok). Windowson nincs rájuk szükség, a többi fájl ki lett csomagolva, rendszergazdai jog nem kell.
+413	a szimbolikus hivatkozások nem jöttek létre
+414	Nem sikerült kinyerni fájlokat: {0}. Ellenőrizze, hogy az összes kötet (data1.cab, data2.cab...) megvan és teljesen letöltődött.
+415	az App\\_redist mappában olyan telepítők vannak, amelyekre a játéknak szüksége van a rendszerben (például PhysX): telepítse őket egyszer azon a számítógépen, ahol játszani fog
+416	a Discs mappa lemezképei indítás előtt csatlakoznak, kilépés után leválnak
+417	a Registry mappa beállításai indítás előtt betöltődnek a felhasználó rendszerleíró adatbázisába
+418	a játékból való kilépés után az új .tga képernyőképek .png fájllá alakulnak (az eredetiek megmaradnak; a Screenshots_PNG.txt törlésével kikapcsolható)
+419	az App mappában rendszerkomponensek telepítői vannak
+420	az elérési út nem olvasható
+421	Több lemez esetén a „Csak Launch.bat” mód nem szükséges: válassza ki a kész játékmappát.
+422	Több lemez esetén csak a kicsomagolás érhető el.
+423	Lemezek kicsomagolása
+424	Telepítő: {0}
+425	Relic fájlok telepítése
+426	Figyelmeztetés: nincs adat {0} fájlhoz (például {1}). Ellenőrizze, hogy a lemez mappája teljesen át lett másolva.
+427	Figyelmeztetés: az ellenőrző összeg nem egyezik {0} fájlnál (például {1}). A lemez vagy a másolat sérült lehet.
+428	Rendszerleíró adatbázis: kiírva (HKCU). Ha a játék termékkulcsot kér, egyszer adja meg - elmentődik.
+429	Nem találtam felesleges elemet: nincs mit eltávolítani.
+430	NTFS-tömörítés: csak Windowson érhető el, kihagyom.
+431	Az NTFS-tömörítés nem sikerült (lehet, hogy a lemez nem NTFS). A mappa változatlan maradt.
+432	msi: nem sikerült előkészíteni a másolatot: {0}
+433	Digitalizálás: nem sikerült feldolgozni a telepítőt ({0})
+434	INI: nem sikerült feldolgozni a telepítő bejegyzéseit ({0})
+435	Rendszerleíró adatbázis: Registry\\{0}.reg ({1} bejegyzés, a HKCU-ban).
+436	A játéknak más lemezekre is szüksége lehet ({0}): készítse el a lemezképeket az ISO lapon a(z) {1} kötetcímkékkel, és tegye őket a Discs mappába.
+437	Nem sikerült létrehozni a Portable.ps1 fájlt: {0}
+438	Tipp: az exe régi grafikát használ (DirectDraw/Direct3D 8). Ha Windows 10/11 alatt a képernyő elsötétül vagy villog, jelölje be a „Teljes képernyős optimalizálás letiltása” négyzetet, és indítsa a „Csak Launch.bat” módot.
+439	Tipp: az exe ellenőrzi a lemezt (GetVolumeInformation/GetDriveType). Ha a játék lemezt kér, készítsen lemezképet az ISO lapon (a kötetcímke egyezzen a lemezével), és tegye a Discs mappába.
+440	A DirectX könyvtárakat tartalmazó dx mappa nem található. Tegye a Portabilizer.exe mellé (a part2 archívumban megtalálható), és építse újra: a könyvtárak ekkor maguktól a játék mellé kerülnek.
+441	A játéknak {0} {1} ({2}) kell, de ez a verzió nincs a Portabilizerben. Ha a játék párhuzamos konfigurációs (side-by-side) hibával nem indul el, telepítse a rendszerre a megfelelő évjáratú Microsoft Visual C++ Redistributable csomagot, vagy küldjön a fejlesztőnek egy vcredist fájlt ezzel a verzióval.
+442	nincs {0} {1}
+443	. Ha a játék hiányzó dll vagy könyvtár miatti hibával nem indul el, telepítse őket egyszer azon a számítógépen, ahol játszani fog (rendszergazdai jog szükséges). Magába a portábilis mappába nem települnek.
+444	{0}: a forrás és az eredmény egymásban van
+445	Forrás törölve: {0} ({1})
+446	A(z) {0} forrás nem törlődött teljesen (foglalt fájlok maradtak).
+447	Relic telepítő
+448	InstallShield lemez: {0}. Helyben olvasom, a lemez munkamásolata nem kell.
+449	Egyetlen lemezt sem sikerült előkészíteni.
+450	Rendszerleíró adatbázis: nem sikerült kiírni a .reg fájlt ({0})
+451	A játék lemezei
+452	van
+453	msi: nem sikerült ellenőrizni a forrásfájlok meglétét ({0})
+454	Az msi mellett nincsenek forrásfájlok: {0} (ki lesznek hagyva): {1}
+455	A telepítőből származó beállításfájlok létrejöttek: 
+456	. Ha a játék nem indul el, a szükséges értékeket a Registry\\*.reg fájlba lehet tenni (HKCU).
+457	Az App mappában rendszerkomponensek telepítői vannak: 
+458	A forrásokat NEM törölte: 
+459	R mód: a Relic lemez fájljai a lemez mappájából az App mappába kerülnek át (másolat nélkül).
+460	A mappában nincs telepítő (msi, Inno, NSIS, WiX). A kész alkalmazásmappák még nem támogatottak: adjon meg telepítőt vagy archívumot.
+461	Egyik lemezen sem található telepítő. Ellenőrizze, hogy a játék összes lemeze ki van-e választva.
+462	A lemezek munkamásolata törölve: a lemezképek és a játék már elkészültek.
+463	Felesleges eltávolítva: {0} fájl, {1} ({2}
+464	A lemezek címkéi nem állapíthatók meg: {0}
+465	{0} lemezkép: építés innen: {1} (kötetcímke: {2}).
+466	Lemezkép: {0}, {1}.
+467	A lemezkép már létezik: {0}
+468	Tipp: az exe olvassa a rendszerleíró adatbázist: 
+469	Radikális mód: {0}: {1}. Nem csinálok semmit.
+470	A további beállítások nem lettek alkalmazva: {0}
+471	Több lemez...
+472	A játék képernyőképei: TGA PNG-re kilépés után
+473	Teljes képernyős optimalizálás letiltása (régi játékok)
+474	Felesleges eltávolítása (VC/DirectX telepítők, idegen Readme fájlok)
+475	Mappa tömörítése NTFS-sel
+476	Radikális változat (kockázatos).\n\nA forrás nem marad meg: sikeres építés után TÖRLŐDIK a forrásfájl (az archívum minden kötete), a forrásmappák és a több lemez, valamint az ideiglenes másolatok. A portábilis mappa a forrás mellett jön létre. Egyszerre működik fájllal, mappával és több lemezzel.\n\nÍgy takarít meg helyet: a hagyományos exe és a Relic lemez (gameInst.exe + Data) nem másolódik, hanem ÁTKERÜL az App mappába. Az archívumokat és a többi telepítőt először kicsomagolja, ezért a munka idejére ugyanannyi hely kell, mint a hagyományos változatnál.\n\nBiztonság: a törlés csak ellenőrzés után történik (a Launch.bat létrejött, az App nem üres, a kicsomagoló figyelmeztetés nélkül futott). A meghajtó gyökere és a felhasználói mappák (Letöltések, Asztal, Dokumentumok) soha nem törlődnek. De ha az áthelyezés félbeszakad, a forrásmappa hiányos marad, a törölt dolgot pedig nem lehet visszaállítani.\n\nA „Csak Launch.bat” mód is működik, és nem töröl semmit. Minden indítás előtt a program megerősítést kér.
+477	A lemezkép nem jött létre: {0}
+478	A kicsomagolt archívum törölve: a játék már az App mappában van.
+479	A kicsomagolt archívum elemzésre itt maradt: {0}.
+480	Az archívumban nincs kész program és telepítő, de vannak lemezképek: {0}. A játék lemezeiként dolgozom fel őket. Az archívum tartalma ide lett mentve: {1}.
+481	A lemezes játék főfájlja a(z) {0} lett (az eredeti Launcher.exe rendszergazdai jog nélkül nem indul).
+482	Adja hozzá a játék összes lemezét: mappákat, archívumokat (zip, 7z, rar) vagy iso lemezképeket. A sorrend mindegy: a program maga megtalálja a telepítőt, és elrendezi a lemezeket.
+483	Mappa hozzáadása
+484	Fájlok hozzáadása
+485	Eltávolítás
+486	Kész
+487	Portabilizer (R): a forrásmappák és fájlok törölve lesznek
+488	Biztosan portábilissá akarja tenni ezt radikális módban?\n\nSikeres építés után VÉGLEG TÖRLŐDNEK (a Lomtárat megkerülve):\n{0}\nösszesen {1}.\n\nHa ez egy Relic lemez (gameInst.exe és Data), a fájljai nem másolódnak, hanem ÁTKERÜLNEK az App mappába: ha a munka félbeszakad, a lemez mappája hiányos marad.\n\nA törlés csak akkor történik meg, ha az építés sikerült, és minden ellenőrzött. Az eredmény az első mappa mellett jön létre.\n\nFolytatja?
+489	lemezképek
+490	A(z) {0} mappa ellenőrzés után törölhető: csak a forrás lemezképek vannak benne.
+491	Archívumok és lemezképek
+492	{0}: {1}. Az R mód ilyen elérési útnál ki van kapcsolva.
+493	A kabinetek ellenőrzése kimaradt: {0}
+494	mappa
+495	fájl
+496	Nem sikerült, és ehhez az okhoz nincs kész tipp. Az ok általában a fenti napló utolsó soraiban található. Ha nem világos, küldje el a portabilizer.log fájlt a fejlesztőnek.

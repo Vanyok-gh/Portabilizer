@@ -384,3 +384,113 @@
 384	Valmis: {0} ({1})
 385	Koostan kujutist... {0}%
 386	Kujutist ei loodud.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Mäng kasutab vana graafikat (DirectDraw/Direct3D 8). Kui ekraan Windows 10/11-s mustaks läheb või vilgub, märkige «Keela täisekraani optimeerimine» ja käivitage režiim «Ainult Launch.bat».
+389	Ketastel pole installerit, mida Portabilizer oskab lahti võtta (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Avage kaust Extracted_discs, vaadake, mis on esimesel kettal (Setup.exe, Install.exe), ja andke see installer eraldi ette. Kui seal on mängu oma installer, saatke logi arendajale.
+390	Vaikne installimine ebaõnnestus, lahtipakitud failid viidi tagasi kausta App. Kontrollige, kas programm käivitub kaustast App. Kui installer nõuab administraatoriõigusi, aitab ainult installimine administraatori parooliga arvutis, kus selline õigus on.
+391	Kaustas App on süsteemikomponentide installerid (PhysX, Visual C++, DirectX, .NET). Kui mäng ei käivitu dll-i veaga, installige need ükskord arvutisse, kus hakkate mängima (vaja on administraatoriõigusi).
+392	msiexec: kood {0}, faile tulemuses {1}. Üksikasjalik logi: {2}
+393	InstallShieldi installer {0}: faile CAB-failides {1}, mängu keel: {2}. Installerit ei käivitata, failid loetakse CAB-failidest.
+394	InstallShieldi lahtipakkimine
+395	CAB-failidest eraldati faile: {0} ({1}), iga faili MD5 on kontrollitud.
+396	InstallShieldi ketas: üle viidi ainult mäng
+397	failid paigutati CAB-i struktuuri järgi (installeri skript on krüptitud): kui mängul midagi puudu on, saatke logi
+398	ei leitud
+399	see on ketta juurkaust
+400	see on kasutaja kaust
+401	see on kasutajate ühiskaust
+402	mitu ketast
+403	Kettaid: {0}. Töökaust: {1}
+404	Relicu installer: {0}
+405	Relic: faile {0}, mängu keel: {1}.
+406	NTFS-i tihendamine
+407	Tihendan kausta NTFS-i vahenditega (võib võtta mitu minutit)...
+408	NTFS-i tihendamine valmis. Kettal võetav maht vähenes seal, kus andmed tihenevad; mäng seda ei märka.
+409	REŽIIM (R): lähtefaili ei jää alles. Tavaline exe ja Relicu ketas VIIAKSE kausta App ilma koopiata (lisaruumi pole vaja). Arhiivid ja muud installerid pakitakse esmalt lahti ning alles siis kustutatakse lähtefail: töö ajaks on vaja ruumi lahtipakitu jaoks. Töötab ka kaustade ja mitme kettaga. Enne algust küsitakse kinnitust.
+410	Kordus ilma InstallScripti toiminguteta (msi ajutisel koopial)
+411	Kettamäng: kettad {0}; faile kettalt: {1}.
+412	Sümboolseid linke ei loodud: {0} (macOS-i/Linuxi failid). Windowsis pole neid vaja, ülejäänud failid on lahti pakitud, administraatoriõigusi pole vaja.
+413	sümboolseid linke ei loodud
+414	Faile ei õnnestunud eraldada: {0}. Kontrollige, et kõik köited (data1.cab, data2.cab...) on olemas ja täielikult alla laaditud.
+415	kaustas App\\_redist on installerid, mida mäng süsteemis vajab (näiteks PhysX): installige need ükskord arvutisse, kus hakkate mängima
+416	kaustas Discs olevad kujutised ühendatakse enne käivitamist ja eemaldatakse pärast väljumist
+417	kausta Registry sätted laaditakse enne käivitamist kasutaja registrisse
+418	pärast mängust väljumist muudetakse uued .tga ekraanipildid .png-ks (originaalid jäävad alles; väljalülitamiseks kustutage Screenshots_PNG.txt)
+419	kaustas App on süsteemikomponentide installerid
+420	teed ei saa lugeda
+421	Mitme ketta puhul pole režiimi «Ainult Launch.bat» vaja: valige valmis mängukaust.
+422	Mitme ketta puhul on saadaval ainult lahtipakkimine.
+423	Kettaide lahtipakkimine
+424	Installer: {0}
+425	Relicu failide installimine
+426	Hoiatus: {0} faili andmed puuduvad (näiteks {1}). Kontrollige, et ketta kaust on täielikult kopeeritud.
+427	Hoiatus: {0} faili kontrollsumma ei klappinud (näiteks {1}). Ketas või koopia võib olla vigane.
+428	Register: kirjutatud (HKCU). Kui mäng küsib tootevõtit, sisestage see ühe korra - see salvestatakse.
+429	Üleliigset ei leitud: pole midagi eemaldada.
+430	NTFS-i tihendamine: saadaval ainult Windowsis, jätan vahele.
+431	NTFS-i tihendamine ebaõnnestus (ketas ei pruugi olla NTFS). Kaust jäi nii, nagu oli.
+432	msi: koopiat ei õnnestunud ette valmistada: {0}
+433	Digiteerimine: installerit ei õnnestunud analüüsida ({0})
+434	INI: installeri kirjeid ei õnnestunud analüüsida ({0})
+435	Register: Registry\\{0}.reg ({1} kirjet, HKCU-sse).
+436	Mäng võib vajada teisi kettaid ({0}): koostage kujutised vahekaardil ISO kettamärgenditega {1} ja pange need kausta Discs.
+437	Portable.ps1 loomine ebaõnnestus: {0}
+438	Vihje: exe kasutab vana graafikat (DirectDraw/Direct3D 8). Kui ekraan Windows 10/11-s mustaks läheb või vilgub, märkige «Keela täisekraani optimeerimine» ja käivitage režiim «Ainult Launch.bat».
+439	Vihje: exe kontrollib ketast (GetVolumeInformation/GetDriveType). Kui mäng küsib ketast, koostage ketta kujutis vahekaardil ISO (kettamärge nagu kettal) ja pange see kausta Discs.
+440	DirectX-i teekidega kausta dx ei leitud. Pange see Portabilizer.exe kõrvale (see on arhiivis part2) ja koostage uuesti: siis satuvad teegid ise mängu kõrvale.
+441	Mäng vajab {0} {1} ({2}), kuid Portabilizeris seda versiooni pole. Kui mäng ei käivitu paralleelkonfiguratsiooni (side-by-side) veaga, installige süsteemi vajaliku aasta Microsoft Visual C++ Redistributable või saatke arendajale selle versiooniga vcredist.
+442	puudub {0} {1}
+443	. Kui mäng ei käivitu puuduva dll-i või teegi veaga, installige need ükskord arvutisse, kus hakkate mängima (vaja on administraatoriõigusi). Portatiivsesse kausta endasse neid ei installita.
+444	{0}: lähtekoht ja tulemus asuvad teineteise sees
+445	Lähtefail kustutatud: {0} ({1})
+446	Lähtefail {0} kustutati osaliselt (alles jäid kasutusel olevad failid).
+447	Relicu installer
+448	InstallShieldi ketas: {0}. Loen kohapeal, ketta töökoopiat pole vaja.
+449	Ühtegi ketast ei õnnestunud ette valmistada.
+450	Register: .reg-faili kirjutamine ebaõnnestus ({0})
+451	Mängu kettad
+452	on
+453	msi: lähtefailide olemasolu kontrollimine ebaõnnestus ({0})
+454	msi kõrval pole lähtefaile: {0} (need jäetakse vahele): {1}
+455	Installeri sätete failid on loodud: 
+456	. Kui mäng ei käivitu, võib vajalikud väärtused panna faili Registry\\*.reg (HKCU).
+457	Kaustas App on süsteemikomponentide installerid: 
+458	Lähtefaile EI kustutatud: 
+459	Režiim R: Relicu ketta failid viiakse ketta kaustast kausta App (ilma koopiata).
+460	Kaustas pole installerit (msi, Inno, NSIS, WiX). Valmis rakenduste kaustu veel ei toetata: andke ette installer või arhiiv.
+461	Installerit ei leitud ühelt kettalt. Kontrollige, et kõik mängu kettad on valitud.
+462	Ketaste töökoopia kustutati: kujutised ja mäng on juba koostatud.
+463	Üleliigne eemaldatud: {0} faili, {1} ({2}
+464	Ketta märgendeid ei õnnestunud tuvastada: {0}
+465	Ketta kujutis {0}: koostan kaustast {1} (kettamärge {2}).
+466	Ketta kujutis: {0}, {1}.
+467	Ketta kujutis on juba olemas: {0}
+468	Vihje: exe loeb registrit: 
+469	Radikaalne režiim: {0}: {1}. Ei tee midagi.
+470	Lisasätteid ei rakendatud: {0}
+471	Mitu ketast...
+472	Mängu ekraanipildid: TGA PNG-ks pärast väljumist
+473	Keela täisekraani optimeerimine (vanad mängud)
+474	Eemalda üleliigne (VC/DirectX-i installerid, võõrad Readme-failid)
+475	Tihenda kaust NTFS-i vahenditega
+476	Radikaalne versioon (riskantne).\n\nLähtefaili ei jää alles: pärast edukat koostamist KUSTUTATAKSE lähtefail (kõik arhiivi köited), lähtekaustad ja mitu ketast ning ajutised koopiad. Portatiivne kaust luuakse lähtefaili kõrvale. Töötab korraga faili, kausta ja mitme kettaga.\n\nKuidas see ruumi säästab: tavalist exe-faili ja Relicu ketast (gameInst.exe + Data) ei kopeerita, vaid VIIAKSE kausta App. Arhiivid ja muud installerid pakitakse esmalt lahti, seega on töö ajaks vaja sama palju ruumi kui tavaversioonis.\n\nTurvalisus: kustutamine toimub alles pärast kontrolli (Launch.bat on loodud, App pole tühi, lahtipakkija ei andnud hoiatusi). Ketta juurkausta ja kasutaja kaustu (Allalaadimised, Töölaud, Dokumendid) ei kustutata kunagi. Kui aga ülekanne pooleli katkeb, jääb lähtekaust poolikuks ja kustutatut ei saa taastada.\n\nRežiim «Ainult Launch.bat» töötab samuti ega kustuta midagi. Enne iga käivitamist küsib programm kinnitust.
+477	Ketta kujutist ei loodud: {0}
+478	Lahtipakitud arhiiv kustutati: mäng on juba kausta App paigutatud.
+479	Lahtipakitud arhiiv jäeti kausta {0} analüüsimiseks.
+480	Arhiivis pole valmis programmi ega installerit, kuid on ketta kujutised: {0}. Töötlen neid mängu kettaina. Arhiivi sisu on salvestatud kausta {1}.
+481	Kettamängu peamiseks failiks valiti {0} (originaalne Launcher.exe ei käivitu ilma administraatoriõigusteta).
+482	Lisage kõik mängu kettad: kaustad, arhiivid (zip, 7z, rar) või iso-kujutised. Järjekord pole oluline: programm leiab installeri ise ja paigutab kettad.
+483	Lisa kaust
+484	Lisa failid
+485	Eemalda
+486	Valmis
+487	Portabilizer (R): lähtekaustad ja -failid kustutatakse
+488	Kas soovite tõesti teha selle radikaalses režiimis portatiivseks?\n\nPärast edukat koostamist KUSTUTATAKSE PÜSIVALT (prügikasti läbimata):\n{0}\nkokku {1}.\n\nKui see on Relicu ketas (gameInst.exe ja Data), siis selle faile ei kopeerita, vaid VIIAKSE kausta App: kui töö pooleli katkeb, jääb ketta kaust poolikuks.\n\nKustutamine toimub ainult siis, kui koostamine õnnestus ja kõik on kontrollitud. Tulemus luuakse esimese kausta kõrvale.\n\nJätkata?
+489	ketta kujutised
+490	Kausta {0} võib pärast kontrolli kustutada: seal on ainult lähtekujutised.
+491	Arhiivid ja kujutised
+492	{0}: {1}. Režiim R on sellise tee jaoks keelatud.
+493	CAB-failide kontroll jäeti vahele: {0}
+494	kaust
+495	fail
+496	Ei õnnestunud ja selle põhjuse jaoks pole valmis vihjet. Põhjus on tavaliselt ülalolevas logis viimastel ridadel. Kui ei saa aru, saatke portabilizer.log arendajale.

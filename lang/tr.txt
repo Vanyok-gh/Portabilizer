@@ -384,3 +384,113 @@
 384	Hazır: {0} ({1})
 385	Görüntü oluşturuluyor... {0}%
 386	Görüntü oluşturulmadı.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Oyun eski bir grafik arayüzü kullanıyor (DirectDraw/Direct3D 8). Windows 10/11'de ekran kararırsa veya titrerse «Tam ekran iyileştirmelerini devre dışı bırak» kutusunu işaretleyin ve «Yalnızca Launch.bat» modunu çalıştırın.
+389	Disklerde Portabilizer'ın ayrıştırabildiği bir yükleyici yok (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Extracted_discs klasörünü açıp ilk diskte ne olduğuna bakın (Setup.exe, Install.exe) ve bu yükleyiciyi ayrıca verin. Oyunun kendi yükleyicisi varsa günlüğü geliştiriciye gönderin.
+390	Sessiz kurulum başarısız oldu, çıkarılan dosyalar App klasörüne geri konuldu. Programın App içinden çalışıp çalışmadığını kontrol edin. Yükleyici yönetici hakları istiyorsa, yalnızca bu haklara sahip bir bilgisayarda yönetici parolasıyla kurulum yardımcı olur.
+391	App içinde sistem bileşenlerinin yükleyicileri var (PhysX, Visual C++, DirectX, .NET). Oyun dll ile ilgili bir hatayla açılmazsa, bunları oyunu oynayacağınız bilgisayara bir kez kurun (yönetici hakları gerekir).
+392	msiexec: kod {0}, sonuçtaki dosya sayısı {1}. Ayrıntılı günlük: {2}
+393	InstallShield yükleyicisi {0}: kabinlerdeki dosya sayısı {1}, oyun dili: {2}. Yükleyici çalıştırılmaz, dosyalar kabinlerden okunur.
+394	InstallShield paketini açma
+395	Kabinlerden çıkarılan dosya sayısı: {0} ({1}), her birinin MD5 değeri doğrulandı.
+396	InstallShield diski: yalnızca oyun aktarıldı
+397	dosyalar kabin yapısına göre yerleştirildi (yükleyici betiği şifreli): oyunda bir şey eksikse günlüğü gönderin
+398	bulunamadı
+399	bu diskin kök dizini
+400	bu kullanıcı klasörü
+401	bu ortak kullanıcı klasörü
+402	birden çok disk
+403	Disk sayısı: {0}. Çalışma klasörü: {1}
+404	Relic yükleyicisi: {0}
+405	Relic: {0} dosya, oyun dili: {1}.
+406	NTFS sıkıştırması
+407	Klasör NTFS ile sıkıştırılıyor (birkaç dakika sürebilir)...
+408	NTFS sıkıştırması tamamlandı. Veri sıkıştırılabilen yerlerde diskteki boyut küçüldü; oyun bunu fark etmez.
+409	MOD (R): kaynak kalmaz. Normal exe ve Relic diski kopyalanmadan App klasörüne TAŞINIR (yer gerekmez). Arşivler ve diğer yükleyiciler önce açılır, kaynak ancak sonra silinir: çalışma süresince açılmış dosyalar için yer gerekir. Hem klasörlerle hem de birden çok diskle çalışır. Başlamadan önce onay istenir.
+410	InstallScript eylemleri olmadan yeniden deneme (msi'nin geçici kopyasında)
+411	Diskli oyun: diskler {0}; diskten gelen dosyalar: {1}.
+412	Sembolik bağlantılar oluşturulmadı: {0} (macOS/Linux dosyaları). Windows'ta gerekmezler, diğer dosyalar açıldı, yönetici hakları gerekmez.
+413	sembolik bağlantılar oluşturulmadı
+414	Çıkarılamayan dosya sayısı: {0}. Tüm ciltlerin (data1.cab, data2.cab...) yerinde ve eksiksiz indirilmiş olduğunu kontrol edin.
+415	App\\_redist klasöründe oyunun sistemde ihtiyaç duyduğu yükleyiciler var (örneğin PhysX): bunları oyunu oynayacağınız bilgisayara bir kez kurun
+416	Discs klasöründeki görüntüler başlatmadan önce bağlanacak, çıkıştan sonra ayrılacak
+417	Registry içindeki ayarlar başlatmadan önce kullanıcı kayıt defterine yüklenecek
+418	oyundan çıktıktan sonra yeni .tga ekran görüntüleri .png'ye dönüştürülecek (orijinaller kalır; Screenshots_PNG.txt silinerek kapatılır)
+419	App içinde sistem bileşenlerinin yükleyicileri var
+420	yol okunamıyor
+421	Birden çok disk için «Yalnızca Launch.bat» modu gerekmez: hazır oyun klasörünü seçin.
+422	Birden çok disk için yalnızca çıkarma kullanılabilir.
+423	Diskleri çıkarma
+424	Yükleyici: {0}
+425	Relic dosyalarını kurma
+426	Uyarı: {0} dosya için veri yok (örneğin {1}). Disk klasörünün eksiksiz kopyalandığını kontrol edin.
+427	Uyarı: {0} dosyada sağlama toplamı eşleşmedi (örneğin {1}). Disk veya kopya bozuk olabilir.
+428	Kayıt defteri: yazıldı (HKCU). Oyun ürün anahtarı isterse bir kez girin - kaydedilecektir.
+429	Fazlalık bulunamadı: kaldırılacak bir şey yok.
+430	NTFS sıkıştırması: yalnızca Windows'ta kullanılabilir, atlanıyor.
+431	NTFS sıkıştırması başarısız oldu (disk NTFS olmayabilir). Klasör olduğu gibi bırakıldı.
+432	msi: kopya hazırlanamadı: {0}
+433	Dijitalleştirme: yükleyici ayrıştırılamadı ({0})
+434	INI: yükleyici kayıtları ayrıştırılamadı ({0})
+435	Kayıt defteri: Registry\\{0}.reg ({1} kayıt, HKCU içinde).
+436	Oyunun başka disklere ihtiyacı olabilir ({0}): ISO sekmesinde {1} birim etiketleriyle görüntüleri oluşturun ve Discs klasörüne koyun.
+437	Portable.ps1 oluşturulamadı: {0}
+438	İpucu: exe eski bir grafik arayüzü kullanıyor (DirectDraw/Direct3D 8). Windows 10/11'de ekran kararırsa veya titrerse «Tam ekran iyileştirmelerini devre dışı bırak» seçeneğini işaretleyin ve «Yalnızca Launch.bat» modunu çalıştırın.
+439	İpucu: exe diski denetliyor (GetVolumeInformation/GetDriveType). Oyun disk isterse, ISO sekmesinde diskin görüntüsünü oluşturun (birim etiketi diskteki gibi) ve Discs klasörüne koyun.
+440	DirectX kitaplıklarının bulunduğu dx klasörü bulunamadı. Onu Portabilizer.exe'nin yanına koyun (part2 arşivinde var) ve yeniden oluşturun: kitaplıklar o zaman kendiliğinden oyunun yanına yerleşir.
+441	Oyun {0} {1} ({2}) gerektiriyor, ancak Portabilizer'da bu sürüm yok. Oyun yan yana yapılandırma (side-by-side) hatasıyla açılmazsa, ilgili yılın Microsoft Visual C++ Redistributable paketini sisteme kurun veya geliştiriciye bu sürümü içeren vcredist gönderin.
+442	{0} {1} yok
+443	. Oyun eksik bir dll veya kitaplıkla ilgili hatayla açılmazsa, bunları oyunu oynayacağınız bilgisayara bir kez kurun (yönetici hakları gerekir). Bunlar taşınabilir klasöre kurulmaz.
+444	{0}: kaynak ve sonuç birbirinin içinde
+445	Kaynak silindi: {0} ({1})
+446	Kaynak {0} tamamen silinemedi (meşgul dosyalar kaldı).
+447	Relic yükleyicisi
+448	InstallShield diski: {0}. Yerinde okunuyor, diskin çalışma kopyası gerekmez.
+449	Hiçbir disk hazırlanamadı.
+450	Kayıt defteri: .reg yazılamadı ({0})
+451	Oyun diskleri
+452	var
+453	msi: kaynak dosyaların varlığı denetlenemedi ({0})
+454	msi'nin yanında kaynak dosyalar yok: {0} (atlanacaklar): {1}
+455	Yükleyiciden ayar dosyaları oluşturuldu: 
+456	. Oyun açılmazsa, gerekli değerleri Registry\\*.reg içine (HKCU) koyabilirsiniz.
+457	App içinde sistem bileşenlerinin yükleyicileri var: 
+458	Kaynaklar SİLİNMEDİ: 
+459	R modu: Relic diski dosyaları disk klasöründen App klasörüne taşınıyor (kopyasız).
+460	Klasörde yükleyici yok (msi, Inno, NSIS, WiX). Hazır uygulama klasörleri henüz desteklenmiyor: bir yükleyici veya arşiv verin.
+461	Hiçbir diskte yükleyici bulunamadı. Oyunun tüm disklerinin seçildiğini kontrol edin.
+462	Disklerin çalışma kopyası silindi: görüntüler ve oyun zaten oluşturuldu.
+463	Fazlalık kaldırıldı: {0} dosya, {1} ({2}
+464	Disk etiketleri belirlenemedi: {0}
+465	{0} disk görüntüsü: {1} kaynağından oluşturuluyor (birim etiketi {2}).
+466	Disk görüntüsü: {0}, {1}.
+467	Disk görüntüsü zaten var: {0}
+468	İpucu: exe kayıt defterini okuyor: 
+469	Radikal mod: {0}: {1}. Hiçbir şey yapılmıyor.
+470	Ek ayarlar uygulanmadı: {0}
+471	Birden çok disk...
+472	Oyun ekran görüntüleri: çıkıştan sonra TGA'dan PNG'ye
+473	Tam ekran iyileştirmelerini devre dışı bırak (eski oyunlar)
+474	Fazlalıkları kaldır (VC/DirectX yükleyicileri, yabancı Readme dosyaları)
+475	Klasörü NTFS ile sıkıştır
+476	Radikal sürüm (riskli).\n\nKaynak kalmaz: başarılı derlemeden sonra kaynak dosya (arşivin tüm ciltleri), kaynak klasörler ve birden çok disk ile geçici kopyalar SİLİNİR. Taşınabilir klasör kaynağın yanında oluşturulur. Dosya, klasör ve birden çok diskle aynı anda çalışır.\n\nYerden nasıl tasarruf edilir: normal exe ve Relic diski (gameInst.exe + Data) kopyalanmaz, App içine TAŞINIR. Arşivler ve diğer yükleyiciler önce açılır, bu yüzden çalışma süresince normal sürümdeki kadar yer gerekir.\n\nGüvenlik: silme yalnızca denetimden sonra yapılır (Launch.bat oluşturuldu, App boş değil, açıcı uyarı vermedi). Diskin kök dizini ve kullanıcı klasörleri (İndirilenler, Masaüstü, Belgeler) asla silinmez. Ancak aktarım ortasında kesilirse kaynak klasör eksik kalır ve silinenler geri getirilemez.\n\n«Yalnızca Launch.bat» modu da hiçbir şey silmeden çalışır. Her çalıştırmadan önce program onay ister.
+477	Disk görüntüsü oluşturulamadı: {0}
+478	Açılan arşiv silindi: oyun zaten App içine yerleştirildi.
+479	Açılan arşiv inceleme için {0} içinde bırakıldı.
+480	Arşivde hazır program ve yükleyici yok, ancak disk görüntüleri var: {0}. Bunları oyun diskleri olarak işliyorum. Arşivin içeriği {1} içinde saklandı.
+481	Diskli oyun için ana dosya olarak {0} seçildi (orijinal Launcher.exe yönetici hakları olmadan çalışmaz).
+482	Oyunun tüm disklerini ekleyin: klasörler, arşivler (zip, 7z, rar) veya iso görüntüleri. Sıra önemli değil: program yükleyiciyi kendisi bulur ve diskleri yerleştirir.
+483	Klasör ekle
+484	Dosya ekle
+485	Kaldır
+486	Tamam
+487	Portabilizer (R): kaynak klasörler ve dosyalar silinecek
+488	Bunu radikal modda taşınabilir yapmak istediğinizden emin misiniz?\n\nBaşarılı derlemeden sonra KALICI OLARAK (geri dönüşüm kutusuna gitmeden) SİLİNECEKLER:\n{0}\ntoplam {1}.\n\nBu bir Relic diskiyse (gameInst.exe ve Data), dosyaları kopyalanmaz, App içine TAŞINIR: çalışma ortada kesilirse disk klasörü eksik kalır.\n\nSilme yalnızca derleme başarılı olduysa ve her şey denetlendiyse yapılır. Sonuç ilk klasörün yanında oluşturulur.\n\nDevam edilsin mi?
+489	disk görüntüleri
+490	{0} klasörü denetimden sonra silinebilir: içinde yalnızca kaynak disk görüntüleri var.
+491	Arşivler ve görüntüler
+492	{0}: {1}. Bu yol için R modu devre dışı.
+493	Kabinlerin denetimi atlandı: {0}
+494	klasör
+495	dosya
+496	Başarısız oldu ve bu neden için hazır bir ipucu yok. Neden genellikle yukarıdaki günlüğün son satırlarındadır. Anlaşılmazsa portabilizer.log dosyasını geliştiriciye gönderin.

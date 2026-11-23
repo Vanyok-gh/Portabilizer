@@ -384,3 +384,113 @@
 384	Xong: {0} ({1})
 385	Đang tạo ảnh đĩa... {0}%
 386	Ảnh đĩa chưa được tạo.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Trò chơi dùng đồ họa cũ (DirectDraw/Direct3D 8). Nếu trên Windows 10/11 màn hình bị đen hoặc nhấp nháy, hãy bật «Tắt tối ưu hóa toàn màn hình» và chạy chế độ «Chỉ Launch.bat».
+389	Trên các đĩa không có trình cài đặt mà Portabilizer có thể phân tích (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Hãy mở thư mục Extracted_discs, xem trên đĩa đầu tiên có gì (Setup.exe, Install.exe) và đưa trình cài đặt đó vào riêng. Nếu đó là trình cài đặt riêng của trò chơi, hãy gửi nhật ký cho nhà phát triển.
+390	Cài đặt im lặng không thành công, các tệp đã giải nén được trả về App. Hãy kiểm tra xem chương trình có chạy từ App không. Nếu trình cài đặt yêu cầu quyền quản trị, chỉ có cách cài đặt bằng mật khẩu quản trị trên máy có quyền đó.
+391	Trong App có các trình cài đặt thành phần hệ thống (PhysX, Visual C++, DirectX, .NET). Nếu trò chơi không chạy và báo lỗi về dll, hãy cài chúng một lần trên máy bạn sẽ chơi (cần quyền quản trị).
+392	msiexec: mã {0}, số tệp trong kết quả: {1}. Nhật ký chi tiết: {2}
+393	Trình cài đặt InstallShield {0}: số tệp trong cabinet: {1}, ngôn ngữ trò chơi: {2}. Trình cài đặt không được chạy, các tệp được đọc từ cabinet.
+394	Giải nén InstallShield
+395	Đã trích xuất từ cabinet: {0} tệp ({1}), MD5 của từng tệp đã được kiểm tra.
+396	đĩa InstallShield: chỉ chuyển trò chơi
+397	các tệp được sắp xếp theo cấu trúc của cabinet (tập lệnh của trình cài đặt bị mã hóa): nếu trò chơi thiếu gì đó, hãy gửi nhật ký
+398	không tìm thấy
+399	đây là thư mục gốc của ổ đĩa
+400	đây là thư mục người dùng
+401	đây là thư mục dùng chung của người dùng
+402	nhiều đĩa
+403	Số đĩa: {0}. Thư mục làm việc: {1}
+404	Trình cài đặt Relic: {0}
+405	Relic: {0} tệp, ngôn ngữ trò chơi: {1}.
+406	Nén NTFS
+407	Đang nén thư mục bằng NTFS (có thể mất vài phút)...
+408	Nén NTFS xong. Dung lượng trên đĩa đã giảm ở những nơi dữ liệu nén được; trò chơi không nhận ra điều này.
+409	CHẾ ĐỘ (R): không giữ lại tệp nguồn. Tệp exe thông thường và đĩa Relic được CHUYỂN vào thư mục App mà không sao chép (không cần thêm dung lượng). Kho lưu trữ và các trình cài đặt khác được giải nén trước, rồi mới xóa tệp nguồn: trong lúc chạy cần dung lượng cho phần đã giải nén. Hoạt động với cả thư mục và nhiều đĩa. Trước khi bắt đầu sẽ có bước xác nhận.
+410	Chạy lại không có hành động InstallScript (trên bản sao tạm của msi)
+411	Trò chơi trên đĩa: đĩa {0}; tệp từ đĩa: {1}.
+412	Chưa tạo các liên kết tượng trưng: {0} (tệp cho macOS/Linux). Trên Windows chúng không cần thiết, các tệp còn lại đã được giải nén, không cần quyền quản trị.
+413	chưa tạo liên kết tượng trưng
+414	Không thể trích xuất {0} tệp. Hãy kiểm tra xem tất cả các phần (data1.cab, data2.cab...) có đầy đủ và đã được tải về trọn vẹn.
+415	trong thư mục App\\_redist có các trình cài đặt mà trò chơi cần trong hệ thống (ví dụ PhysX): hãy cài chúng một lần trên máy bạn sẽ chơi
+416	các ảnh đĩa trong Discs sẽ được gắn trước khi chạy và gỡ sau khi thoát
+417	các thiết lập từ Registry sẽ được nạp vào registry của người dùng trước khi chạy
+418	sau khi thoát trò chơi, các ảnh chụp màn hình .tga mới sẽ được chuyển thành .png (bản gốc vẫn giữ; tắt bằng cách xóa Screenshots_PNG.txt)
+419	trong App có các trình cài đặt thành phần hệ thống
+420	không đọc được đường dẫn
+421	Với nhiều đĩa, chế độ «Chỉ Launch.bat» không cần thiết: hãy chọn thư mục trò chơi đã sẵn sàng.
+422	Với nhiều đĩa chỉ có thể giải nén.
+423	Giải nén đĩa
+424	Trình cài đặt: {0}
+425	Cài đặt tệp Relic
+426	Cảnh báo: thiếu dữ liệu cho {0} tệp (ví dụ {1}). Hãy kiểm tra xem thư mục đĩa đã được sao chép đầy đủ chưa.
+427	Cảnh báo: tổng kiểm tra không khớp ở {0} tệp (ví dụ {1}). Đĩa hoặc bản sao có thể bị hỏng.
+428	Registry: đã ghi (HKCU). Nếu trò chơi hỏi khóa sản phẩm, hãy nhập một lần, khóa sẽ được lưu.
+429	Không có gì thừa: không cần dọn.
+430	Nén NTFS: chỉ có trên Windows, bỏ qua.
+431	Nén NTFS không thành công (có thể đĩa không phải NTFS). Thư mục được giữ nguyên.
+432	msi: không thể chuẩn bị bản sao: {0}
+433	Số hóa: không thể phân tích trình cài đặt ({0})
+434	INI: không thể phân tích các mục của trình cài đặt ({0})
+435	Registry: Registry\\{0}.reg ({1} mục, trong HKCU).
+436	Trò chơi có thể cần các đĩa khác ({0}): hãy tạo ảnh đĩa trong tab ISO với nhãn ổ đĩa {1} rồi đặt vào thư mục Discs.
+437	Không thể tạo Portable.ps1: {0}
+438	Gợi ý: tệp exe dùng đồ họa cũ (DirectDraw/Direct3D 8). Nếu trên Windows 10/11 màn hình bị đen hoặc nhấp nháy, hãy bật «Tắt tối ưu hóa toàn màn hình» và chạy chế độ «Chỉ Launch.bat».
+439	Gợi ý: tệp exe kiểm tra đĩa (GetVolumeInformation/GetDriveType). Nếu trò chơi yêu cầu đĩa, hãy tạo ảnh đĩa trong tab ISO (nhãn ổ đĩa giống đĩa gốc) rồi đặt vào thư mục Discs.
+440	Không tìm thấy thư mục dx chứa các thư viện DirectX. Hãy đặt nó cạnh Portabilizer.exe (có trong kho part2) rồi tạo lại: khi đó các thư viện sẽ tự nằm cạnh trò chơi.
+441	Trò chơi cần {0} {1} ({2}), nhưng Portabilizer không có phiên bản này. Nếu trò chơi không chạy và báo lỗi cấu hình song song (side-by-side), hãy cài Microsoft Visual C++ Redistributable của năm tương ứng vào hệ thống hoặc gửi cho nhà phát triển vcredist có phiên bản này.
+442	không có {0} {1}
+443	. Nếu trò chơi không chạy và báo lỗi về dll hoặc thư viện bị thiếu, hãy cài chúng một lần trên máy bạn sẽ chơi (cần quyền quản trị). Chúng không được cài vào thư mục portable.
+444	{0}: nguồn và kết quả nằm trong nhau
+445	Đã xóa tệp nguồn: {0} ({1})
+446	Tệp nguồn {0} chưa được xóa hết (còn lại các tệp đang bị chiếm dụng).
+447	trình cài đặt Relic
+448	Đĩa InstallShield: {0}. Đọc trực tiếp, không cần bản sao làm việc của đĩa.
+449	Không chuẩn bị được đĩa nào.
+450	Registry: không thể ghi .reg ({0})
+451	Đĩa của trò chơi
+452	có
+453	msi: không thể kiểm tra sự có mặt của các tệp nguồn ({0})
+454	Không có tệp nguồn cạnh msi: {0} (sẽ bị bỏ qua): {1}
+455	Đã tạo các tệp thiết lập từ trình cài đặt: 
+456	. Nếu trò chơi không chạy, có thể đặt các giá trị cần thiết vào Registry\\*.reg (HKCU).
+457	Trong App có các trình cài đặt thành phần hệ thống: 
+458	Tệp nguồn KHÔNG bị xóa: 
+459	Chế độ R: các tệp của đĩa Relic được chuyển từ thư mục đĩa vào App (không sao chép).
+460	Trong thư mục không có trình cài đặt (msi, Inno, NSIS, WiX). Các thư mục ứng dụng dựng sẵn hiện chưa được hỗ trợ: hãy đưa vào trình cài đặt hoặc kho lưu trữ.
+461	Không tìm thấy trình cài đặt trên bất kỳ đĩa nào. Hãy kiểm tra xem đã chọn tất cả các đĩa của trò chơi chưa.
+462	Đã xóa bản sao làm việc của các đĩa: ảnh đĩa và trò chơi đã được tạo xong.
+463	Đã dọn phần thừa: {0} tệp, {1} ({2}
+464	Không xác định được nhãn đĩa: {0}
+465	Ảnh đĩa {0}: đang tạo từ {1} (nhãn ổ đĩa {2}).
+466	Ảnh đĩa: {0}, {1}.
+467	Ảnh đĩa đã có: {0}
+468	Gợi ý: tệp exe đọc registry: 
+469	Chế độ cực đoan: {0}: {1}. Không làm gì cả.
+470	Chưa áp dụng thiết lập bổ sung: {0}
+471	Nhiều đĩa...
+472	Ảnh chụp màn hình trò chơi: TGA sang PNG sau khi thoát
+473	Tắt tối ưu hóa toàn màn hình (trò chơi cũ)
+474	Dọn phần thừa (trình cài đặt VC/DirectX, Readme của bên khác)
+475	Nén thư mục bằng NTFS
+476	Bản cực đoan (có rủi ro).\n\nKhông giữ lại tệp nguồn: sau khi tạo thành công, tệp nguồn (mọi phần của kho lưu trữ), các thư mục nguồn, nhiều đĩa và các bản sao tạm sẽ bị XÓA. Thư mục portable được tạo cạnh tệp nguồn. Hoạt động với tệp, thư mục và nhiều đĩa cùng lúc.\n\nCách tiết kiệm dung lượng: tệp exe thông thường và đĩa Relic (gameInst.exe + Data) không được sao chép mà được CHUYỂN vào App. Kho lưu trữ và các trình cài đặt khác được giải nén trước, nên trong lúc chạy cần dung lượng bằng phiên bản thông thường.\n\nAn toàn: chỉ xóa sau khi đã kiểm tra (Launch.bat đã được tạo, App không trống, trình giải nén không có cảnh báo). Thư mục gốc của ổ đĩa và thư mục người dùng (Downloads, Desktop, Documents) không bao giờ bị xóa. Nhưng nếu việc chuyển bị gián đoạn giữa chừng, thư mục nguồn sẽ không còn đầy đủ và không thể khôi phục phần đã xóa.\n\nChế độ «Chỉ Launch.bat» cũng hoạt động mà không xóa gì. Trước mỗi lần chạy, chương trình sẽ yêu cầu xác nhận.
+477	Không tạo được ảnh đĩa: {0}
+478	Đã xóa kho lưu trữ đã giải nén: trò chơi đã được sắp xếp trong App.
+479	Kho lưu trữ đã giải nén được giữ lại trong {0} để phân tích.
+480	Trong kho lưu trữ không có chương trình sẵn dùng hay trình cài đặt, nhưng có ảnh đĩa: {0}. Chương trình xử lý chúng như các đĩa của trò chơi. Nội dung kho lưu trữ được lưu trong {1}.
+481	Với trò chơi trên đĩa, {0} được chọn làm tệp chính (Launcher.exe gốc không chạy nếu thiếu quyền quản trị).
+482	Hãy thêm tất cả các đĩa của trò chơi: thư mục, kho lưu trữ (zip, 7z, rar) hoặc ảnh iso. Thứ tự không quan trọng: chương trình tự tìm trình cài đặt và sắp xếp các đĩa.
+483	Thêm thư mục
+484	Thêm tệp
+485	Xóa khỏi danh sách
+486	Xong
+487	Portabilizer (R): các thư mục và tệp nguồn sẽ bị xóa
+488	Bạn có thật sự muốn tạo bản portable ở chế độ cực đoan không?\n\nSau khi tạo thành công sẽ XÓA VĨNH VIỄN (không qua thùng rác):\n{0}\ntổng cộng {1}.\n\nNếu đây là đĩa Relic (gameInst.exe và Data), các tệp của nó không được sao chép mà được CHUYỂN vào App: nếu bị gián đoạn giữa chừng, thư mục đĩa sẽ không còn đầy đủ.\n\nViệc xóa chỉ diễn ra nếu quá trình tạo thành công và mọi thứ đã được kiểm tra. Kết quả được tạo cạnh thư mục đầu tiên.\n\nTiếp tục?
+489	ảnh đĩa
+490	Có thể xóa thư mục {0} sau khi kiểm tra: trong đó chỉ có các ảnh đĩa nguồn.
+491	Kho lưu trữ và ảnh đĩa
+492	{0}: {1}. Chế độ R bị tắt cho đường dẫn này.
+493	Đã bỏ qua kiểm tra cabinet: {0}
+494	thư mục
+495	tệp
+496	Không thành công, và chưa có gợi ý sẵn cho nguyên nhân này. Nguyên nhân thường nằm ở những dòng cuối của nhật ký phía trên. Nếu chưa rõ, hãy gửi portabilizer.log cho nhà phát triển.
