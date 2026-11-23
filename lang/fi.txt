@@ -384,3 +384,113 @@
 384	Valmis: {0} ({1})
 385	Kootaan levykuvaa... {0}%
 386	Levykuvaa ei luotu.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Peli käyttää vanhaa grafiikkaa (DirectDraw/Direct3D 8). Jos näyttö mustuu tai vilkkuu Windows 10/11:ssä, ota käyttöön valinta «Poista koko näytön optimoinnit käytöstä» ja suorita tila «Vain Launch.bat».
+389	Levyillä ei ole asennusohjelmaa, jota Portabilizer osaa käsitellä (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Avaa kansio Extracted_discs, katso mitä ensimmäisellä levyllä on (Setup.exe, Install.exe) ja anna tämä asennusohjelma erikseen. Jos siellä on pelin oma asennusohjelma, lähetä loki kehittäjälle.
+390	Hiljainen asennus epäonnistui, puretut tiedostot palautettiin App-kansioon. Tarkista, käynnistyykö ohjelma App-kansiosta. Jos asennusohjelma vaatii järjestelmänvalvojan oikeudet, auttaa vain asennus järjestelmänvalvojan salasanalla tietokoneella, jossa sinulla on tällaiset oikeudet.
+391	App-kansiossa on järjestelmäkomponenttien asennusohjelmia (PhysX, Visual C++, DirectX, .NET). Jos peli ei käynnisty ja ilmoittaa dll-virheestä, asenna ne kerran tietokoneelle, jolla pelaat (tarvitaan järjestelmänvalvojan oikeudet).
+392	msiexec: koodi {0}, tiedostoja tuloksessa {1}. Yksityiskohtainen loki: {2}
+393	InstallShield-asennusohjelma {0}: tiedostoja cab-paketeissa {1}, pelin kieli: {2}. Asennusohjelmaa ei suoriteta, tiedostot luetaan cab-paketeista.
+394	InstallShieldin purku
+395	Cab-paketeista purettiin tiedostoja: {0} ({1}), jokaisen MD5 tarkistettu.
+396	InstallShield-levy: siirrettiin vain peli
+397	tiedostot sijoitettiin cab-pakettien rakenteen mukaan (asennuksen komentosarja on salattu): jos pelistä puuttuu jotain, lähetä loki
+398	ei löytynyt
+399	tämä on aseman juurikansio
+400	tämä on käyttäjän kansio
+401	tämä on käyttäjien yhteinen kansio
+402	useita levyjä
+403	Levyjä: {0}. Työkansio: {1}
+404	Relic-asennusohjelma: {0}
+405	Relic: {0} tiedostoa, pelin kieli: {1}.
+406	NTFS-pakkaus
+407	Pakataan kansiota NTFS:n keinoin (voi kestää useita minuutteja)...
+408	NTFS-pakkaus valmis. Levytila pieneni siellä, missä data pakkautuu; peli ei huomaa tätä.
+409	TILA (R): lähdettä ei jätetä. Tavallinen exe ja Relic-levy SIIRRETÄÄN App-kansioon ilman kopiota (tilaa ei tarvita). Arkistot ja muut asennusohjelmat puretaan ensin, ja vasta sitten lähde poistetaan: työn ajaksi tarvitaan tilaa puretuille tiedostoille. Toimii sekä kansioiden että useiden levyjen kanssa. Ennen aloitusta pyydetään vahvistus.
+410	Uusi yritys ilman InstallScript-toimintoja (msi-tiedoston väliaikaisella kopiolla)
+411	Levypeli: levyt {0}; levyn tiedostot: {1}.
+412	Symbolisia linkkejä ei luotu: {0} (macOS/Linux-tiedostoja). Windowsissa niitä ei tarvita, muut tiedostot on purettu eikä järjestelmänvalvojan oikeuksia tarvita.
+413	symbolisia linkkejä ei luotu
+414	Tiedostoja ei voitu purkaa: {0}. Tarkista, että kaikki osat (data1.cab, data2.cab...) ovat paikallaan ja ladattu kokonaan.
+415	App\\_redist-kansiossa on asennusohjelmia, joita peli tarvitsee järjestelmässä (esimerkiksi PhysX): asenna ne kerran tietokoneelle, jolla pelaat
+416	Discs-kansion levykuvat liitetään ennen käynnistystä ja irrotetaan poistuttaessa
+417	Registry-kansion asetukset ladataan käyttäjän rekisteriin ennen käynnistystä
+418	pelistä poistumisen jälkeen uudet .tga-kuvakaappaukset muunnetaan .png-muotoon (alkuperäiset säilyvät; poistetaan käytöstä poistamalla Screenshots_PNG.txt)
+419	App-kansiossa on järjestelmäkomponenttien asennusohjelmia
+420	polkua ei voi lukea
+421	Useille levyille tilaa «Vain Launch.bat» ei tarvita: valitse valmis pelikansio.
+422	Useille levyille on käytettävissä vain purku.
+423	Levyjen purku
+424	Asennusohjelma: {0}
+425	Relic-tiedostojen asennus
+426	Varoitus: ei dataa {0} tiedostolle (esimerkiksi {1}). Tarkista, että levykansio on kopioitu kokonaan.
+427	Varoitus: tarkistussumma ei täsmännyt {0} tiedostolla (esimerkiksi {1}). Levy tai kopio voi olla vaurioitunut.
+428	Rekisteri: kirjoitettu (HKCU). Jos peli pyytää tuoteavainta, syötä se kerran - se tallentuu.
+429	Ylimääräistä ei löytynyt: ei poistettavaa.
+430	NTFS-pakkaus: käytettävissä vain Windowsissa, ohitetaan.
+431	NTFS-pakkaus epäonnistui (levy ei ehkä ole NTFS). Kansio jäi ennalleen.
+432	msi: kopion valmistelu epäonnistui: {0}
+433	Digitointi: asennusohjelman jäsennys epäonnistui ({0})
+434	INI: asennusohjelman merkintöjen jäsennys epäonnistui ({0})
+435	Rekisteri: Registry\\{0}.reg ({1} merkintää, HKCU:ssa).
+436	Peli voi tarvita muita levyjä ({0}): luo levykuvat ISO-välilehdellä levytunnisteilla {1} ja aseta ne Discs-kansioon.
+437	Portable.ps1:n luonti epäonnistui: {0}
+438	Vihje: exe käyttää vanhaa grafiikkaa (DirectDraw/Direct3D 8). Jos näyttö mustuu tai vilkkuu Windows 10/11:ssä, ota käyttöön «Poista koko näytön optimoinnit käytöstä» ja suorita tila «Vain Launch.bat».
+439	Vihje: exe tarkistaa levyn (GetVolumeInformation/GetDriveType). Jos peli pyytää levyä, luo levykuva ISO-välilehdellä (levytunniste sama kuin levyllä) ja aseta se Discs-kansioon.
+440	Kansiota dx DirectX-kirjastoineen ei löytynyt. Aseta se Portabilizer.exe:n viereen (se on part2-arkistossa) ja rakenna uudelleen: kirjastot sijoittuvat silloin pelin viereen itsestään.
+441	Peli tarvitsee: {0} {1} ({2}), mutta tätä versiota ei ole Portabilizerissa. Jos peli ei käynnisty ja ilmoittaa rinnakkaiskokoonpanon (side-by-side) virheestä, asenna järjestelmään oikean vuoden Microsoft Visual C++ Redistributable tai lähetä kehittäjälle vcredist tällä versiolla.
+442	ei ole: {0} {1}
+443	. Jos peli ei käynnisty ja ilmoittaa puuttuvasta dll-tiedostosta tai kirjastosta, asenna ne kerran tietokoneelle, jolla pelaat (tarvitaan järjestelmänvalvojan oikeudet). Itse kannettavaan kansioon niitä ei asenneta.
+444	{0}: lähde ja tulos ovat toistensa sisällä
+445	Lähde poistettu: {0} ({1})
+446	Lähdettä {0} ei poistettu kokonaan (käytössä olevia tiedostoja jäi).
+447	Relic-asennusohjelma
+448	InstallShield-levy: {0}. Luetaan paikan päällä, levyn työkopiota ei tarvita.
+449	Yhtäkään levyä ei voitu valmistella.
+450	Rekisteri: .reg-tiedoston kirjoitus epäonnistui ({0})
+451	Pelin levyt
+452	on
+453	msi: lähdetiedostojen olemassaolon tarkistus epäonnistui ({0})
+454	Lähdetiedostoja ei ole msi:n vieressä: {0} (ne ohitetaan): {1}
+455	Asennusohjelman asetustiedostot luotu: 
+456	. Jos peli ei käynnisty, tarvittavat arvot voi laittaa tiedostoon Registry\\*.reg (HKCU).
+457	App-kansiossa on järjestelmäkomponenttien asennusohjelmia: 
+458	Lähteitä EI poistettu: 
+459	Tila R: Relic-levyn tiedostot siirretään levykansiosta App-kansioon (ilman kopiota).
+460	Kansiossa ei ole asennusohjelmaa (msi, Inno, NSIS, WiX). Valmiita sovelluskansioita ei vielä tueta: anna asennusohjelma tai arkisto.
+461	Asennusohjelmaa ei löytynyt yhdeltäkään levyltä. Tarkista, että kaikki pelin levyt on valittu.
+462	Levyjen työkopio poistettu: levykuvat ja peli on jo rakennettu.
+463	Ylimääräistä poistettu: {0} tiedosto(a), {1} ({2}
+464	Levyjen tunnisteita ei voitu määrittää: {0}
+465	Levykuva {0}: rakennetaan kohteesta {1} (levytunniste {2}).
+466	Levykuva: {0}, {1}.
+467	Levykuva on jo olemassa: {0}
+468	Vihje: exe lukee rekisteriä: 
+469	Radikaali tila: {0}: {1}. Ei tehdä mitään.
+470	Lisäasetuksia ei otettu käyttöön: {0}
+471	Useita levyjä...
+472	Pelin kuvakaappaukset: TGA PNG:ksi poistumisen jälkeen
+473	Poista koko näytön optimoinnit käytöstä (vanhat pelit)
+474	Poista ylimääräinen (VC/DirectX-asennusohjelmat, muiden Readme-tiedostot)
+475	Pakkaa kansio NTFS:n keinoin
+476	Radikaali versio (riski).\n\nLähdettä ei jätetä: onnistuneen rakentamisen jälkeen POISTETAAN lähdetiedosto (kaikki arkiston osat), lähdekansiot ja useat levyt sekä väliaikaiset kopiot. Kannettava kansio luodaan lähteen viereen. Toimii tiedoston, kansion ja useiden levyjen kanssa yhtä aikaa.\n\nNäin säästetään tilaa: tavallista exeä ja Relic-levyä (gameInst.exe + Data) ei kopioida, vaan ne SIIRRETÄÄN App-kansioon. Arkistot ja muut asennusohjelmat puretaan ensin, joten työn ajaksi tarvitaan yhtä paljon tilaa kuin tavallisessa versiossa.\n\nTurvallisuus: poisto tehdään vasta tarkistuksen jälkeen (Launch.bat luotu, App ei ole tyhjä, purkaja ilman varoituksia). Aseman juurikansiota ja käyttäjän kansioita (Lataukset, Työpöytä, Asiakirjat) ei koskaan poisteta. Mutta jos siirto keskeytetään kesken, lähdekansio jää vajaaksi, eikä poistettua voi palauttaa.\n\nTila «Vain Launch.bat» toimii myös eikä poista mitään. Ohjelma pyytää vahvistuksen ennen jokaista suoritusta.
+477	Levykuvaa ei luotu: {0}
+478	Purettu arkisto poistettu: peli on jo sijoitettu App-kansioon.
+479	Purettu arkisto jätettiin kansioon {0} tarkastelua varten.
+480	Arkistossa ei ole valmista ohjelmaa eikä asennusohjelmaa, mutta siinä on levykuvia: {0}. Käsittelen ne pelin levyinä. Arkiston sisältö on tallennettu kansioon {1}.
+481	Levypelin pääohjelmaksi valittiin {0} (alkuperäinen Launcher.exe ei käynnisty ilman järjestelmänvalvojan oikeuksia).
+482	Lisää kaikki pelin levyt: kansiot, arkistot (zip, 7z, rar) tai iso-levykuvat. Järjestyksellä ei ole väliä: ohjelma löytää asennusohjelman itse ja sijoittaa levyt.
+483	Lisää kansio
+484	Lisää tiedostoja
+485	Poista
+486	Valmis
+487	Portabilizer (R): lähdekansiot ja -tiedostot poistetaan
+488	Haluatko varmasti tehdä tästä kannettavan radikaalissa tilassa?\n\nOnnistuneen rakentamisen jälkeen POISTETAAN PYSYVÄSTI (roskakorin ohi):\n{0}\nyhteensä {1}.\n\nJos kyseessä on Relic-levy (gameInst.exe ja Data), sen tiedostoja ei kopioida, vaan ne SIIRRETÄÄN App-kansioon: jos työ keskeytetään kesken, levykansio jää vajaaksi.\n\nPoisto tehdään vain, jos rakentaminen onnistui ja kaikki on tarkistettu. Tulos luodaan ensimmäisen kansion viereen.\n\nJatketaanko?
+489	levykuvat
+490	Kansion {0} voi poistaa tarkistuksen jälkeen: siinä on vain lähteenä olleet levykuvat.
+491	Arkistot ja levykuvat
+492	{0}: {1}. Tila R on tällaiselle polulle poistettu käytöstä.
+493	Cab-pakettien tarkistus ohitettiin: {0}
+494	kansio
+495	tiedosto
+496	Ei onnistunut, eikä tälle syylle ole valmista vihjettä. Syy on yleensä yllä olevan lokin viimeisillä riveillä. Jos se jää epäselväksi, lähetä portabilizer.log kehittäjälle.

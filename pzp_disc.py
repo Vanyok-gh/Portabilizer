@@ -430,12 +430,13 @@ _REG_SKIP = ("microsoft", "classes", "policies", "wow6432node\\microsoft")
 def scan_exe_hints(exe, limit=64 * 1024 * 1024) -> dict:
     """{'registry': [ключи HKLM/HKCU, которые exe читает], 'disc_check': bool, 'disc_prompts': [строки]}.
     Значения ключей по exe узнать нельзя, только их пути: это подсказка, что именно игра ищет в реестре."""
-    res = {"registry": [], "disc_check": False, "disc_prompts": []}
+    res = {"registry": [], "disc_check": False, "disc_prompts": [], "legacy_gfx": False}
     try:
         with open(exe, "rb") as f:
             data = f.read(limit)
     except OSError:
         return res
+    res["legacy_gfx"] = re.search(rb"(?i)ddraw\.dll|d3d8\.dll", data) is not None     # DirectDraw / Direct3D 8
     strs = re.findall(rb"[\x20-\x7e]{6,}", data)                                           # ASCII-строки
     strs += [m.replace(b"\x00", b"") for m in re.findall(rb"(?:[\x20-\x7e]\x00){6,}", data)]  # UTF-16
     seen = set()

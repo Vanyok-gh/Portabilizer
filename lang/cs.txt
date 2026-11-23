@@ -384,3 +384,113 @@
 384	Hotovo: {0} ({1})
 385	Sestavuji obraz... {0}%
 386	Obraz nebyl vytvořen.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Hra používá starou grafiku (DirectDraw/Direct3D 8). Pokud se ve Windows 10/11 obrazovka zčerná nebo bliká, zaškrtněte «Zakázat optimalizaci na celou obrazovku» a spusťte režim «Pouze Launch.bat».
+389	Na discích není instalátor, který Portabilizer umí zpracovat (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Otevřete složku Extracted_discs, podívejte se, co je na prvním disku (Setup.exe, Install.exe), a zadejte tento instalátor samostatně. Pokud je tam vlastní instalátor hry, pošlete log vývojáři.
+390	Tichá instalace se nezdařila, rozbalené soubory byly vráceny do App. Zkontrolujte, zda se program spouští z App. Pokud instalátor vyžaduje práva správce, pomůže jen instalace s heslem správce na počítači, kde taková práva máte.
+391	Uvnitř App jsou instalátory systémových součástí (PhysX, Visual C++, DirectX, .NET). Pokud se hra nespustí s chybou o dll, nainstalujte je jednou na počítači, kde budete hrát (jsou potřeba práva správce).
+392	msiexec: kód {0}, souborů ve výsledku {1}. Podrobný log: {2}
+393	Instalátor InstallShield {0}: souborů v kabinetech {1}, jazyk hry: {2}. Instalátor se nespouští, soubory se čtou z kabinetů.
+394	Rozbalení InstallShield
+395	Z kabinetů extrahováno souborů: {0} ({1}), MD5 každého ověřeno.
+396	disk InstallShield: přenesena pouze hra
+397	soubory byly rozloženy podle struktury kabinetu (skript instalátoru je zašifrován): pokud hře něco chybí, pošlete log
+398	nenalezeno
+399	toto je kořen disku
+400	toto je složka uživatele
+401	toto je sdílená složka uživatelů
+402	několik disků
+403	Disků: {0}. Pracovní složka: {1}
+404	Instalátor Relic: {0}
+405	Relic: {0} souborů, jazyk hry: {1}.
+406	Komprese NTFS
+407	Komprimuji složku prostředky NTFS (může to trvat několik minut)...
+408	Komprese NTFS dokončena. Velikost na disku se zmenšila tam, kde se data komprimují; hra si toho nevšimne.
+409	REŽIM (R): zdroj se nezachovává. Běžné exe a disk Relic se PŘESOUVAJÍ do složky App bez kopie (místo není potřeba). Archivy a ostatní instalátory se nejdřív rozbalí a teprve potom se zdroj smaže: po dobu práce je potřeba místo pro rozbalené soubory. Funguje se složkami i s několika disky. Před spuštěním bude požadováno potvrzení.
+410	Opakování bez akcí InstallScript (na dočasné kopii msi)
+411	Hra na discích: disky {0}; soubory z disku: {1}.
+412	Symbolické odkazy nebyly vytvořeny: {0} (soubory pro macOS/Linux). Ve Windows nejsou potřeba, ostatní soubory jsou rozbaleny, práva správce nejsou nutná.
+413	symbolické odkazy nebyly vytvořeny
+414	Nepodařilo se extrahovat souborů: {0}. Zkontrolujte, že všechny svazky (data1.cab, data2.cab...) jsou na místě a stažené celé.
+415	ve složce App\\_redist jsou instalátory, které hra potřebuje v systému (například PhysX): nainstalujte je jednou na počítači, kde budete hrát
+416	obrazy z Discs se před spuštěním připojí a po ukončení odpojí
+417	nastavení z Registry se před spuštěním načtou do registru uživatele
+418	po ukončení hry se nové snímky obrazovky .tga převedou na .png (originály zůstanou; vypíná se smazáním Screenshots_PNG.txt)
+419	v App jsou instalátory systémových součástí
+420	cestu nelze přečíst
+421	Pro několik disků není režim «Pouze Launch.bat» potřeba: vyberte hotovou složku hry.
+422	Pro několik disků je dostupné pouze rozbalení.
+423	Rozbalení disků
+424	Instalátor: {0}
+425	Instalace souborů Relic
+426	Upozornění: chybí data pro {0} souborů (například {1}). Zkontrolujte, že složka disku byla zkopírována celá.
+427	Upozornění: kontrolní součet nesouhlasí u {0} souborů (například {1}). Disk nebo kopie mohou být poškozeny.
+428	Registr: zapsán (HKCU). Pokud hra požádá o produktový klíč, zadejte jej jednou - uloží se.
+429	Nic nadbytečného nenalezeno: není co odstraňovat.
+430	Komprese NTFS: dostupná pouze ve Windows, přeskakuji.
+431	Komprese NTFS se nezdařila (možná disk není NTFS). Složka zůstala beze změny.
+432	msi: nepodařilo se připravit kopii: {0}
+433	Digitalizace: nepodařilo se zpracovat instalátor ({0})
+434	INI: nepodařilo se zpracovat záznamy instalátoru ({0})
+435	Registr: Registry\\{0}.reg ({1} záznamů, v HKCU).
+436	Hra může potřebovat další disky ({0}): vytvořte obrazy na kartě ISO s názvy svazků {1} a vložte je do složky Discs.
+437	Nepodařilo se vytvořit Portable.ps1: {0}
+438	Tip: exe používá starou grafiku (DirectDraw/Direct3D 8). Pokud se ve Windows 10/11 obrazovka zčerná nebo bliká, zaškrtněte «Zakázat optimalizaci na celou obrazovku» a spusťte režim «Pouze Launch.bat».
+439	Tip: exe kontroluje disk (GetVolumeInformation/GetDriveType). Pokud hra žádá disk, vytvořte obraz disku na kartě ISO (název svazku stejný jako na disku) a vložte jej do složky Discs.
+440	Složka dx s knihovnami DirectX nebyla nalezena. Vložte ji vedle Portabilizer.exe (je v archivu part2) a sestavte znovu: knihovny se pak uloží vedle hry samy.
+441	Hra potřebuje {0} {1} ({2}), ale tato verze v Portabilizeru není. Pokud se hra nespustí s chybou paralelní konfigurace (side-by-side), nainstalujte do systému Microsoft Visual C++ Redistributable potřebného roku nebo pošlete vývojáři vcredist s touto verzí.
+442	chybí {0} {1}
+443	. Pokud se hra nespustí s chybou o chybějící dll nebo knihovně, nainstalujte je jednou na počítači, kde budete hrát (jsou potřeba práva správce). Do portativní složky se samy neinstalují.
+444	{0}: zdroj a výsledek leží jeden v druhém
+445	Zdroj odstraněn: {0} ({1})
+446	Zdroj {0} nebyl odstraněn úplně (zůstaly zamčené soubory).
+447	instalátor Relic
+448	Disk InstallShield: {0}. Čtu na místě, pracovní kopie disku není potřeba.
+449	Žádný disk se nepodařilo připravit.
+450	Registr: nepodařilo se zapsat .reg ({0})
+451	Disky hry
+452	je
+453	msi: nepodařilo se ověřit přítomnost zdrojových souborů ({0})
+454	Vedle msi chybí zdrojové soubory: {0} (budou přeskočeny): {1}
+455	Soubory nastavení z instalátoru vytvořeny: 
+456	. Pokud se hra nespouští, potřebné hodnoty lze vložit do Registry\\*.reg (HKCU).
+457	Uvnitř App jsou instalátory systémových součástí: 
+458	Zdroje NEBYLY odstraněny: 
+459	Režim R: soubory disku Relic se přesouvají ze složky disku do App (bez kopie).
+460	Ve složce není instalátor (msi, Inno, NSIS, WiX). Hotové složky aplikací zatím nejsou podporovány: zadejte instalátor nebo archiv.
+461	Instalátor nebyl nalezen na žádném disku. Zkontrolujte, že jsou vybrány všechny disky hry.
+462	Pracovní kopie disků odstraněna: obrazy i hra už jsou sestaveny.
+463	Nadbytečné odstraněno: {0} souborů, {1} ({2}
+464	Názvy disků nebyly určeny: {0}
+465	Obraz disku {0}: sestavuji z {1} (název svazku {2}).
+466	Obraz disku: {0}, {1}.
+467	Obraz disku již existuje: {0}
+468	Tip: exe čte registr: 
+469	Radikální režim: {0}: {1}. Nic nedělám.
+470	Další nastavení nebyla použita: {0}
+471	Několik disků...
+472	Snímky obrazovky hry: TGA na PNG po ukončení
+473	Zakázat optimalizaci na celou obrazovku (staré hry)
+474	Odstranit nadbytečné (instalátory VC/DirectX, cizí Readme)
+475	Komprimovat složku prostředky NTFS
+476	Radikální verze (riziko).\n\nZdroj se nezachovává: po úspěšném sestavení se SMAŽE zdrojový soubor (všechny svazky archivu), zdrojové složky a několik disků i dočasné kopie. Portativní složka se vytvoří vedle zdroje. Funguje se souborem, složkou i s několika disky najednou.\n\nJak se šetří místo: běžné exe a disk Relic (gameInst.exe + Data) se nekopírují, ale PŘESOUVAJÍ do App. Archivy a ostatní instalátory se nejdřív rozbalí, takže po dobu práce je potřeba stejně místa jako v běžné verzi.\n\nBezpečnost: mazání probíhá až po kontrole (Launch.bat vytvořen, App není prázdná, rozbalovač bez upozornění). Kořen disku a složky uživatele (Stažené soubory, Plocha, Dokumenty) se nikdy nemažou. Pokud se ale přesun uprostřed přeruší, zdrojová složka zůstane neúplná a smazané nelze vrátit.\n\nRežim «Pouze Launch.bat» také funguje a nic nemaže. Před každým spuštěním program požádá o potvrzení.
+477	Obraz disku nebyl vytvořen: {0}
+478	Rozbalený archiv odstraněn: hra je již rozložena v App.
+479	Rozbalený archiv ponechán v {0} k prozkoumání.
+480	V archivu není hotový program ani instalátor, ale jsou v něm obrazy disků: {0}. Zpracovávám je jako disky hry. Obsah archivu je uložen v {1}.
+481	Pro hru na discích byl jako hlavní zvolen {0} (původní Launcher.exe se bez práv správce nespustí).
+482	Přidejte všechny disky hry: složky, archivy (zip, 7z, rar) nebo obrazy iso. Na pořadí nezáleží: program sám najde instalátor a rozloží disky.
+483	Přidat složku
+484	Přidat soubory
+485	Odebrat
+486	Hotovo
+487	Portabilizer (R): zdrojové složky a soubory budou smazány
+488	Opravdu to chcete udělat portativním v radikálním režimu?\n\nPo úspěšném sestavení budou NAVŽDY SMAZÁNY (mimo koš):\n{0}\ncelkem {1}.\n\nPokud jde o disk Relic (gameInst.exe a Data), jeho soubory se nekopírují, ale PŘESOUVAJÍ do App: pokud se práce uprostřed přeruší, složka disku zůstane neúplná.\n\nMazání proběhne jen tehdy, když sestavení uspělo a vše je ověřeno. Výsledek bude vytvořen vedle první složky.\n\nPokračovat?
+489	obrazy disků
+490	Složku {0} lze po kontrole smazat: jsou v ní jen zdrojové obrazy disků.
+491	Archivy a obrazy
+492	{0}: {1}. Režim R je pro takovou cestu vypnut.
+493	Kontrola kabinetů přeskočena: {0}
+494	složka
+495	soubor
+496	Nepodařilo se a pro tuto příčinu není připraven žádný tip. Příčina bývá v posledních řádcích logu výše. Pokud to není jasné, pošlete portabilizer.log vývojáři.

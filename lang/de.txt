@@ -384,3 +384,113 @@
 384	Fertig: {0} ({1})
 385	Abbild wird erstellt... {0}%
 386	Abbild wurde nicht erstellt.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Das Spiel verwendet alte Grafik (DirectDraw/Direct3D 8). Wenn unter Windows 10/11 der Bildschirm schwarz wird oder flackert, aktivieren Sie „Vollbildoptimierungen deaktivieren“ und starten Sie den Modus „Nur Launch.bat“.
+389	Auf den Datenträgern gibt es kein Installationsprogramm, das Portabilizer verarbeiten kann (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Öffnen Sie den Ordner Extracted_discs, sehen Sie nach, was sich auf dem ersten Datenträger befindet (Setup.exe, Install.exe), und übergeben Sie dieses Installationsprogramm separat. Handelt es sich um das spiel-eigene Installationsprogramm, senden Sie das Journal an den Entwickler.
+390	Die stille Installation ist fehlgeschlagen, die entpackten Dateien wurden nach App zurückgelegt. Prüfen Sie, ob sich das Programm aus App starten lässt. Wenn das Installationsprogramm Administratorrechte verlangt, hilft nur eine Installation mit dem Administratorkennwort auf einem Computer, auf dem Sie solche Rechte haben.
+391	In App liegen Installationsprogramme für Systemkomponenten (PhysX, Visual C++, DirectX, .NET). Wenn das Spiel mit einem dll-Fehler nicht startet, installieren Sie sie einmal auf dem Computer, auf dem Sie spielen (Administratorrechte erforderlich).
+392	msiexec: Code {0}, Dateien im Ergebnis: {1}. Ausführliches Journal: {2}
+393	InstallShield-Installationsprogramm {0}: Dateien in den Cabinets: {1}, Spielsprache: {2}. Das Installationsprogramm wird nicht gestartet, die Dateien werden aus den Cabinets gelesen.
+394	InstallShield-Entpacken
+395	Aus den Cabinets extrahierte Dateien: {0} ({1}), MD5 jeder Datei geprüft.
+396	InstallShield-Datenträger: nur das Spiel übertragen
+397	Die Dateien wurden nach der Cabinet-Struktur abgelegt (das Skript des Installationsprogramms ist verschlüsselt): Wenn dem Spiel etwas fehlt, senden Sie das Journal
+398	nicht gefunden
+399	das ist das Stammverzeichnis eines Laufwerks
+400	das ist ein Benutzerordner
+401	das ist ein gemeinsamer Benutzerordner
+402	mehrere Datenträger
+403	Datenträger: {0}. Arbeitsordner: {1}
+404	Relic-Installationsprogramm: {0}
+405	Relic: {0} Dateien, Spielsprache: {1}.
+406	NTFS-Komprimierung
+407	Ordner wird mit NTFS komprimiert (das kann einige Minuten dauern)...
+408	NTFS-Komprimierung abgeschlossen. Der belegte Speicher ist dort gesunken, wo sich Daten komprimieren lassen; das Spiel merkt davon nichts.
+409	MODUS (R): Die Quelle bleibt nicht erhalten. Eine gewöhnliche exe und ein Relic-Datenträger werden ohne Kopie in den Ordner App VERSCHOBEN (kein Speicherplatz nötig). Archive und übrige Installationsprogramme werden zuerst entpackt, erst danach wird die Quelle gelöscht: Während der Arbeit wird Platz für die entpackten Dateien benötigt. Funktioniert auch mit Ordnern und mehreren Datenträgern. Vor dem Start wird um Bestätigung gebeten.
+410	Wiederholung ohne InstallScript-Aktionen (auf einer temporären Kopie der msi)
+411	Datenträger-Spiel: Datenträger {0}; Dateien vom Datenträger: {1}.
+412	Symbolische Links wurden nicht erstellt: {0} (Dateien für macOS/Linux). Unter Windows werden sie nicht benötigt, die übrigen Dateien wurden entpackt, Administratorrechte sind nicht erforderlich.
+413	symbolische Links nicht erstellt
+414	Dateien konnten nicht extrahiert werden: {0}. Prüfen Sie, ob alle Teile (data1.cab, data2.cab...) vorhanden und vollständig heruntergeladen sind.
+415	Im Ordner App\\_redist liegen Installationsprogramme, die das Spiel im System braucht (z. B. PhysX): Installieren Sie sie einmal auf dem Computer, auf dem Sie spielen
+416	Abbilder aus Discs werden vor dem Start eingebunden und nach dem Beenden getrennt
+417	Einstellungen aus Registry werden vor dem Start in die Benutzer-Registrierung geladen
+418	Nach dem Beenden des Spiels werden neue .tga-Screenshots in .png umgewandelt (die Originale bleiben erhalten; zum Ausschalten Screenshots_PNG.txt löschen)
+419	In App liegen Installationsprogramme für Systemkomponenten
+420	Pfad nicht lesbar
+421	Für mehrere Datenträger wird der Modus „Nur Launch.bat“ nicht benötigt: Wählen Sie den fertigen Spielordner.
+422	Für mehrere Datenträger ist nur das Entpacken verfügbar.
+423	Datenträger entpacken
+424	Installationsprogramm: {0}
+425	Installation der Relic-Dateien
+426	Warnung: Keine Daten für {0} Dateien (z. B. {1}). Prüfen Sie, ob der Datenträgerordner vollständig kopiert wurde.
+427	Warnung: Die Prüfsumme stimmt bei {0} Dateien nicht überein (z. B. {1}). Der Datenträger oder die Kopie könnte beschädigt sein.
+428	Registrierung: geschrieben (HKCU). Falls das Spiel einen Produktschlüssel verlangt, geben Sie ihn einmal ein – er wird gespeichert.
+429	Nichts Überflüssiges gefunden: Es gibt nichts zu entfernen.
+430	NTFS-Komprimierung: nur unter Windows verfügbar, übersprungen.
+431	Die NTFS-Komprimierung ist fehlgeschlagen (möglicherweise ist das Laufwerk nicht NTFS). Der Ordner blieb unverändert.
+432	msi: Kopie konnte nicht vorbereitet werden: {0}
+433	Digitalisierung: Das Installationsprogramm konnte nicht analysiert werden ({0})
+434	INI: Die Einträge des Installationsprogramms konnten nicht analysiert werden ({0})
+435	Registrierung: Registry\\{0}.reg ({1} Einträge, in HKCU).
+436	Das Spiel benötigt möglicherweise weitere Datenträger ({0}): Erstellen Sie im Tab ISO Abbilder mit den Volumebezeichnungen {1} und legen Sie sie in den Ordner Discs.
+437	Portable.ps1 konnte nicht erstellt werden: {0}
+438	Hinweis: Die exe verwendet alte Grafik (DirectDraw/Direct3D 8). Wenn unter Windows 10/11 der Bildschirm schwarz wird oder flackert, aktivieren Sie „Vollbildoptimierungen deaktivieren“ und starten Sie den Modus „Nur Launch.bat“.
+439	Hinweis: Die exe prüft den Datenträger (GetVolumeInformation/GetDriveType). Wenn das Spiel einen Datenträger verlangt, erstellen Sie im Tab ISO ein Abbild des Datenträgers (Volumebezeichnung wie beim Datenträger) und legen Sie es in den Ordner Discs.
+440	Der Ordner dx mit den DirectX-Bibliotheken wurde nicht gefunden. Legen Sie ihn neben Portabilizer.exe (er befindet sich im Archiv part2) und erstellen Sie neu: Die Bibliotheken werden dann automatisch neben das Spiel gelegt.
+441	Das Spiel benötigt {0} {1} ({2}), diese Version ist in Portabilizer aber nicht enthalten. Wenn das Spiel mit einem Fehler zur parallelen Konfiguration (side-by-side) nicht startet, installieren Sie das Microsoft Visual C++ Redistributable des benötigten Jahres im System oder senden Sie dem Entwickler ein vcredist mit dieser Version.
+442	{0} {1} fehlt
+443	. Wenn das Spiel mit einem Fehler über eine fehlende dll oder Bibliothek nicht startet, installieren Sie sie einmal auf dem Computer, auf dem Sie spielen (Administratorrechte erforderlich). Sie selbst werden nicht in den portablen Ordner installiert.
+444	{0}: Quelle und Ergebnis liegen ineinander
+445	Quelle gelöscht: {0} ({1})
+446	Die Quelle {0} wurde nicht vollständig gelöscht (es sind belegte Dateien übrig).
+447	Relic-Installationsprogramm
+448	InstallShield-Datenträger: {0}. Wird an Ort und Stelle gelesen, eine Arbeitskopie des Datenträgers ist nicht nötig.
+449	Kein Datenträger konnte vorbereitet werden.
+450	Registrierung: Die .reg konnte nicht geschrieben werden ({0})
+451	Spieldatenträger
+452	vorhanden
+453	msi: Das Vorhandensein der Quelldateien konnte nicht geprüft werden ({0})
+454	Keine Quelldateien neben der msi: {0} (sie werden übersprungen): {1}
+455	Einstellungsdateien aus dem Installationsprogramm erstellt: 
+456	. Wenn das Spiel nicht startet, können Sie die benötigten Werte in Registry\\*.reg (HKCU) ablegen.
+457	In App liegen Installationsprogramme für Systemkomponenten: 
+458	Quellen wurden NICHT gelöscht: 
+459	Modus R: Die Dateien des Relic-Datenträgers werden aus dem Datenträgerordner nach App verschoben (ohne Kopie).
+460	Im Ordner gibt es kein Installationsprogramm (msi, Inno, NSIS, WiX). Fertige Anwendungsordner werden noch nicht unterstützt: Übergeben Sie ein Installationsprogramm oder ein Archiv.
+461	Auf keinem Datenträger wurde ein Installationsprogramm gefunden. Prüfen Sie, ob alle Spieldatenträger ausgewählt sind.
+462	Die Arbeitskopie der Datenträger wurde gelöscht: Abbilder und Spiel sind bereits erstellt.
+463	Überflüssiges entfernt: {0} Datei(en), {1} ({2}
+464	Datenträgerbezeichnungen nicht ermittelt: {0}
+465	Datenträgerabbild {0}: wird aus {1} erstellt (Volumebezeichnung {2}).
+466	Datenträgerabbild: {0}, {1}.
+467	Das Datenträgerabbild existiert bereits: {0}
+468	Hinweis: Die exe liest die Registrierung: 
+469	Radikaler Modus: {0}: {1}. Es passiert nichts.
+470	Zusätzliche Einstellungen nicht angewendet: {0}
+471	Mehrere Datenträger...
+472	Spiel-Screenshots: TGA zu PNG nach dem Beenden
+473	Vollbildoptimierungen deaktivieren (alte Spiele)
+474	Überflüssiges entfernen (VC/DirectX-Installationsprogramme, fremde Readme)
+475	Ordner mit NTFS komprimieren
+476	Radikale Version (Risiko).\n\nDie Quelle bleibt nicht erhalten: Nach erfolgreichem Erstellen werden die Quelldatei (alle Teile des Archivs), die Quellordner und mehrere Datenträger sowie temporäre Kopien GELÖSCHT. Der portable Ordner wird neben der Quelle erstellt. Funktioniert mit einer Datei, einem Ordner und mehreren Datenträgern gleichzeitig.\n\nSo wird Platz gespart: Eine gewöhnliche exe und ein Relic-Datenträger (gameInst.exe + Data) werden nicht kopiert, sondern nach App VERSCHOBEN. Archive und übrige Installationsprogramme werden zuerst entpackt, daher wird während der Arbeit genauso viel Platz benötigt wie bei der gewöhnlichen Version.\n\nSicherheit: Gelöscht wird erst nach einer Prüfung (Launch.bat erstellt, App nicht leer, Entpacker ohne Warnungen). Das Stammverzeichnis eines Laufwerks und Benutzerordner (Downloads, Desktop, Dokumente) werden nie gelöscht. Wird das Verschieben jedoch mittendrin abgebrochen, bleibt der Quellordner unvollständig, und Gelöschtes lässt sich nicht wiederherstellen.\n\nDer Modus „Nur Launch.bat“ funktioniert ebenfalls und löscht nichts. Vor jedem Start bittet das Programm um Bestätigung.
+477	Datenträgerabbild nicht erstellt: {0}
+478	Das entpackte Archiv wurde gelöscht: Das Spiel ist bereits in App abgelegt.
+479	Das entpackte Archiv wurde zur Analyse in {0} belassen.
+480	Im Archiv gibt es kein fertiges Programm und kein Installationsprogramm, aber Datenträgerabbilder: {0}. Ich verarbeite sie als Spieldatenträger. Der Inhalt des Archivs wurde in {1} gespeichert.
+481	Für das Datenträger-Spiel wurde {0} als Hauptdatei gewählt (die originale Launcher.exe startet ohne Administratorrechte nicht).
+482	Fügen Sie alle Datenträger des Spiels hinzu: Ordner, Archive (zip, 7z, rar) oder iso-Abbilder. Die Reihenfolge ist egal: Das Programm findet das Installationsprogramm selbst und ordnet die Datenträger zu.
+483	Ordner hinzufügen
+484	Dateien hinzufügen
+485	Entfernen
+486	Fertig
+487	Portabilizer (R): Quellordner und -dateien werden gelöscht
+488	Möchten Sie das wirklich im radikalen Modus portabel machen?\n\nNach erfolgreichem Erstellen werden DAUERHAFT GELÖSCHT (am Papierkorb vorbei):\n{0}\ninsgesamt {1}.\n\nWenn es sich um einen Relic-Datenträger handelt (gameInst.exe und Data), werden seine Dateien nicht kopiert, sondern nach App VERSCHOBEN: Wird die Arbeit mittendrin abgebrochen, bleibt der Datenträgerordner unvollständig.\n\nGelöscht wird nur, wenn das Erstellen gelungen ist und alles geprüft wurde. Das Ergebnis wird neben dem ersten Ordner erstellt.\n\nFortfahren?
+489	Datenträgerabbilder
+490	Der Ordner {0} kann nach der Prüfung gelöscht werden: Er enthält nur die ursprünglichen Datenträgerabbilder.
+491	Archive und Abbilder
+492	{0}: {1}. Der Modus R ist für einen solchen Pfad deaktiviert.
+493	Prüfung der Cabinets übersprungen: {0}
+494	Ordner
+495	Datei
+496	Das hat nicht geklappt, und für diese Ursache gibt es keinen fertigen Hinweis. Die Ursache steht meist in den letzten Zeilen des Journals oben. Wenn es unklar ist, senden Sie portabilizer.log an den Entwickler.

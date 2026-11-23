@@ -384,3 +384,113 @@
 384	完成：{0} ({1})
 385	正在生成映像... {0}%
 386	未创建映像。
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	游戏使用旧版图形接口（DirectDraw/Direct3D 8）。如果在 Windows 10/11 上屏幕变黑或闪烁，请勾选“禁用全屏优化”，并使用“仅 Launch.bat”模式运行。
+389	光盘中没有 Portabilizer 能够处理的安装程序（msi、Inno Setup、NSIS、WiX、InstallShield、Relic）。请打开 Extracted_discs 文件夹，查看第一张光盘上的内容（Setup.exe、Install.exe），并单独提交该安装程序。如果那是游戏自带的安装程序，请把日志发给开发者。
+390	静默安装失败，已将解压的文件放回 App。请检查程序能否从 App 启动。如果安装程序需要管理员权限，只能在拥有此类权限的电脑上，使用管理员密码进行安装。
+391	App 中包含系统组件安装程序（PhysX、Visual C++、DirectX、.NET）。如果游戏因 dll 错误无法启动，请在你要玩游戏的电脑上安装一次（需要管理员权限）。
+392	msiexec：代码 {0}，结果中的文件数：{1}。详细日志：{2}
+393	InstallShield 安装程序 {0}：cab 中的文件数：{1}，游戏语言：{2}。不会运行安装程序，文件直接从 cab 中读取。
+394	InstallShield 解压
+395	已从 cab 中提取文件：{0}（{1}），每个文件均已校验 MD5。
+396	InstallShield 光盘：仅转移了游戏
+397	文件按 cab 的结构放置（安装程序脚本已加密）：如果游戏缺少某些内容，请发送日志
+398	未找到
+399	这是磁盘根目录
+400	这是用户文件夹
+401	这是公共用户文件夹
+402	多张光盘
+403	光盘数：{0}。工作文件夹：{1}
+404	Relic 安装程序：{0}
+405	Relic：{0} 个文件，游戏语言：{1}。
+406	NTFS 压缩
+407	正在使用 NTFS 压缩文件夹（可能需要几分钟）...
+408	NTFS 压缩完成。数据可压缩的部分占用的磁盘空间已减少；游戏不会察觉。
+409	模式 (R)：不保留源文件。普通 exe 和 Relic 光盘会被直接移动到 App 文件夹，不产生副本（无需额外空间）。压缩包和其他安装程序会先解压，之后才删除源文件：处理期间需要有存放解压内容的空间。同样适用于文件夹和多张光盘。开始前会请求确认。
+410	不执行 InstallScript 操作重试（在 msi 的临时副本上）
+411	光盘游戏：光盘 {0}；光盘文件：{1}。
+412	未创建符号链接：{0}（用于 macOS/Linux 的文件）。Windows 不需要它们，其余文件已解压，无需管理员权限。
+413	未创建符号链接
+414	无法提取文件：{0}。请确认所有分卷（data1.cab、data2.cab...）都在且已完整下载。
+415	App\\_redist 文件夹中有游戏需要在系统中安装的安装程序（例如 PhysX）：请在你要玩游戏的电脑上安装一次
+416	Discs 中的镜像将在启动前挂载，退出后卸载
+417	Registry 中的设置将在启动前加载到当前用户的注册表
+418	退出游戏后，新的 .tga 截图将转换为 .png（保留原文件；删除 Screenshots_PNG.txt 即可关闭）
+419	App 中包含系统组件安装程序
+420	路径无法读取
+421	多张光盘不需要“仅 Launch.bat”模式：请选择已准备好的游戏文件夹。
+422	多张光盘仅支持解压。
+423	光盘解压
+424	安装程序：{0}
+425	安装 Relic 文件
+426	警告：{0} 个文件没有数据（例如 {1}）。请确认光盘文件夹已完整复制。
+427	警告：{0} 个文件的校验和不匹配（例如 {1}）。光盘或副本可能已损坏。
+428	注册表：已写入 (HKCU)。如果游戏要求产品密钥，请输入一次，之后会保存。
+429	没有多余内容：无需清理。
+430	NTFS 压缩：仅在 Windows 中可用，已跳过。
+431	NTFS 压缩失败（磁盘可能不是 NTFS）。文件夹保持原样。
+432	msi：无法准备副本：{0}
+433	数字化：无法解析安装程序（{0}）
+434	INI：无法解析安装程序的条目（{0}）
+435	注册表：Registry\\{0}.reg（{1} 条记录，位于 HKCU）。
+436	游戏可能需要其他光盘（{0}）：请在 ISO 选项卡中以卷标 {1} 创建镜像，并放入 Discs 文件夹。
+437	无法创建 Portable.ps1：{0}
+438	提示：该 exe 使用旧版图形接口（DirectDraw/Direct3D 8）。如果在 Windows 10/11 上屏幕变黑或闪烁，请勾选“禁用全屏优化”，并使用“仅 Launch.bat”模式运行。
+439	提示：该 exe 会检查光盘（GetVolumeInformation/GetDriveType）。如果游戏要求插入光盘，请在 ISO 选项卡中创建光盘镜像（卷标与光盘相同），并放入 Discs 文件夹。
+440	未找到包含 DirectX 库的 dx 文件夹。请将其放在 Portabilizer.exe 旁边（它在 part2 压缩包中），然后重新构建：库文件会自动放到游戏旁边。
+441	游戏需要 {0} {1}（{2}），但 Portabilizer 中没有此版本。如果游戏因并行配置（side-by-side）错误无法启动，请在系统中安装相应年份的 Microsoft Visual C++ Redistributable，或把包含该版本的 vcredist 发给开发者。
+442	缺少 {0} {1}
+443	。如果游戏因缺少 dll 或库而无法启动，请在你要玩游戏的电脑上安装一次（需要管理员权限）。它们不会安装到便携文件夹中。
+444	{0}：源和结果互相嵌套
+445	已删除源文件：{0}（{1}）
+446	源 {0} 未被完全删除（部分文件被占用）。
+447	Relic 安装程序
+448	InstallShield 光盘：{0}。就地读取，无需光盘的工作副本。
+449	没有任何光盘可以准备。
+450	注册表：无法写入 .reg（{0}）
+451	游戏光盘
+452	有
+453	msi：无法检查源文件是否存在（{0}）
+454	msi 旁边没有源文件：{0}（将被跳过）：{1}
+455	已创建来自安装程序的设置文件： 
+456	。如果游戏无法启动，可以把所需的值放入 Registry\\*.reg (HKCU)。
+457	App 中包含系统组件安装程序： 
+458	源文件未被删除： 
+459	模式 R：Relic 光盘文件从光盘文件夹移动到 App（不产生副本）。
+460	文件夹中没有安装程序（msi、Inno、NSIS、WiX）。暂不支持现成的应用文件夹：请提交安装程序或压缩包。
+461	在任何光盘上都没有找到安装程序。请确认已选择游戏的所有光盘。
+462	光盘的工作副本已删除：镜像和游戏已构建完成。
+463	已清理多余内容：{0} 个文件，{1}（{2}
+464	无法确定光盘卷标：{0}
+465	光盘镜像 {0}：正在从 {1} 构建（卷标 {2}）。
+466	光盘镜像：{0}，{1}。
+467	光盘镜像已存在：{0}
+468	提示：该 exe 会读取注册表： 
+469	激进模式：{0}：{1}。不执行任何操作。
+470	附加设置未应用：{0}
+471	多张光盘...
+472	游戏截图：退出后将 TGA 转为 PNG
+473	禁用全屏优化（旧游戏）
+474	清理多余内容（VC/DirectX 安装程序、其他 Readme）
+475	使用 NTFS 压缩文件夹
+476	激进版本（有风险）。\n\n不保留源文件：构建成功后，源文件（压缩包的所有分卷）、源文件夹、多张光盘以及临时副本都会被删除。便携文件夹创建在源文件旁边。可同时处理文件、文件夹和多张光盘。\n\n如何节省空间：普通 exe 和 Relic 光盘（gameInst.exe + Data）不会被复制，而是被移动到 App。压缩包和其他安装程序会先解压，因此处理期间所需空间与普通版本相同。\n\n安全性：只有在检查通过后才会删除（已创建 Launch.bat，App 不为空，解压器无警告）。磁盘根目录和用户文件夹（下载、桌面、文档）永远不会被删除。但如果移动过程中被中断，源文件夹将不完整，且已删除的内容无法恢复。\n\n“仅 Launch.bat”模式同样可用，且不删除任何内容。每次运行前程序都会请求确认。
+477	光盘镜像未创建：{0}
+478	已删除解压的压缩包：游戏已放入 App。
+479	解压的压缩包保留在 {0}，供分析。
+480	压缩包中没有现成的程序和安装程序，但有光盘镜像：{0}。将把它们作为游戏光盘处理。压缩包内容已保存到 {1}。
+481	光盘游戏已选择 {0} 作为主程序（原版 Launcher.exe 没有管理员权限无法运行）。
+482	请添加游戏的所有光盘：文件夹、压缩包（zip、7z、rar）或 iso 镜像。顺序无关：程序会自行找到安装程序并整理光盘。
+483	添加文件夹
+484	添加文件
+485	移除
+486	完成
+487	Portabilizer (R)：源文件夹和文件将被删除
+488	确定要以激进模式将其制作为便携版吗？\n\n构建成功后，以下内容将被永久删除（不经过回收站）：\n{0}\n共 {1}。\n\n如果是 Relic 光盘（gameInst.exe 和 Data），其文件不会被复制，而是被移动到 App：如果中途中断，光盘文件夹将不完整。\n\n仅当构建成功且全部检查通过后才会删除。结果将创建在第一个文件夹旁边。\n\n是否继续？
+489	光盘镜像
+490	检查后可以删除文件夹 {0}：其中只有源光盘镜像。
+491	压缩包和镜像
+492	{0}：{1}。此路径已禁用 R 模式。
+493	已跳过 cab 检查：{0}
+494	文件夹
+495	文件
+496	失败了，而且这个原因没有现成的提示。原因通常在上方日志的最后几行。如果不清楚，请把 portabilizer.log 发给开发者。

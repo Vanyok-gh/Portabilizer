@@ -90,6 +90,8 @@ class Cabinet:
         self.cab_dir = Path(cab_dir)
         self.entries = []
         self.groups = []
+        self.dirs = []
+        self.inferred = {}              # группа -> подпапка, выведенная по структуре кабинета (предположение)
         self._index = None              # имя файла (нижний регистр) -> пути на диске, строится при первой надобности
         self._parse(header)
 
@@ -113,6 +115,7 @@ class Cabinet:
         if recs + files_n * DESC_SIZE > len(h) or dirs_n > 100000 or files_n > 1000000:
             raise ISCError("таблица файлов InstallShield повреждена")
         dirs = [_cstr(h, table + u32(table + 4 * i)) for i in range(dirs_n)]
+        self.dirs = dirs
         for i in range(files_n):
             p = recs + i * DESC_SIZE
             di = u16(p + 62)
@@ -331,6 +334,27 @@ _GROUP_SUBDIR = {"commonsettings": "settings", "commonbundles": "bundles"}
 _REDIST_GROUPS = re.compile(r"^(ageia|physx)", re.I)
 
 
+def group_subdir(cab: Cabinet, group_name: str) -> str:
+    """Подпапка, в которую установщик кладёт файлы группы.
+    Скрипт setup.inx зашифрован, поэтому точный ответ взять негде. Известные случаи записаны в _GROUP_SUBDIR
+    (подтверждены на GRAW2). Для остальных групп вида Common<Имя> действует правило, выведенное из них:
+    в кабинете есть пустая папка верхнего уровня с именем <Имя> (нет файлов ни в ней, ни глубже): это и есть
+    место назначения. Это ПРЕДПОЛОЖЕНИЕ, на реальных дисках проверено только для двух групп выше;
+    результат запоминается в cab.inferred, чтобы его можно было показать в журнале."""
+    name = group_name.lower()
+    if name in _GROUP_SUBDIR:
+        return _GROUP_SUBDIR[name]
+    if not name.startswith("common") or len(name) <= 6:
+        return ""
+    want = name[6:]
+    used = {e.dir.split("\\")[0].lower() for e in cab.entries if e.dir}
+    for d in cab.dirs:
+        if d and "\\" not in d and d.lower() == want and want not in used:
+            cab.inferred[group_name] = d
+            return d
+    return ""
+
+
 def language_of(name: str):
     """('Data', 'FR') для группы DataFR, иначе None."""
     m = _LANG_GROUP.match(name)
@@ -363,7 +387,7 @@ def select_files(cab: Cabinet, language: str = "en"):
         if lg and len(families.get(lg[0].lower(), [])) > 1 and lg[1].upper() not in want:
             skipped.append((name, len(entries)))
             continue
-        sub = _GROUP_SUBDIR.get(name.lower(), "")
+        sub = group_subdir(cab, name)
         for e in entries:
             if _SKIP_FILES.search(e.name):
                 continue
@@ -403,6 +427,9 @@ def extract_game(cab: Cabinet, dest, language="en", log=print, progress=None, ca
             raise ISCError("прервано")
 
     errors, count, size = [], 0, 0
+    for g, d in cab.inferred.items():
+        log(f"Группа {g}: файлы положены в папку {d} по структуре кабинета (предположение: скрипт установщика "
+            f"зашифрован). Если игра не находит свои файлы, переложите их вручную.")
     log(f"InstallShield {cab.major}: файлов игры {len(files)}, "
         f"{sum(e.size for e, _ in files) / 1048576:.0f} МБ; пропущены группы установщика: "
         + (", ".join(f"{n} ({c})" for n, c in skipped) or "нет"))

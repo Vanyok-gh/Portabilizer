@@ -384,3 +384,113 @@
 384	Selesai: {0} ({1})
 385	Membuat citra... {0}%
 386	Citra tidak dibuat.
+387	\nparam([string]$Path, [string]$KeysFile)\n$ErrorActionPreference = 'Stop'\n$inst = New-Object -ComObject WindowsInstaller.Installer\n$db = $inst.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $inst, @($Path, 1))\nforeach ($t in 'AdminExecuteSequence', 'AdminUISequence') {\n    try {\n        $v = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("SELECT Action FROM $t"))\n        $v.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $v, $null) | Out-Null\n        $names = @()\n        while ($true) {\n            $r = $v.GetType().InvokeMember('Fetch', 'InvokeMethod', $null, $v, $null)\n            if ($r -eq $null) { break }\n            $n = $r.GetType().InvokeMember('StringData', 'GetProperty', $null, $r, @(1))\n            if ($n -like 'IS*') { $names += $n }\n        }\n        $v.GetType().InvokeMember('Close', 'InvokeMethod', $null, $v, $null) | Out-Null\n        foreach ($n in $names) {\n            $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM $t WHERE Action='$n'"))\n            $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n            $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n        }\n        Write-Host "$t : removed $($names.Count)"\n    } catch { Write-Host "$t : skipped ($($_.Exception.Message))" }\n}\n# Папка DirectX9 с диска (установщик DirectX, cab-ы) обычно не копируется вместе с игрой:\n# убираем её файлы из черновика, иначе msiexec падает с ошибкой 1309 (cab не найден).\ntry {\n    $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @("DELETE FROM File WHERE Component_='DirectX9'"))\n    $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n    $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n} catch { Write-Host "File : skipped ($($_.Exception.Message))" }\n# Файлы-источники, которых нет рядом с msi (список ключей в $KeysFile): убираем их строки,\n# иначе msiexec останавливается на первом же отсутствующем файле (ошибка 1308).\nif ($KeysFile -and (Test-Path -LiteralPath $KeysFile)) {\n    $cnt = 0\n    foreach ($k in (Get-Content -LiteralPath $KeysFile -Encoding UTF8)) {\n        if (-not $k -or $k.Contains("'")) { continue }\n        try {\n            foreach ($q in "UPDATE Component SET KeyPath=NULL WHERE KeyPath='$k'", "DELETE FROM File WHERE File='$k'") {\n                $d = $db.GetType().InvokeMember('OpenView', 'InvokeMethod', $null, $db, @($q))\n                $d.GetType().InvokeMember('Execute', 'InvokeMethod', $null, $d, $null) | Out-Null\n                $d.GetType().InvokeMember('Close', 'InvokeMethod', $null, $d, $null) | Out-Null\n            }\n            $cnt++\n        } catch { Write-Host "File $k : skipped ($($_.Exception.Message))" }\n    }\n    Write-Host "File : removed $cnt missing sources"\n}\n$db.GetType().InvokeMember('Commit', 'InvokeMethod', $null, $db, $null) | Out-Null\n
+388	Game ini memakai grafis lama (DirectDraw/Direct3D 8). Jika di Windows 10/11 layar menjadi hitam atau berkedip, centang "Nonaktifkan optimisasi layar penuh" dan jalankan mode "Hanya Launch.bat".
+389	Di disk tidak ada installer yang dapat diproses Portabilizer (msi, Inno Setup, NSIS, WiX, InstallShield, Relic). Buka folder Extracted_discs, lihat isi disk pertama (Setup.exe, Install.exe), lalu masukkan installer itu secara terpisah. Jika itu installer bawaan game, kirimkan log ke pengembang.
+390	Instalasi senyap gagal, file yang diekstrak dikembalikan ke App. Periksa apakah program berjalan dari App. Jika installer memerlukan hak administrator, satu-satunya cara adalah menginstal dengan kata sandi administrator di komputer yang memiliki hak tersebut.
+391	Di dalam App terdapat installer komponen sistem (PhysX, Visual C++, DirectX, .NET). Jika game tidak berjalan dan muncul error dll, instal sekali di komputer tempat Anda akan bermain (perlu hak administrator).
+392	msiexec: kode {0}, jumlah file hasil {1}. Log terperinci: {2}
+393	Installer InstallShield {0}: jumlah file di cabinet {1}, bahasa game: {2}. Installer tidak dijalankan, file dibaca dari cabinet.
+394	Ekstraksi InstallShield
+395	File yang diekstrak dari cabinet: {0} ({1}), MD5 setiap file telah diperiksa.
+396	disk InstallShield: hanya game yang dipindahkan
+397	file disusun menurut struktur cabinet (skrip installer terenkripsi): jika ada yang kurang pada game, kirimkan log
+398	tidak ditemukan
+399	ini root disk
+400	ini folder pengguna
+401	ini folder pengguna bersama
+402	beberapa disk
+403	Jumlah disk: {0}. Folder kerja: {1}
+404	Installer Relic: {0}
+405	Relic: {0} file, bahasa game: {1}.
+406	Kompresi NTFS
+407	Mengompresi folder dengan NTFS (bisa memakan waktu beberapa menit)...
+408	Kompresi NTFS selesai. Ukuran di disk berkurang untuk data yang bisa dikompresi; game tidak merasakannya.
+409	MODE (R): file sumber tidak dipertahankan. Exe biasa dan disk Relic DIPINDAHKAN ke folder App tanpa salinan (tidak perlu ruang tambahan). Arsip dan installer lainnya diekstrak terlebih dahulu, baru setelah itu file sumber dihapus: selama proses berlangsung diperlukan ruang untuk hasil ekstraksi. Berfungsi untuk folder dan beberapa disk. Sebelum mulai akan ada konfirmasi.
+410	Ulangi tanpa aksi InstallScript (pada salinan sementara msi)
+411	Game disk: disk {0}; file dari disk: {1}.
+412	Symlink tidak dibuat: {0} (file untuk macOS/Linux). Di Windows tidak diperlukan, file lainnya telah diekstrak, hak administrator tidak diperlukan.
+413	symlink tidak dibuat
+414	Gagal mengekstrak file: {0}. Pastikan semua volume (data1.cab, data2.cab...) ada dan terunduh sepenuhnya.
+415	di folder App\\_redist ada installer yang dibutuhkan game di sistem (misalnya PhysX): instal sekali di komputer tempat Anda akan bermain
+416	citra dari Discs akan dipasang sebelum dijalankan dan dilepas setelah keluar
+417	pengaturan dari Registry akan dimuat ke registri pengguna sebelum dijalankan
+418	setelah keluar dari game, tangkapan layar .tga baru akan diubah menjadi .png (file asli tetap ada; untuk menonaktifkan, hapus Screenshots_PNG.txt)
+419	di App ada installer komponen sistem
+420	path tidak dapat dibaca
+421	Untuk beberapa disk mode 'Hanya Launch.bat' tidak diperlukan: pilih folder game yang sudah jadi.
+422	Untuk beberapa disk hanya tersedia ekstraksi.
+423	Ekstraksi disk
+424	Installer: {0}
+425	Instalasi file Relic
+426	Peringatan: tidak ada data untuk {0} file (misalnya {1}). Pastikan folder disk disalin seluruhnya.
+427	Peringatan: checksum tidak cocok pada {0} file (misalnya {1}). Disk atau salinannya mungkin rusak.
+428	Registri: tertulis (HKCU). Jika game meminta kunci produk, masukkan sekali saja: kunci akan disimpan.
+429	Tidak ada yang berlebih: tidak ada yang perlu dihapus.
+430	Kompresi NTFS: hanya tersedia di Windows, dilewati.
+431	Kompresi NTFS gagal (mungkin disk bukan NTFS). Folder dibiarkan apa adanya.
+432	msi: gagal menyiapkan salinan: {0}
+433	Digitalisasi: gagal mengurai installer ({0})
+434	INI: gagal mengurai entri installer ({0})
+435	Registri: Registry\\{0}.reg ({1} entri, di HKCU).
+436	Game mungkin memerlukan disk lain ({0}): buat citra di tab ISO dengan label volume {1} dan letakkan di folder Discs.
+437	Gagal membuat Portable.ps1: {0}
+438	Petunjuk: exe memakai grafis lama (DirectDraw/Direct3D 8). Jika di Windows 10/11 layar menjadi hitam atau berkedip, centang "Nonaktifkan optimisasi layar penuh" dan jalankan mode "Hanya Launch.bat".
+439	Petunjuk: exe memeriksa disk (GetVolumeInformation/GetDriveType). Jika game meminta disk, buat citra disk di tab ISO (label volume sama dengan disk) dan letakkan di folder Discs.
+440	Folder dx dengan pustaka DirectX tidak ditemukan. Letakkan di sebelah Portabilizer.exe (ada di arsip part2) lalu build ulang: pustaka akan otomatis ditempatkan di samping game.
+441	Game memerlukan {0} {1} ({2}), tetapi versi tersebut tidak ada di Portabilizer. Jika game tidak berjalan dengan error konfigurasi berdampingan (side-by-side), instal Microsoft Visual C++ Redistributable untuk tahun yang sesuai ke sistem, atau kirimkan ke pengembang vcredist dengan versi tersebut.
+442	tidak ada {0} {1}
+443	. Jika game tidak berjalan dengan error tentang dll atau pustaka yang hilang, instal sekali di komputer tempat Anda akan bermain (perlu hak administrator). Komponen itu sendiri tidak diinstal ke folder portabel.
+444	{0}: sumber dan hasil saling berada di dalam satu sama lain
+445	Sumber dihapus: {0} ({1})
+446	Sumber {0} tidak terhapus seluruhnya (ada file yang sedang digunakan).
+447	installer Relic
+448	Disk InstallShield: {0}. Dibaca di tempat, salinan kerja disk tidak diperlukan.
+449	Tidak ada disk yang berhasil disiapkan.
+450	Registri: gagal menulis .reg ({0})
+451	Disk game
+452	ada
+453	msi: gagal memeriksa keberadaan file sumber ({0})
+454	Tidak ada file sumber di samping msi: {0} (akan dilewati): {1}
+455	File pengaturan dari installer telah dibuat: 
+456	. Jika game tidak berjalan, nilai yang diperlukan dapat diletakkan di Registry\\*.reg (HKCU).
+457	Di dalam App ada installer komponen sistem: 
+458	File sumber TIDAK dihapus: 
+459	Mode R: file disk Relic dipindahkan dari folder disk ke App (tanpa salinan).
+460	Di folder tidak ada installer (msi, Inno, NSIS, WiX). Folder aplikasi yang sudah jadi belum didukung: masukkan installer atau arsip.
+461	Installer tidak ditemukan di disk mana pun. Pastikan semua disk game sudah dipilih.
+462	Salinan kerja disk dihapus: citra dan game sudah dibuat.
+463	File berlebih dihapus: {0} file, {1} ({2}
+464	Label disk tidak dapat ditentukan: {0}
+465	Citra disk {0}: dibuat dari {1} (label volume {2}).
+466	Citra disk: {0}, {1}.
+467	Citra disk sudah ada: {0}
+468	Petunjuk: exe membaca registri: 
+469	Mode radikal: {0}: {1}. Tidak melakukan apa-apa.
+470	Pengaturan tambahan tidak diterapkan: {0}
+471	Beberapa disk...
+472	Tangkapan layar game: TGA ke PNG setelah keluar
+473	Nonaktifkan optimisasi layar penuh (game lama)
+474	Hapus yang berlebih (installer VC/DirectX, Readme pihak lain)
+475	Kompres folder dengan NTFS
+476	Versi radikal (berisiko).\n\nFile sumber tidak dipertahankan: setelah build berhasil, file sumber (semua volume arsip), folder sumber dan beberapa disk, serta salinan sementara akan DIHAPUS. Folder portabel dibuat di samping file sumber. Berfungsi untuk file, folder, dan beberapa disk sekaligus.\n\nCara menghemat ruang: exe biasa dan disk Relic (gameInst.exe + Data) tidak disalin, tetapi DIPINDAHKAN ke App. Arsip dan installer lainnya diekstrak terlebih dahulu, sehingga selama proses diperlukan ruang sebanyak pada versi biasa.\n\nKeamanan: penghapusan hanya dilakukan setelah pemeriksaan (Launch.bat dibuat, App tidak kosong, ekstraktor tanpa peringatan). Root disk dan folder pengguna (Unduhan, Desktop, Dokumen) tidak pernah dihapus. Namun jika pemindahan dihentikan di tengah jalan, folder sumber akan tidak lengkap, dan yang sudah terhapus tidak dapat dikembalikan.\n\nMode "Hanya Launch.bat" juga berfungsi tanpa menghapus apa pun. Sebelum setiap proses, program meminta konfirmasi.
+477	Citra disk tidak dibuat: {0}
+478	Arsip yang diekstrak dihapus: game sudah ditata di App.
+479	Arsip yang diekstrak disimpan di {0} untuk dianalisis.
+480	Di arsip tidak ada program siap pakai maupun installer, tetapi ada citra disk: {0}. Saya memprosesnya sebagai disk game. Isi arsip disimpan di {1}.
+481	Untuk game disk, {0} dipilih sebagai file utama (Launcher.exe asli tidak berjalan tanpa hak administrator).
+482	Tambahkan semua disk game: folder, arsip (zip, 7z, rar), atau citra iso. Urutan tidak penting: program akan menemukan installer dan menata disk sendiri.
+483	Tambah folder
+484	Tambah file
+485	Hapus
+486	Selesai
+487	Portabilizer (R): folder dan file sumber akan dihapus
+488	Apakah Anda yakin ingin membuat ini portabel dalam mode radikal?\n\nSetelah build berhasil, yang akan DIHAPUS PERMANEN (tanpa melalui Recycle Bin):\n{0}\ntotal {1}.\n\nJika ini disk Relic (gameInst.exe dan Data), file-nya tidak disalin, tetapi DIPINDAHKAN ke App: jika proses dihentikan di tengah jalan, folder disk akan tidak lengkap.\n\nPenghapusan hanya terjadi jika build berhasil dan semuanya telah diperiksa. Hasilnya dibuat di samping folder pertama.\n\nLanjutkan?
+489	citra disk
+490	Folder {0} dapat dihapus setelah pemeriksaan: isinya hanya citra disk sumber.
+491	Arsip dan citra
+492	{0}: {1}. Mode R dinonaktifkan untuk path seperti ini.
+493	Pemeriksaan cabinet dilewati: {0}
+494	folder
+495	file
+496	Gagal, dan untuk penyebab ini belum ada petunjuk siap pakai. Penyebabnya biasanya ada di baris terakhir log di atas. Jika tidak jelas, kirimkan portabilizer.log ke pengembang.

@@ -109,7 +109,7 @@ with tempfile.TemporaryDirectory() as d:
     check(h["registry"] == ["Software\\Core Design\\Game\\1.0"], f"ключ реестра из exe: {h['registry']}")
     check(h["disc_check"], "проверка диска определяется по API")
     check(h["disc_prompts"] and "insert" in h["disc_prompts"][0].lower(), "строка просьбы вставить диск найдена")
-    check(D.scan_exe_hints(Path(d) / "нет.exe") == {"registry": [], "disc_check": False, "disc_prompts": []}, "нет файла - пустой результат")
+    check(D.scan_exe_hints(Path(d) / "нет.exe") == {"registry": [], "disc_check": False, "disc_prompts": [], "legacy_gfx": False}, "нет файла - пустой результат")
 if glob.glob("/mnt/user-data/attachments/*/*TRAOD_P4.exe"):
     h = D.scan_exe_hints(glob.glob("/mnt/user-data/attachments/*/*TRAOD_P4.exe")[0])
     check(any("TombRaiderAngelOfDarkness" in k for k in h["registry"]), "в настоящем TRAOD_P4.exe найден ключ реестра игры")
