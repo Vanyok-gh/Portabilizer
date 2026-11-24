@@ -2583,6 +2583,41 @@ def system_installers(app: Path, limit=6):
     return found
 
 
+# тихие ключи известных установщиков системных компонентов (порядок: более конкретные первыми)
+REDIST_SWITCHES = (("vc_redist", "/quiet /norestart"), ("vcredist", "/quiet /norestart"),
+                   ("physx", "/s"), ("dxsetup", "/silent"), ("oalinst", "/silent"),
+                   ("ndp", "/q /norestart"), ("dotnet", "/q /norestart"))
+
+
+def write_redist_script(target: Path, app: Path, items, log) -> bool:
+    """Install_redist.bat: по очереди тихо ставит найденные в App системные компоненты.
+
+    Запускать нужно один раз на компьютере, где будут играть, от имени администратора.
+    Неизвестные установщики в скрипт не попадают (их ключей мы не знаем), о них говорит лог.
+    """
+    lines = []
+    for rel in items:
+        low = Path(rel).name.lower()
+        if low.endswith(".msi"):
+            lines.append(f'echo {Path(rel).name}\nmsiexec /i "%~dp0App\\{rel}" /qn /norestart')
+            continue
+        for key, sw in REDIST_SWITCHES:
+            if key in low:
+                lines.append(f'echo {Path(rel).name}\nstart /wait "" "%~dp0App\\{rel}" {sw}')
+                break
+    if not lines:
+        return False
+    bat = ("@echo off\nchcp 65001 >nul\n"
+           "net session >nul 2>&1 || (echo Run this file as administrator: right click - Run as administrator. & pause & exit /b 1)\n"
+           + "\n".join(lines) + "\necho.\necho Done.\npause\n")
+    try:
+        (Path(target) / "Install_redist.bat").write_text(bat, encoding="utf-8")
+    except OSError as e:
+        log(f"Не удалось создать Install_redist.bat: {e}")
+        return False
+    return True
+
+
 def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=True,
            system_root=None) -> bool:
     """Пишет Launch.bat. Для игр на Unreal Engine запускает ...-Shipping.exe напрямую
@@ -2699,6 +2734,9 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
               "один раз на компьютере, где будете играть (нужны права администратора). "
               "Сами они в портативную папку не ставятся.")
         notes.append("в App есть установщики системных компонентов")
+        if write_redist_script(target, app, sysinst, log):
+            log("Для удобства создан Install_redist.bat: он тихо поставит найденные компоненты "
+                "(запускать от имени администратора, один раз на компьютере с игрой).")
     try:
         bat, sc_name, icon = write_shortcut_script(target, app, main)
         if info is not None:
