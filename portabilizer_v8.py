@@ -1387,6 +1387,39 @@ def silent_install(exe: Path, kind: str, app: Path, log, job=None) -> bool:
     return ok and any(app.iterdir())
 
 
+def check_bin_parts(setup: Path, bins) -> list:
+    """Проблемы с частями установщика Inno (<имя>-1.bin, <имя>-2.bin ...): пропуски, пустые и обрезанные файлы.
+
+    Возвращает список готовых строк для лога (пусто - всё в порядке). Последнюю часть
+    по счёту проверить нельзя: её отсутствие видно только по докачке, поэтому о ней молчим.
+    """
+    stem = re.escape(setup.stem)
+    parts = {}
+    for b in bins:
+        m = re.fullmatch(stem + r"-(\d+)\.bin", b.name, re.I)
+        if m:
+            parts[int(m.group(1))] = b
+    if not parts:
+        return []
+    problems = []
+    last = max(parts)
+    missing = [n for n in range(1, last + 1) if n not in parts]
+    if missing:
+        names = ", ".join(f"{setup.stem}-{n}.bin" for n in missing[:6])
+        problems.append(f"Не хватает частей установщика: {names}. Докачайте их в ту же папку, "
+                        "иначе распаковка или установка остановится на середине.")
+    sizes = {n: _size(p) for n, p in parts.items()}
+    empty = [n for n, sz in sizes.items() if sz == 0]
+    if empty:
+        problems.append("Пустые файлы частей: " + ", ".join(parts[n].name for n in empty[:6]) + ".")
+    full = max((sz for n, sz in sizes.items() if n != last), default=0)
+    short = [n for n, sz in sizes.items() if n != last and sz and full and sz < full]
+    if short:
+        problems.append("Похоже, не докачаны: " + ", ".join(parts[n].name for n in short[:6])
+                        + " (они меньше остальных частей). Скачайте их заново.")
+    return problems
+
+
 def is_gui_exe(p: Path) -> bool:
     """True для GUI-программ (Subsystem=2). Консольные утилиты (XTool и т.п.) отсеиваем."""
     try:
@@ -1400,7 +1433,8 @@ def is_gui_exe(p: Path) -> bool:
 
 
 # имена, которые не отсеиваем совсем, но ставим в конец очереди: патчеры, обновлялки, помощники
-SOFT_PENALTY = ("patch", "benchmark", "crashhandler", "helper", "ffmpeg", "merger")   # "update" отсеян жёстко (SKIP)
+SOFT_PENALTY = ("patch", "benchmark", "crashhandler", "crashreport", "helper", "ffmpeg", "merger",
+                "config", "settings", "editor", "dedicated", "server")   # "update" отсеян жёстко (SKIP)
 
 
 def unreal_rank(p: Path) -> int:
@@ -1439,36 +1473,101 @@ def _size(p: Path) -> int:
         return 0
 
 
-def exe_rank_key(p: Path, folder: Path):
-    """Чем больше ключ, тем лучше кандидат: Unreal, не патчер, ближе к корню, крупнее."""
+def _norm_name(text: str) -> str:
+    """Только буквы и цифры в нижнем регистре: 'Metro 2033-Redux' -> 'metro2033redux'."""
+    return re.sub(r"[^0-9a-zа-яё]", "", text.lower())
+
+
+_ARCH_SUFFIX = re.compile(r"(x64|x86|win64|win32|amd64|64|32)$")
+
+
+def _arch_base(p: Path) -> str:
+    """Имя без пометки разрядности: game_x64.exe и game_x86.exe имеют общую основу 'game'."""
+    return _ARCH_SUFFIX.sub("", _norm_name(p.stem)) or _norm_name(p.stem)
+
+
+def is_x64_exe(p: Path) -> bool:
+    """True для 64-битных PE (Machine = 0x8664 / ARM64)."""
+    try:
+        with open(p, "rb") as f:
+            f.seek(0x3C)
+            pe = struct.unpack("<I", f.read(4))[0]
+            f.seek(pe + 4)
+            return struct.unpack("<H", f.read(2))[0] in (0x8664, 0xAA64)
+    except Exception:
+        return False
+
+
+def name_affinity(p: Path, folder: Path, hints=()) -> int:
+    """1, если имя exe совпадает с названием программы (папка назначения, подсказки), иначе 0.
+
+    Совпадением считаем вхождение одного названия в другое при длине от 4 знаков:
+    metro.exe подходит к папке 'Metro 2033 Redux'. Так главный exe находится без вопросов,
+    даже когда рядом лежат равные по весу лаунчер, редактор и утилиты.
+    """
+    stem = _norm_name(p.stem)
+    if len(stem) < 4:
+        return 0
+    names = list(hints) + [d for d in p.relative_to(folder).parts[:-1]]
+    for h in names:
+        n = _norm_name(str(h))
+        if len(n) >= 4 and (stem in n or n in stem):
+            return 1
+    return 0
+
+
+def exe_rank_key(p: Path, folder: Path, hints=(), twin_x64=False):
+    """Чем больше ключ, тем лучше кандидат: Unreal, не патчер, имя совпало с игрой,
+    64-бит (если рядом есть 32-битная копия), ближе к корню, крупнее."""
     low = p.name.lower()
     return (unreal_rank(p), not any(w in low for w in SOFT_PENALTY),
+            name_affinity(p, folder, hints), twin_x64,
             -len(p.relative_to(folder).parts), _size(p))
 
 
-def rank_exes(folder: Path, allow_console=False):
+_TIE_LEN = 5   # сколько первых компонентов ключа определяют «равных» кандидатов (без размера)
+
+
+def _keys(cands, folder, hints):
+    """Ключи для списка кандидатов; 64-битный бонус даём только тем, у кого есть 32-битный близнец."""
+    groups = {}
+    for p in cands:
+        groups.setdefault(_arch_base(p), []).append(p)
+    out = {}
+    for p in cands:
+        twins = groups[_arch_base(p)]   # game_x64/game_x86 или bin\x64\game.exe / bin\x86\game.exe
+        twin_x64 = len(twins) > 1 and is_x64_exe(p)
+        out[p] = exe_rank_key(p, folder, hints, twin_x64)
+    return out
+
+
+def rank_exes(folder: Path, allow_console=False, hints=()):
     """Подходящие exe, лучший первым."""
     cands = [p for p in folder.rglob("*.exe") if exe_reject_reason(p, folder, allow_console) is None]
-    cands.sort(key=lambda p: exe_rank_key(p, folder), reverse=True)
+    keys = _keys(cands, folder, hints)
+    cands.sort(key=lambda p: keys[p], reverse=True)
     return cands
 
 
-def find_main_exe(folder: Path, log=None, chooser=None):
+def find_main_exe(folder: Path, log=None, chooser=None, hints=None):
     """Главный exe. Сначала только графические программы; если таких нет - допускаем консольные.
 
     chooser(options) - необязательная функция выбора, options = [(подпись, путь), ...];
     вызывается только если несколько кандидатов равны по приоритету (кроме Unreal-игр).
     """
+    if hints is None:   # папка App лежит в папке с названием программы
+        hints = [folder.parent.name, folder.name]
     for allow_console in (False, True):
-        cands = rank_exes(folder, allow_console)
+        cands = rank_exes(folder, allow_console, hints)
         if not cands:
             continue
+        keys = _keys(cands, folder, hints)
         best = cands[0]
         if allow_console and log:
             log(f"Графических программ не нашлось, беру консольную: "
                 f"{best.relative_to(folder)}. Если это не игра, укажите exe вручную.")
-        key0 = exe_rank_key(best, folder)[:3]
-        tied = [c for c in cands if exe_rank_key(c, folder)[:3] == key0]
+        key0 = keys[best][:_TIE_LEN]
+        tied = [c for c in cands if keys[c][:_TIE_LEN] == key0]
         if chooser and len(tied) > 1 and key0[0] == 0:
             options = [(f"{c.relative_to(folder)}  ({fmt_size(_size(c))})", c) for c in tied[:8]]
             try:
@@ -2484,6 +2583,41 @@ def system_installers(app: Path, limit=6):
     return found
 
 
+# тихие ключи известных установщиков системных компонентов (порядок: более конкретные первыми)
+REDIST_SWITCHES = (("vc_redist", "/quiet /norestart"), ("vcredist", "/quiet /norestart"),
+                   ("physx", "/s"), ("dxsetup", "/silent"), ("oalinst", "/silent"),
+                   ("ndp", "/q /norestart"), ("dotnet", "/q /norestart"))
+
+
+def write_redist_script(target: Path, app: Path, items, log) -> bool:
+    """Install_redist.bat: по очереди тихо ставит найденные в App системные компоненты.
+
+    Запускать нужно один раз на компьютере, где будут играть, от имени администратора.
+    Неизвестные установщики в скрипт не попадают (их ключей мы не знаем), о них говорит лог.
+    """
+    lines = []
+    for rel in items:
+        low = Path(rel).name.lower()
+        if low.endswith(".msi"):
+            lines.append(f'echo {Path(rel).name}\nmsiexec /i "%~dp0App\\{rel}" /qn /norestart')
+            continue
+        for key, sw in REDIST_SWITCHES:
+            if key in low:
+                lines.append(f'echo {Path(rel).name}\nstart /wait "" "%~dp0App\\{rel}" {sw}')
+                break
+    if not lines:
+        return False
+    bat = ("@echo off\nchcp 65001 >nul\n"
+           "net session >nul 2>&1 || (echo Run this file as administrator: right click - Run as administrator. & pause & exit /b 1)\n"
+           + "\n".join(lines) + "\necho.\necho Done.\npause\n")
+    try:
+        (Path(target) / "Install_redist.bat").write_text(bat, encoding="utf-8")
+    except OSError as e:
+        log(f"Не удалось создать Install_redist.bat: {e}")
+        return False
+    return True
+
+
 def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=True,
            system_root=None) -> bool:
     """Пишет Launch.bat. Для игр на Unreal Engine запускает ...-Shipping.exe напрямую
@@ -2600,6 +2734,9 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
               "один раз на компьютере, где будете играть (нужны права администратора). "
               "Сами они в портативную папку не ставятся.")
         notes.append("в App есть установщики системных компонентов")
+        if write_redist_script(target, app, sysinst, log):
+            log("Для удобства создан Install_redist.bat: он тихо поставит найденные компоненты "
+                "(запускать от имени администратора, один раз на компьютере с игрой).")
     try:
         bat, sc_name, icon = write_shortcut_script(target, app, main)
         if info is not None:
@@ -3001,6 +3138,8 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
         if bins:
             log(f"Рядом с установщиком найдено .bin файлов: {len(bins)} "
                 f"({fmt_size(bin_size)}): " + ", ".join(b.name for b in bins))
+            for problem in check_bin_parts(exe, bins):
+                log(problem)
 
         do_install = mode == "install"
         do_extract = mode in ("extract", "auto")
