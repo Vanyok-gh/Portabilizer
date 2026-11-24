@@ -37,6 +37,10 @@ class Var:
 tk = MagicMock(name="tk"); tk.StringVar = Var; tk.BooleanVar = Var; tk.IntVar = Var
 ttk = MagicMock(name="ttk"); style = MagicMock(); style.theme_use.return_value = "vista"; ttk.Style.return_value = style
 rootm = MagicMock(); rootm.cget.return_value = "#f0f0f0"; rootm.geometry.return_value = "880x720+5+5"; tk.Tk.return_value = rootm
+class FakeFrame:                                  # настоящий класс: от него наследует WrapFrame
+    def __init__(self, *a, **k): pass
+    def __getattr__(self, name): return MagicMock(name=name)
+ttk.Frame = FakeFrame
 tv = MagicMock(); tv.selection.return_value = (); tv.get_children.return_value = (); ttk.Treeview.return_value = tv
 sys.modules.update({"tkinter": tk, "tkinter.ttk": ttk})
 tk.ttk = ttk

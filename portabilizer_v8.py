@@ -3847,9 +3847,49 @@ def set_dark_titlebar(root, dark: bool):
 
 # ------------------------------------------------------------------ интерфейс
 
+def wrap_positions(widths, total, gap=8):
+    """(строка, столбец) для каждого виджета: когда не хватает ширины total, виджет переносится на новую строку."""
+    out, row, col, x = [], 0, 0, 0
+    for w in widths:
+        need = w + gap
+        if col and x + need > total:
+            row, col, x = row + 1, 0, 0
+        out.append((row, col))
+        col += 1
+        x += need
+    return out
+
+
 def gui(_hook=None, start_radical=False):
     import tkinter as tk
     from tkinter import filedialog, messagebox, ttk
+
+    class WrapFrame(ttk.Frame):
+        """Контейнер, который переносит дочерние виджеты на новую строку, если окно узкое: ничего не обрезается."""
+
+        def __init__(self, master, gap=8, **kw):
+            super().__init__(master, **kw)
+            self._gap, self._items, self._width = gap, [], 0
+            self.bind("<Configure>", self._on_configure)
+
+        def add(self, widget):
+            self._items.append(widget)
+            self._relayout()
+
+        def _on_configure(self, event):
+            if abs(event.width - self._width) > 2:        # высота меняется от самой раскладки: её не слушаем
+                self._width = event.width
+                self.after_idle(self._relayout)
+
+        def _relayout(self):
+            if not self._items:
+                return
+            total = int(self.winfo_width())
+            if total <= 1:                                # окно ещё не показано: пока в одну строку
+                total = 10 ** 6
+            widths = [int(w.winfo_reqwidth()) for w in self._items]
+            for w, (r, c) in zip(self._items, wrap_positions(widths, total, self._gap)):
+                w.grid(row=r, column=c, sticky="w", padx=(0, self._gap), pady=1)
 
     if os.name == "nt":
         try:                                  # чтобы в панели задач была наша иконка, а не Python
@@ -3967,26 +4007,28 @@ def gui(_hook=None, start_radical=False):
         filetypes=[(tr("Программы"), "*.exe"), (tr("Все"), "*.*")]) or mexe.get()))
 
     ttk.Label(main_tab, text=tr("Режим:")).grid(row=3, column=0, sticky="w", padx=8, pady=6)
-    mrow = ttk.Frame(main_tab)
-    mrow.grid(row=3, column=1, sticky="w", padx=4)
+    mrow = WrapFrame(main_tab)
+    mrow.grid(row=3, column=1, columnspan=2, sticky="we", padx=4)
     combos = []
     combos.append(ttk.Combobox(mrow, textvariable=mode_var, values=list(mode_names),
                                state="readonly", width=30))
-    combos[-1].pack(side="left")
-    ttk.Label(mrow, text=tr("   Запуск:")).pack(side="left")
-    combos.append(ttk.Combobox(mrow, textvariable=run_var, values=list(run_names),
+    mrow.add(combos[-1])
+    runf = ttk.Frame(mrow)
+    ttk.Label(runf, text=tr("   Запуск:")).pack(side="left")
+    combos.append(ttk.Combobox(runf, textvariable=run_var, values=list(run_names),
                                state="readonly", width=40))
     combos[-1].pack(side="left", padx=4)
+    mrow.add(runf)
     shots_var = tk.BooleanVar(value=bool(settings.get("tga_png", False)))
-    ttk.Checkbutton(mrow, text=tr("Скриншоты игры: TGA в PNG после выхода"), variable=shots_var).pack(side="left", padx=8)
+    mrow.add(ttk.Checkbutton(mrow, text=tr("Скриншоты игры: TGA в PNG после выхода"), variable=shots_var))
     fso_var = tk.BooleanVar(value=bool(settings.get("nofso", False)))
-    ttk.Checkbutton(mrow, text=tr("Отключить оптимизацию во весь экран (старые игры)"), variable=fso_var).pack(side="left", padx=8)
-    orow = ttk.Frame(main_tab)
-    orow.grid(row=4, column=0, columnspan=3, sticky="w", padx=8)
+    mrow.add(ttk.Checkbutton(mrow, text=tr("Отключить оптимизацию во весь экран (старые игры)"), variable=fso_var))
+    orow = WrapFrame(main_tab, gap=12)
+    orow.grid(row=4, column=0, columnspan=3, sticky="we", padx=8)
     trim_var = tk.BooleanVar(value=bool(settings.get("slim_trim", False)))
-    ttk.Checkbutton(orow, text=tr("Убрать лишнее (установщики VC/DirectX, чужие Readme)"), variable=trim_var).pack(side="left")
+    orow.add(ttk.Checkbutton(orow, text=tr("Убрать лишнее (установщики VC/DirectX, чужие Readme)"), variable=trim_var))
     comp_var = tk.BooleanVar(value=bool(settings.get("slim_compress", False)))
-    ttk.Checkbutton(orow, text=tr("Сжать папку средствами NTFS"), variable=comp_var).pack(side="left", padx=12)
+    orow.add(ttk.Checkbutton(orow, text=tr("Сжать папку средствами NTFS"), variable=comp_var))
 
     hint = (tr("Файл: exe, msi, msix/appx, архив (rar, zip, 7z...). Главный exe - необязательно: "
             "имя (App.exe), путь внутри App или файл из папки App. "
