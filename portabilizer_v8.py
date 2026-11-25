@@ -4133,6 +4133,15 @@ def gui(_hook=None, start_radical=False):
     hint_lbl = ttk.Label(main_tab, text=hint, wraplength=820, style="Muted.TLabel")
     hint_lbl.grid(row=5, column=0, columnspan=3, sticky="w", padx=8)
 
+    def _fit_hint(e=None):      # подсказка переносится по ширине окна, а не обрезается справа
+        try:
+            w = int(main_tab.winfo_width())
+            if w > 100:
+                hint_lbl.configure(wraplength=max(200, w - 24))
+        except Exception:  # noqa
+            pass
+    main_tab.bind("<Configure>", _fit_hint, add="+")
+
     bf = ttk.Frame(main_tab)
     bf.grid(row=6, column=0, columnspan=3, pady=6)
     btn_start = ttk.Button(bf, text=tr("Сделать портативным"), style="Accent.TButton")
