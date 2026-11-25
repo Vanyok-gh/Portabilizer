@@ -98,5 +98,16 @@ for xr, tst in ((3000, 2900), (2900, 3000)):          # размеры почт�
     check(best.relative_to(d).as_posix() == "bin/XR_3DA.exe" and not asked,
           f"STALKER: главный bin/XR_3DA.exe без вопросов (размеры {xr}/{tst})")
 
+# 9. Раскладка Atomic Heart (Unreal Engine, depot 668581): корневая заглушка + Shipping, CrashReportClient отсеян
+d = Path(tempfile.mkdtemp()) / "Atomic Heart" / "App"
+pe(d / "AtomicHeart.exe", machine=0x8664, size=2700)
+pe(d / "AtomicHeart/Binaries/Win64/AtomicHeart-Win64-Shipping.exe", machine=0x8664, size=117000)
+pe(d / "Engine/Binaries/Win64/CrashReportClient.exe", machine=0x8664, size=19500)
+asked = []
+best = P.find_main_exe(d, chooser=lambda o: asked.append(o) or None)
+check(best.name == "AtomicHeart.exe" and not asked, "Atomic Heart: главным выбран корневой AtomicHeart.exe без вопросов")
+check(P.unreal_shipping(best).name == "AtomicHeart-Win64-Shipping.exe", "Atomic Heart: запуск пойдёт через Shipping.exe")
+check(not any("CrashReport" in str(x) for x in P.rank_exes(d)), "Atomic Heart: CrashReportClient отсеян")
+
 print("\nпровалов:", len(fails))
 sys.exit(1 if fails else 0)
