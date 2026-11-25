@@ -2590,6 +2590,53 @@ def system_installers(app: Path, limit=6):
     return found
 
 
+# Файл путей движка X-Ray: у игр из установщиков, где его создаёт скрипт установки, он отсутствует в распакованном
+# виде. Этот набор проверен на одной игре (архивы gamedata.db*, сохранения и логи в App\\_appdata_).
+FSGAME_LTX = (
+    "$app_data_root$ = true| false| $fs_root$| _appdata_\\\n"
+    "$game_data$     = false| true| $fs_root$| gamedata\\\n"
+    "$game_ai$       = true| false| $game_data$| ai\\\n"
+    "$game_spawn$    = true| false| $game_data$| spawns\\\n"
+    "$game_anims$    = true| true| $game_data$| anims\\\n"
+    "$game_levels$   = true| false| $game_data$| levels\\\n"
+    "$game_meshes$   = true| true| $game_data$| meshes\\\n"
+    "$game_dm$       = true| true| $game_data$| meshes\\\n"
+    "$game_shaders$  = true| true| $game_data$| shaders\\\n"
+    "$game_sounds$   = true| true| $game_data$| sounds\\\n"
+    "$game_textures$ = true| true| $game_data$| textures\\\n"
+    "$game_scripts$  = true| false| $game_data$| scripts\\\n"
+    "$game_config$   = true| false| $game_data$| config\\\n"
+    "$level$         = false| false| $game_levels$\n"
+    "$game_saves$    = true| true| $app_data_root$| savedgames\\\n"
+    "$logs$          = true| false| $app_data_root$| logs\\\n"
+    "$screenshots$   = true| false| $app_data_root$| screenshots\\\n"
+    "$mod_dir$       = false| false| $fs_root$| mods\\\n").replace("\n", "\r\n")
+
+
+def ensure_fsgame(app: Path, log) -> bool:
+    """Движок X-Ray (XR_3DA.exe) не стартует без fsgame.ltx в корне игры ("Cannot open file fsgame.ltx").
+    Если файла нет, но рядом лежат данные игры (gamedata.db* или папка gamedata), кладёт стандартный."""
+    try:
+        exe = next((p for p in sorted(app.rglob("*"), key=lambda x: (len(x.relative_to(app).parts), str(x).lower()))
+                    if p.name.lower() == "xr_3da.exe" and len(p.relative_to(app).parts) <= 3 and p.is_file()), None)
+        if exe is None:
+            return False
+        root = exe.parent.parent if exe.parent.name.lower() == "bin" else exe.parent
+        if any(q.name.lower() == "fsgame.ltx" for q in root.iterdir()):
+            return False
+        has_data = (root / "gamedata").is_dir() or any(root.glob("gamedata.db*")) or any(root.glob("gamedata.xdb*"))
+        if not has_data:
+            return False
+        (root / "fsgame.ltx").write_bytes(FSGAME_LTX.encode("ascii"))
+    except OSError as e:
+        log(f"fsgame.ltx не создан: {e}")
+        return False
+    log("В установленной игре не нашлось fsgame.ltx (его обычно создаёт скрипт установщика), поэтому создан "
+        "стандартный: сохранения и логи лягут в App\\_appdata_. Если игра пожалуется на пути, замените его "
+        "файлом с установленной копии.")
+    return True
+
+
 # тихие ключи известных установщиков системных компонентов (порядок: более конкретные первыми)
 REDIST_SWITCHES = (("vc_redist", "/quiet /norestart"), ("vcredist", "/quiet /norestart"),
                    ("physx", "/s"), ("dxsetup", "/silent"), ("oalinst", "/silent"),
@@ -2733,6 +2780,8 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
             notes.append(f"нет {name} {ver}")
     if needs_admin:
         notes.append("exe требует админа: Launch.bat идёт через RunAsInvoker")
+    if ensure_fsgame(app, log):
+        notes.append("создан fsgame.ltx (путь сохранений: App\\_appdata_)")
     dotnet_check(main, target, log)
     sysinst = system_installers(app)
     if sysinst:
@@ -3551,7 +3600,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "11.0"
+APP_VERSION = "11.1"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
