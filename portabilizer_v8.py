@@ -1327,6 +1327,9 @@ SKIP = ("unins", "uninst", "uninstall", "setup", "vcredist", "vc_redist",
         "facompress", "precomp", "cls-", "oalinst", "physx", "dotnet", "redist",
         "subprocess", "prereq", "isdel", "inst32")      # isdel/inst32: помощники InstallShield
 # короткие имена сравниваем целиком, чтобы не отсеять игры вроде "ArcheAge.exe"
+# папки, в которых лежат только установщики системных компонентов (Steam: pc\\redist\\...)
+REDIST_DIRS = ("redist", "_redist", "redistributable", "redistributables", "commonredist", "_commonredist",
+               "prereq", "prerequisites", "directx", "dotnet", "vcredist")
 SKIP_EXACT = ("xtool", "srep", "arc", "unarc", "7z", "7za", "zpaq", "lzma")
 # служебные установщики, которые не надо принимать за основной установщик в архиве
 INSTALLER_JUNK = ("unins", "vcredist", "vc_redist", "dxsetup", "dxwebsetup",
@@ -1434,7 +1437,7 @@ def is_gui_exe(p: Path) -> bool:
 
 # имена, которые не отсеиваем совсем, но ставим в конец очереди: патчеры, обновлялки, помощники
 SOFT_PENALTY = ("patch", "benchmark", "crashhandler", "crashreport", "helper", "ffmpeg", "merger",
-                "config", "settings", "editor", "dedicated", "server")   # "update" отсеян жёстко (SKIP)
+                "config", "settings", "editor", "dedicated", "server", "testapp")   # "update" отсеян жёстко (SKIP)
 
 
 def unreal_rank(p: Path) -> int:
@@ -1459,6 +1462,8 @@ def exe_reject_reason(p: Path, folder: Path, allow_console=False):
         return "служебное имя (setup/update/redist и т.п.)"
     if p.stem.lower() in SKIP_EXACT:
         return "служебная утилита репака"
+    if any(f"\\{d}\\" in rel for d in REDIST_DIRS):
+        return "установщик системных компонентов (папка redist и т.п.)"
     if "$pluginsdir" in rel or "\\tmp\\" in rel:
         return "временная папка установщика"
     if not allow_console and unreal_rank(p) == 0 and not is_gui_exe(p):
@@ -1508,8 +1513,7 @@ def name_affinity(p: Path, folder: Path, hints=()) -> int:
     stem = _norm_name(p.stem)
     if len(stem) < 4:
         return 0
-    names = list(hints) + [d for d in p.relative_to(folder).parts[:-1]]
-    for h in names:
+    for h in hints:   # собственные папки exe не считаем: D3D11Install.exe в папке D3D11Install - не «игра»
         n = _norm_name(str(h))
         if len(n) >= 4 and (stem in n or n in stem):
             return 1
@@ -1519,7 +1523,8 @@ def name_affinity(p: Path, folder: Path, hints=()) -> int:
 def exe_rank_key(p: Path, folder: Path, hints=(), twin_x64=False):
     """Чем больше ключ, тем лучше кандидат: Unreal, не патчер, имя совпало с игрой,
     64-бит (если рядом есть 32-битная копия), ближе к корню, крупнее."""
-    low = p.name.lower()
+    # штрафуем и по папкам внутри программы: bin\\dedicated\\XR_3DA.exe - это сервер, а не игра
+    low = "\\".join(p.relative_to(folder).parts).lower()
     return (unreal_rank(p), not any(w in low for w in SOFT_PENALTY),
             name_affinity(p, folder, hints), twin_x64,
             -len(p.relative_to(folder).parts), _size(p))
@@ -2562,7 +2567,7 @@ def write_portable_ps(target: Path, log) -> bool:
 
 
 SYSTEM_INSTALLERS = ("physx", "vcredist", "vc_redist", "dxsetup", "dxwebsetup", "directx",
-                     "dotnet", "ndp", "oalinst", "xnafx", "msxml")
+                     "dotnet", "ndp", "oalinst", "xnafx", "msxml", "d3d11install", "d3dx")
 
 
 def system_installers(app: Path, limit=6):
@@ -2574,7 +2579,9 @@ def system_installers(app: Path, limit=6):
             if p.suffix.lower() not in (".exe", ".msi") or len(p.relative_to(app).parts) > 4:
                 continue
             low = p.name.lower()
-            if any(w in low for w in SYSTEM_INSTALLERS) and p.is_file():
+            in_redist = any(d.lower() in REDIST_DIRS for d in p.relative_to(app).parts[:-1]) \
+                and not any(w in low for w in ("launcher", "game"))
+            if (in_redist or any(w in low for w in SYSTEM_INSTALLERS)) and p.is_file():
                 found.append(str(p.relative_to(app)))
                 if len(found) >= limit:
                     break
@@ -4174,6 +4181,15 @@ def gui(_hook=None, start_radical=False):
             "Лог сохраняется в portabilizer.log."))
     hint_lbl = ttk.Label(main_tab, text=hint, wraplength=820, style="Muted.TLabel")
     hint_lbl.grid(row=5, column=0, columnspan=3, sticky="w", padx=8)
+
+    def _fit_hint(e=None):      # подсказка переносится по ширине окна, а не обрезается справа
+        try:
+            w = int(main_tab.winfo_width())
+            if w > 100:
+                hint_lbl.configure(wraplength=max(200, w - 24))
+        except Exception:  # noqa
+            pass
+    main_tab.bind("<Configure>", _fit_hint, add="+")
 
     bf = ttk.Frame(main_tab)
     bf.grid(row=6, column=0, columnspan=3, pady=6)
