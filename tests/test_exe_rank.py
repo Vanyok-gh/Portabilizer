@@ -85,5 +85,18 @@ pe(d / "tool" / "tool.exe", size=1000)
 pe(d / "run.exe", size=500)
 check(P.name_affinity(d / "tool" / "tool.exe", d, ["Another", "App"]) == 0, "собственная папка exe не даёт бонус имени")
 
+# 8. Раскладка Steam-версии S.T.A.L.K.E.R.: Shadow of Chernobyl (depot 4501): bin\\XR_3DA.exe - игра,
+#    bin\\dedicated\\XR_3DA.exe - сервер, bin\\testapp.exe - утилита, setup-bp.exe - служебный
+for xr, tst in ((3000, 2900), (2900, 3000)):          # размеры почти равны: решать должны не они
+    d = Path(tempfile.mkdtemp()) / "Zona" / "App"
+    pe(d / "bin" / "XR_3DA.exe", size=xr)
+    pe(d / "bin" / "testapp.exe", size=tst)
+    pe(d / "bin" / "dedicated" / "XR_3DA.exe", size=2800)
+    pe(d / "setup-bp.exe", size=1500)
+    asked = []
+    best = P.find_main_exe(d, chooser=lambda o: asked.append(o) or None)
+    check(best.relative_to(d).as_posix() == "bin/XR_3DA.exe" and not asked,
+          f"STALKER: главный bin/XR_3DA.exe без вопросов (размеры {xr}/{tst})")
+
 print("\nпровалов:", len(fails))
 sys.exit(1 if fails else 0)

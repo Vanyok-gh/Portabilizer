@@ -1437,7 +1437,7 @@ def is_gui_exe(p: Path) -> bool:
 
 # имена, которые не отсеиваем совсем, но ставим в конец очереди: патчеры, обновлялки, помощники
 SOFT_PENALTY = ("patch", "benchmark", "crashhandler", "crashreport", "helper", "ffmpeg", "merger",
-                "config", "settings", "editor", "dedicated", "server")   # "update" отсеян жёстко (SKIP)
+                "config", "settings", "editor", "dedicated", "server", "testapp")   # "update" отсеян жёстко (SKIP)
 
 
 def unreal_rank(p: Path) -> int:
@@ -1523,7 +1523,8 @@ def name_affinity(p: Path, folder: Path, hints=()) -> int:
 def exe_rank_key(p: Path, folder: Path, hints=(), twin_x64=False):
     """Чем больше ключ, тем лучше кандидат: Unreal, не патчер, имя совпало с игрой,
     64-бит (если рядом есть 32-битная копия), ближе к корню, крупнее."""
-    low = p.name.lower()
+    # штрафуем и по папкам внутри программы: bin\\dedicated\\XR_3DA.exe - это сервер, а не игра
+    low = "\\".join(p.relative_to(folder).parts).lower()
     return (unreal_rank(p), not any(w in low for w in SOFT_PENALTY),
             name_affinity(p, folder, hints), twin_x64,
             -len(p.relative_to(folder).parts), _size(p))
