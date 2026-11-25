@@ -68,5 +68,22 @@ pe(d / "ProgEditor.exe", size=90000)
 pe(d / "prog.exe", size=1000)
 check(P.find_main_exe(d).name == "prog.exe", "редактор не главный")
 
+# 6. Раскладка Steam-версии Metro 2033 Redux (по списку файлов depot): metro.exe в корне,
+#    pc/redist/D3D11Install/D3D11Install.exe - установщик DirectX, не игра
+d = t / "Игра Без Названия" / "App"      # название папки не помогает: имя exe не совпадает с ним
+pe(d / "metro.exe", size=21000)
+pe(d / "pc/redist/D3D11Install/D3D11Install.exe", machine=0x014C, size=2100)
+(d / "content00.vfs0").write_bytes(b"x")
+check(P.find_main_exe(d).name == "metro.exe", "Metro: главный metro.exe, а не установщик DirectX")
+check(not any("D3D11" in str(x) for x in P.rank_exes(d)), "Metro: D3D11Install отсеян как служебный")
+check(P.system_installers(d) == ["pc/redist/D3D11Install/D3D11Install.exe"],
+      "Metro: D3D11Install попал в список системных компонентов")
+
+# 7. exe лежит в папке с таким же именем, как он сам: это не повод считать его игрой
+d = t / "Another" / "App"
+pe(d / "tool" / "tool.exe", size=1000)
+pe(d / "run.exe", size=500)
+check(P.name_affinity(d / "tool" / "tool.exe", d, ["Another", "App"]) == 0, "собственная папка exe не даёт бонус имени")
+
 print("\nпровалов:", len(fails))
 sys.exit(1 if fails else 0)
