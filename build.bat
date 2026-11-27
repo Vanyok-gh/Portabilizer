@@ -9,7 +9,8 @@ python --version >nul 2>&1
 if not errorlevel 1 goto have_python
 set "PYINST="
 for %%F in ("python_installer\python-*.exe" "tools\python-*.exe" "python-*.exe") do if not defined PYINST if exist "%%~F" set "PYINST=%%~F"
-if not defined PYINST goto no_python
+if not defined PYINST goto download_py
+:have_installer
 echo Python не найден, но рядом лежит установщик: %PYINST%
 choice /c YN /n /m "Установить его сейчас для вашего пользователя, права администратора не нужны? [Y/N] "
 if errorlevel 2 goto no_python
@@ -20,6 +21,27 @@ python --version >nul 2>&1
 if errorlevel 1 goto no_python
 echo Python установлен.
 goto have_python
+:download_py
+rem Установщика рядом нет: можно скачать его из релиза "tools" этого репозитория и проверить SHA-256.
+rem Контрольная сумма совпадает с опубликованной на python.org для Windows installer (64-bit), 3.15.2.
+set "PY_URL=https://github.com/Vanyok-gh/Portabilizer/releases/download/tools/python-3.15.2-amd64.exe"
+set "PY_SHA=06e225a228191b0f4d1dcf6905fbb21bf9f6970d13a2ec63137ab9bee76f15aa"
+echo Python не найден. Установщик (около 36 МБ) можно скачать из релиза tools на GitHub.
+choice /c YN /n /m "Скачать сейчас? [Y/N] "
+if errorlevel 2 goto no_python
+if not exist "python_installer" mkdir "python_installer"
+set "PYINST=python_installer\python-3.15.2-amd64.exe"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "try { Invoke-WebRequest -UseBasicParsing -Uri '%PY_URL%' -OutFile '%PYINST%' } catch { Write-Host $_.Exception.Message; exit 1 }"
+if errorlevel 1 goto dl_fail
+set "PY_GOT="
+for /f "skip=1 tokens=*" %%H in ('certutil -hashfile "%PYINST%" SHA256') do if not defined PY_GOT set "PY_GOT=%%H"
+set "PY_GOT=%PY_GOT: =%"
+if /i "%PY_GOT%"=="%PY_SHA%" goto have_installer
+echo Контрольная сумма скачанного файла не совпала с ожидаемой: файл не используется.
+:dl_fail
+del "%PYINST%" 2>nul
+set "PYINST="
+echo Не удалось получить установщик Python.
 :no_python
 echo Python не найден. Установите Python 3.9 или новее с python.org, отметив Add Python to PATH.
 echo Либо положите установщик python-*.exe в папку python_installer рядом с build.bat: сборка предложит его поставить.
