@@ -2340,29 +2340,38 @@ DX_URL = ("https://download.microsoft.com/download/8/4/A/"
 DX_PAGE = "https://www.microsoft.com/en-us/download/details.aspx?id=8109"
 
 # DX_fix.bat: библиотеки DirectX (June 2010) рядом с игрой, без прав администратора.
-# Ключ /Q /T: тихой распаковки не подтверждён документацией: после него проверяем результат,
-# а при неудаче показываем ручную инструкцию (так же, как в успешном ручном способе).
+# Порядок: готовая папка DX9 -> directx_Jun2010_redist.exe рядом с bat (скачивается только если его нет) ->
+# DX_unpack.ps1 вырезает cab из exe и открывает его через expand.exe (exe при этом НЕ запускается) ->
+# запасной ключ /Q /T: самого файла (документацией не подтверждён) -> ручная инструкция.
+# После каждого шага проверяем результат.
 DX_FIX = r"""@echo off
 chcp 65001 >nul
 setlocal
 set "ROOT=%~dp0"
 set "DEST=%ROOT%@DEST@"
 set "DX=%ROOT%DX9"
+set "EXE=%ROOT%directx_Jun2010_redist.exe"
 echo Этот файл кладёт библиотеки DirectX (June 2010) рядом с игрой.
 echo Права администратора не нужны, система не изменяется.
 echo.
 if exist "%DX%\*@ARCH@.cab" goto extract
+if exist "%EXE%" goto unpack
 echo Скачиваю DirectX End-User Runtimes (June 2010), около 96 МБ...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "try { Invoke-WebRequest -UseBasicParsing -Uri '@URL@' -OutFile '%ROOT%directx_Jun2010_redist.exe' } catch { Write-Host $_.Exception.Message }"
-if exist "%ROOT%directx_Jun2010_redist.exe" (
-  echo Распаковываю пакет ^(в систему ничего не ставится^)...
-  "%ROOT%directx_Jun2010_redist.exe" /Q /T:"%DX%"
-)
+powershell -NoProfile -ExecutionPolicy Bypass -Command "try { Invoke-WebRequest -UseBasicParsing -Uri '@URL@' -OutFile '%EXE%' } catch { Write-Host $_.Exception.Message; Remove-Item -LiteralPath '%EXE%' -Force -ErrorAction SilentlyContinue }"
+:unpack
+if not exist "%EXE%" goto manual
+echo Распаковываю пакет ^(установщик не запускается, в систему ничего не ставится^)...
+if exist "%ROOT%DX_unpack.ps1" powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT%DX_unpack.ps1" -Exe "%EXE%" -Out "%DX%"
 if exist "%DX%\*@ARCH@.cab" goto extract
+echo Первый способ не сработал, пробую ключ /Q /T у самого файла...
+"%EXE%" /Q /T:"%DX%"
+if exist "%DX%\*@ARCH@.cab" goto extract
+:manual
 echo.
 echo Автоматически не получилось. Сделайте вручную:
 echo   1. Скачайте directx_Jun2010_redist.exe: @PAGE@
-echo   2. Запустите его и в качестве папки распаковки укажите:
+echo      и положите его рядом с этим файлом ^(можно в папку, где лежит DX_fix.bat^).
+echo   2. Или запустите его и в качестве папки распаковки укажите:
 echo      %DX%
 echo      Файл DXSETUP.exe из неё запускать не нужно.
 echo   3. Запустите DX_fix.bat ещё раз.
@@ -2385,6 +2394,61 @@ exit /b 0
 echo Не удалось скопировать файлы в %DEST%
 pause
 exit /b 1
+"""
+
+# DX_unpack.ps1 лежит рядом с DX_fix.bat. Только ASCII: PowerShell 5.1 читает файл без BOM как ANSI.
+# Ищет в exe самый большой целый cab (заголовок MSCF, версия 1.3, размер помещается в файл), вырезает его
+# во временный файл и раскрывает через expand.exe (есть в любой Windows). Сам exe не запускается.
+DX_UNPACK_PS = r"""param([string]$Exe, [string]$Out)
+$ErrorActionPreference = 'Stop'
+$tmp = Join-Path ([IO.Path]::GetTempPath()) ('dx_pkg_' + [Guid]::NewGuid().ToString('N') + '.cab')
+$fs = $null
+$o = $null
+try {
+  $fs = [IO.File]::OpenRead($Exe)
+  $len = $fs.Length
+  $n = [int][Math]::Min($len, 4MB)
+  $head = New-Object byte[] $n
+  $null = $fs.Read($head, 0, $n)
+  $best = -1
+  $bestSize = [int64]0
+  $i = 0
+  while ($true) {
+    $i = [Array]::IndexOf($head, [byte]0x4D, $i)
+    if ($i -lt 0 -or $i + 36 -gt $n) { break }
+    if ($head[$i+1] -eq 0x53 -and $head[$i+2] -eq 0x43 -and $head[$i+3] -eq 0x46 -and $head[$i+24] -eq 3 -and $head[$i+25] -eq 1) {
+      $size = [int64][BitConverter]::ToUInt32($head, $i + 8)
+      if ($size -gt $bestSize -and ($i + $size) -le $len) { $best = $i; $bestSize = $size }
+    }
+    $i++
+  }
+  if ($best -lt 0) { Write-Host 'cab not found inside the file'; exit 1 }
+  $fs.Position = $best
+  $o = [IO.File]::Create($tmp)
+  $buf = New-Object byte[] 1048576
+  $left = $bestSize
+  while ($left -gt 0) {
+    $k = $fs.Read($buf, 0, [int][Math]::Min($left, $buf.Length))
+    if ($k -le 0) { break }
+    $o.Write($buf, 0, $k)
+    $left -= $k
+  }
+  $o.Close(); $o = $null
+  $fs.Close(); $fs = $null
+  if ($left -ne 0) { Write-Host 'cab is cut off'; exit 1 }
+  New-Item -ItemType Directory -Force -Path $Out | Out-Null
+  & expand.exe $tmp '-F:*' $Out | Out-Null
+  if (@(Get-ChildItem -LiteralPath $Out -Filter '*.cab' -ErrorAction SilentlyContinue).Count -gt 0) { exit 0 }
+  Write-Host 'expand.exe did not produce cab files'
+  exit 1
+} catch {
+  Write-Host $_.Exception.Message
+  exit 1
+} finally {
+  if ($o) { $o.Close() }
+  if ($fs) { $fs.Close() }
+  Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue
+}
 """
 
 
@@ -2754,6 +2818,7 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
                 DX_FIX.replace("@DEST@", dest).replace("@URL@", DX_URL).replace("@PAGE@", DX_PAGE)
                 .replace("@ARCH@", plan["arch"]).replace("@FILES@", " ".join(n + ".dll" for n in left_dx)),
                 encoding="utf-8")
+            (target / "DX_unpack.ps1").write_text(DX_UNPACK_PS, encoding="ascii")
             log(("Без DirectX выбрано продолжить. " if choice != "install" else "")
                 + "Не хватает: " + ", ".join(n + ".dll" for n in left_dx)
                 + ". Если программа пожалуется на них, запустите DX_fix.bat в папке результата "
@@ -3600,7 +3665,7 @@ def portabilize(exe_path, out_root, log, mode="auto", manual_exe="", job=None, h
 
 # ------------------------------------------------------------------ проверка новой версии
 
-APP_VERSION = "11.1"
+APP_VERSION = "11.2"
 UPDATE_URL = "https://api.github.com/repos/Vanyok-gh/Portabilizer/releases"
 
 
