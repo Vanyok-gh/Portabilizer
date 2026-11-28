@@ -139,6 +139,21 @@ check(D.set_large_address_aware(b"") == b"", "LAA: пустой файл не т
 # --- место
 check(D.space_needed([1, 2, 3]) == 6 * D.SPACE_FACTOR and D.SPACE_FACTOR == 3, "место: 3x размера архивов")
 
+# --- что пробовать для установщика
+pl = D.install_plan(True, True, True, True)
+check(pl == {"isdone_first": True, "silent": False, "isdone_fallback": False},
+      "plan: есть файл настроек - только ISDone, тихой установки (UAC) нет")
+pl = D.install_plan(True, True, True, False)
+check(pl == {"isdone_first": False, "silent": True, "isdone_fallback": True},
+      "plan: файла нет - сначала тихая установка, ISDone запасной")
+pl = D.install_plan(True, True, False, True)
+check(pl == {"isdone_first": False, "silent": True, "isdone_fallback": False},
+      "plan: нет архивов репака - как раньше, только тихая установка")
+check(D.install_plan(False, True, True, True)["silent"] and not D.install_plan(False, True, True, True)["isdone_first"],
+      "plan: не Inno - как раньше")
+check(D.install_plan(True, False, True, True)["silent"] and not D.install_plan(True, False, True, True)["isdone_first"],
+      "plan: не Windows - как раньше")
+
 # --- исходник распаковщика
 src = D.UNPACKER_SOURCE
 check("class UnpackerForm" in src and "ISArcExtract" in src and "MakeThunk" in src, "C#: исходник на месте")
