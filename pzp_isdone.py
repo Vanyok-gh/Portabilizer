@@ -59,8 +59,11 @@ def has_external_archives(setup, bins) -> bool:
 
 
 def find_repack_cfg(folder):
-    p = Path(folder) / CFG_FILE
-    return p if p.is_file() else None
+    """repack.cfg.ps1 рядом с установщиком или в его подпапке bin (так его кладёт набор скриптов)."""
+    for p in (Path(folder) / CFG_FILE, Path(folder) / "bin" / CFG_FILE):
+        if p.is_file():
+            return p
+    return None
 
 
 def cfg_candidates(bin_dir, preferred=None) -> list:

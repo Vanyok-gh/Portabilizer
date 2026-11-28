@@ -41,6 +41,12 @@ d = Path(tempfile.mkdtemp())
 check(D.find_repack_cfg(d) is None, "find_repack_cfg: файла нет")
 (d / D.CFG_FILE).write_text("$PasswordHex = '-'", encoding="ascii")
 check(D.find_repack_cfg(d) == d / D.CFG_FILE, "find_repack_cfg: файл найден")
+d2 = Path(tempfile.mkdtemp())
+(d2 / "bin").mkdir()
+(d2 / "bin" / D.CFG_FILE).write_text("$PasswordHex = '-'", encoding="ascii")
+check(D.find_repack_cfg(d2) == d2 / "bin" / D.CFG_FILE, "find_repack_cfg: найден и в подпапке bin")
+(d2 / D.CFG_FILE).write_text("$PasswordHex = '-'", encoding="ascii")
+check(D.find_repack_cfg(d2) == d2 / D.CFG_FILE, "find_repack_cfg: рядом с установщиком важнее bin")
 
 # --- архивы репака или части установщика
 check(D.has_external_archives("C:/x/setup_game.exe", ["C:/x/data.bin", "C:/x/data1.bin"]), "bin: data*.bin - архивы репака")
