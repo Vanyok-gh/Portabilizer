@@ -189,6 +189,11 @@ check("class UnpackerForm" in src and "ISArcExtract" in src and "MakeThunk" in s
 check("\r" not in src and src.isascii(), "C#: только ASCII и LF")
 check(src.count("{") == src.count("}"), "C#: скобки сбалансированы")
 
+check("WatchDialogs" in src and "BM_CLICK" in src and "#32770" in src, "C#: наблюдатель за окнами ошибок на месте")
+check(D.dialog_texts("a\nISDone dialog [ISDone.dll]: Unpack error -8\nb") == ["ISDone dialog [ISDone.dll]: Unpack error -8"],
+      "dialog_texts: находит строку окна")
+check(D.dialog_texts("ничего") == [], "dialog_texts: нет окон - пусто")
+
 # --- Windows-часть
 msgs = []
 if os.name != "nt":
