@@ -15,11 +15,13 @@ import re
 import shutil
 import struct
 import subprocess
+import time
 from pathlib import Path
 
 CFG_FILE = "repack.cfg.ps1"
 ENGINE_FILES = ("ISDone.dll", "unarc.dll")        # без них распаковывать нечем
 UNPACKER_EXE = "pzp_isdone_unpacker.exe"
+QUICK_FAIL_SECONDS = 90                            # отказ быстрее: чаще всего не та конфигурация или пароль
 SPACE_FACTOR = 3                                   # свободного места нужно ~3x размера архивов
 # файлы самого движка не правим: в них нет общей памяти компрессоров
 SKIP_PATCH = {"isdone.dll", "unarc.dll", "unarc.exe", "isskin.dll", "botva2.dll", "b2p.dll", "callbackctrl.dll"}
@@ -58,26 +60,44 @@ def has_external_archives(setup, bins) -> bool:
     return any(not re.fullmatch(stem + r"-\d+\.bin", Path(b).name, re.I) for b in bins)
 
 
+def read_cfg_text(path) -> str:
+    """Текст repack.cfg.ps1. PowerShell 5.1 записывает файлы через > и Out-File в UTF-16, Блокнот в UTF-8:
+    без разбора кодировки пароль в UTF-16 файле молча терялся бы."""
+    raw = Path(path).read_bytes()
+    if raw[:2] in (b"\xff\xfe", b"\xfe\xff"):
+        return raw.decode("utf-16", errors="ignore")
+    if len(raw) >= 4 and raw[1:2] == b"\x00" and raw[3:4] == b"\x00":     # UTF-16 LE без метки
+        return raw.decode("utf-16-le", errors="ignore")
+    return raw.decode("utf-8-sig", errors="ignore")
+
+
 def find_repack_cfg(folder):
-    p = Path(folder) / CFG_FILE
-    return p if p.is_file() else None
+    """repack.cfg.ps1 рядом с установщиком или в его подпапке bin (так его кладёт набор скриптов)."""
+    for p in (Path(folder) / CFG_FILE, Path(folder) / "bin" / CFG_FILE):
+        if p.is_file():
+            return p
+    return None
 
 
 def cfg_candidates(bin_dir, preferred=None) -> list:
-    """Какие arc*.ini пробовать и в каком порядке. Если innounp назвал дубли arc,1.ini / arc,2.ini,
-    голый arc.ini (копия последнего запуска) пропускается."""
+    """Какие arc*.ini пробовать и в каком порядке: указанный в repack.cfg.ps1, затем arc,1.ini, затем
+    arc.ini (innoextract оставляет первый файл с таким именем под этим именем, остальные переименовывает),
+    затем остальные arc*.ini. Если innounp назвал дубли arc,1.ini / arc,2.ini, голый arc.ini (копия
+    последнего запуска) пропускается."""
     bin_dir = Path(bin_dir)
-    names = ([preferred] if preferred else []) + ["arc,1.ini", "arc.ini", "arc,2.ini"]
-    has_numbered = any((bin_dir / n).is_file() for n in ("arc,1.ini", "arc,2.ini"))
+    present = {f.name.lower(): f.name for f in bin_dir.iterdir()
+               if f.is_file() and re.fullmatch(r"arc.*\.ini", f.name, re.I)} if bin_dir.is_dir() else {}
+    has_numbered = any(n in present for n in ("arc,1.ini", "arc,2.ini"))
+    order = ([preferred] if preferred else []) + ["arc,1.ini", "arc.ini"] + sorted(present.values(), key=str.lower)
     out, seen = [], set()
-    for n in names:
-        if n.lower() in seen:
+    for n in order:
+        low = n.lower()
+        if low in seen or low not in present:
             continue
-        seen.add(n.lower())
-        if n.lower() == "arc.ini" and has_numbered and not preferred == n:
+        seen.add(low)
+        if low == "arc.ini" and has_numbered and not (preferred and preferred.lower() == low):
             continue
-        if (bin_dir / n).is_file():
-            out.append(n)
+        out.append(present[low])
     return out
 
 
@@ -177,7 +197,7 @@ def extract_installer_files(setup: Path, bin_dir: Path, log, run_fn, find_tool) 
             log("Нужен innounp.exe (положите рядом или в tools/) или innoextract.exe.")
             return False
         log("innounp.exe не найден, пробую innoextract: для движка ISDone это не проверено.")
-        run_fn([ino, "-e", "-t", "-d", str(tmp), str(setup)], log)
+        run_fn([ino, "-e", "-t", "--collisions", "rename", "-d", str(tmp), str(setup)], log)
     bin_dir.mkdir(parents=True, exist_ok=True)
     if tmp.is_dir():
         for p in tmp.rglob("*"):
@@ -227,7 +247,7 @@ def extract_isdone(setup, out, log, run_fn, find_tool, run_last=lambda: "") -> b
     cfg = {"password_hex": None, "archives": None, "cfg_name": None, "bad_password": False}
     if cfg_file:
         log(f"Настройки репака: {cfg_file.name}")
-        cfg = parse_repack_cfg(cfg_file.read_text(encoding="utf-8-sig", errors="ignore"))
+        cfg = parse_repack_cfg(read_cfg_text(cfg_file))
         if cfg["bad_password"]:
             log("В repack.cfg.ps1 PasswordHex записан неверно (нужны пары hex-символов, например 03050304).")
             return False
@@ -289,20 +309,28 @@ def extract_isdone(setup, out, log, run_fn, find_tool, run_last=lambda: "") -> b
             log("В установщике нет конфигурации архивов (arc.ini / arc,1.ini).")
             return False
         out.mkdir(parents=True, exist_ok=True)
-        for name in cands:
+        for n, name in enumerate(cands):
             log(f"Распаковываю {len(archives)} арх., конфигурация {name} "
                 f"({sum(sizes) / 2**30:.1f} ГБ архивов, это может занять часы)...")
             cmd = [unpacker, str(folder), str(bin_dir), str(out), password_hex, name] + archives
+            t0 = time.monotonic()
             ok = run_fn(cmd, log)
+            took = time.monotonic() - t0
             kill_leftovers()
             if ok:
                 break
             last = run_last().lower()
-            if "unsupported compression method" in last:
-                log(f"Конфигурация {name} не знает нужный метод сжатия, пробую следующую.")
-                continue
             if "wrong password" in last or "-13" in last:
                 log(f"Пароль не подошёл. Проверьте PasswordHex в {CFG_FILE}.")
+                break
+            if took < QUICK_FAIL_SECONDS and n + 1 < len(cands):
+                log(f"Отказ за {took:.0f} с: так бывает при не той конфигурации архивов. "
+                    "Пробую следующую (это эвристика, текст ошибки ISDone программа не видит).")
+                continue
+            if took < QUICK_FAIL_SECONDS:
+                log(f"Отказ за {took:.0f} с, конфигурации кончились. Чаще всего так бывает, когда архивы "
+                    "под паролем, а его не дали: проверьте " + CFG_FILE
+                    + " (в нём $PasswordHex в hex) рядом с установщиком или в папке bin.")
             break
         if not ok:
             log("Распаковка не удалась. Рабочие файлы оставлены в " + str(work))

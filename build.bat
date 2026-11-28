@@ -65,6 +65,7 @@ set "ADD="
 if exist "7z.exe" (set ADD=%ADD% --add-binary "7z.exe;.") else if exist "tools\7z.exe" set ADD=%ADD% --add-binary "tools\7z.exe;."
 if exist "7z.dll" (set ADD=%ADD% --add-binary "7z.dll;.") else if exist "tools\7z.dll" set ADD=%ADD% --add-binary "tools\7z.dll;."
 if exist "innoextract.exe" (set ADD=%ADD% --add-binary "innoextract.exe;.") else if exist "tools\innoextract.exe" set ADD=%ADD% --add-binary "tools\innoextract.exe;."
+if exist "innounp.exe" (set ADD=%ADD% --add-binary "innounp.exe;.") else if exist "tools\innounp.exe" set ADD=%ADD% --add-binary "tools\innounp.exe;."
 if exist "dx\*.cab" set ADD=%ADD% --add-data "dx;dx"
 if not exist "dx\*.cab" echo ВНИМАНИЕ: папка dx с cab-файлами не найдена: DirectX-библиотеки не будут вшиты. Положите dx рядом с build.bat (или потом рядом с Portabilizer.exe).
 if not exist "7z.exe" if not exist "tools\7z.exe" echo ВНИМАНИЕ: 7z.exe не найден. Без него Portabilizer не распакует архивы. Положите 7z.exe и 7z.dll рядом с build.bat и соберите заново.

@@ -41,6 +41,12 @@ d = Path(tempfile.mkdtemp())
 check(D.find_repack_cfg(d) is None, "find_repack_cfg: файла нет")
 (d / D.CFG_FILE).write_text("$PasswordHex = '-'", encoding="ascii")
 check(D.find_repack_cfg(d) == d / D.CFG_FILE, "find_repack_cfg: файл найден")
+d2 = Path(tempfile.mkdtemp())
+(d2 / "bin").mkdir()
+(d2 / "bin" / D.CFG_FILE).write_text("$PasswordHex = '-'", encoding="ascii")
+check(D.find_repack_cfg(d2) == d2 / "bin" / D.CFG_FILE, "find_repack_cfg: найден и в подпапке bin")
+(d2 / D.CFG_FILE).write_text("$PasswordHex = '-'", encoding="ascii")
+check(D.find_repack_cfg(d2) == d2 / D.CFG_FILE, "find_repack_cfg: рядом с установщиком важнее bin")
 
 # --- архивы репака или части установщика
 check(D.has_external_archives("C:/x/setup_game.exe", ["C:/x/data.bin", "C:/x/data1.bin"]), "bin: data*.bin - архивы репака")
@@ -48,6 +54,15 @@ check(not D.has_external_archives("C:/x/setup_game.exe", ["C:/x/setup_game-1.bin
       "bin: части самого установщика не считаются")
 check(D.has_external_archives("C:/x/setup.exe", ["C:/x/setup-1.bin", "C:/x/data.bin"]), "bin: смесь - репак")
 check(not D.has_external_archives("C:/x/setup.exe", []), "bin: пусто - не репак")
+
+# --- кодировки repack.cfg.ps1
+txt = "$PasswordHex = '0A0B'\r\n$Archives = @('data.bin')\r\n"
+cf = Path(tempfile.mkdtemp()) / "c.ps1"
+for enc, name in (("utf-8", "utf-8"), ("utf-8-sig", "utf-8 с меткой"), ("utf-16", "utf-16 с меткой"),
+                  ("utf-16-le", "utf-16 без метки"), ("cp1251", "ansi")):
+    cf.write_bytes(txt.encode(enc))
+    r = D.parse_repack_cfg(D.read_cfg_text(cf))
+    check(r["password_hex"] == "0A0B" and r["archives"] == ["data.bin"], "кодировка cfg: " + name)
 
 # --- какие arc*.ini пробовать
 b = Path(tempfile.mkdtemp())
@@ -60,6 +75,11 @@ check(D.cfg_candidates(b, "arc,2.ini") == ["arc,2.ini", "arc,1.ini"], "arc: ук
 b2 = Path(tempfile.mkdtemp())
 (b2 / "arc.ini").write_text("x")
 check(D.cfg_candidates(b2) == ["arc.ini"], "arc: единственный arc.ini берётся")
+b3 = Path(tempfile.mkdtemp())
+for n in ("arc.ini", "arc$1.ini", "other.txt"):
+    (b3 / n).write_text("x")
+check(D.cfg_candidates(b3) == ["arc.ini", "arc$1.ini"], "arc: после innoextract первым идёт первый файл, потом переименованные")
+check(D.cfg_candidates(Path(tempfile.mkdtemp()) / "нет") == [], "arc: нет папки - пусто")
 
 # --- Global\ -> GlobalX
 data = b"MZ..Global\\abc..\x00" + "Global\\wide".encode("utf-16-le") + b"..Global\\x"
