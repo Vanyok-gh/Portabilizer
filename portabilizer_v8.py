@@ -3277,12 +3277,12 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
         if do_install:
             can_isdone = (kind == "inno" and os.name == "nt"
                           and pzp_isdone.has_external_archives(exe, bins))
-            # repack.cfg.ps1 рядом с установщиком - признак репака на ISDone: сразу берём его движок,
+            # archives.cfg рядом с установщиком - признак репака на ISDone: сразу берём его движок,
             # а не тихую установку, которая без админа всё равно не пройдёт
             isdone_first = can_isdone and pzp_isdone.find_repack_cfg(exe.parent) is not None
             installed = False
             if isdone_first:
-                log("Рядом лежит repack.cfg.ps1: репак распаковывается движком ISDone, без установщика.")
+                log("Рядом лежит archives.cfg: репак распаковывается движком ISDone, без установщика.")
                 installed = isdone_extract(exe, app, log, job)
                 if not installed:
                     clear_dir(app)
