@@ -2551,6 +2551,9 @@ def create_desktop_shortcut(bat: Path, log) -> bool:
     return True
 
 
+XRAY_EXES = ("xr_3da.exe", "xrengine.exe")      # движок X-Ray: Тень Чернобыля / Чистое Небо, Зов Припяти
+
+
 def work_dir(base: Path, exe_rel: Path) -> Path:
     """Рабочая папка запуска (относительно App). Обычно папка exe. Исключение: exe лежит в bin,
     а рядом с bin есть data - так устроены многие старые игры, они ищут data\\... от корня
@@ -2559,7 +2562,13 @@ def work_dir(base: Path, exe_rel: Path) -> Path:
     if d.name.lower() == "bin" and d.parent != d:
         up = base / d.parent
         try:
-            if any(x.is_dir() and x.name.lower() == "data" for x in up.iterdir()):
+            names = {x.name.lower(): x for x in up.iterdir()}
+            if any(n == "data" and x.is_dir() for n, x in names.items()):
+                return d.parent
+            # X-Ray (XR_3DA.exe, xrEngine.exe): fsgame.ltx и gamedata лежат в корне игры, и движок ищет их
+            # от рабочей папки ("Cannot open file fsgame.ltx. Check your working folder")
+            if exe_rel.name.lower() in XRAY_EXES and ("fsgame.ltx" in names or "gamedata" in names
+                                                     or any(n.startswith("gamedata.db") for n in names)):
                 return d.parent
         except OSError:
             pass
@@ -2617,7 +2626,8 @@ def system_installers(app: Path, limit=6):
 
 
 # Файл путей движка X-Ray: у игр из установщиков, где его создаёт скрипт установки, он отсутствует в распакованном
-# виде. Этот набор проверен на одной игре (архивы gamedata.db*, сохранения и логи в App\\_appdata_).
+# виде. Этот набор проверен на одной игре (Тень Чернобыля; архивы gamedata.db*, сохранения и логи в App\\_appdata_);
+# для xrEngine.exe (Чистое Небо, Зов Припяти) он тот же, но там не проверен.
 FSGAME_LTX = (
     "$app_data_root$ = true| false| $fs_root$| _appdata_\\\n"
     "$game_data$     = false| true| $fs_root$| gamedata\\\n"
@@ -2640,11 +2650,11 @@ FSGAME_LTX = (
 
 
 def ensure_fsgame(app: Path, log) -> bool:
-    """Движок X-Ray (XR_3DA.exe) не стартует без fsgame.ltx в корне игры ("Cannot open file fsgame.ltx").
+    """Движок X-Ray (XR_3DA.exe, xrEngine.exe) не стартует без fsgame.ltx в корне игры ("Cannot open file fsgame.ltx").
     Если файла нет, но рядом лежат данные игры (gamedata.db* или папка gamedata), кладёт стандартный."""
     try:
         exe = next((p for p in sorted(app.rglob("*"), key=lambda x: (len(x.relative_to(app).parts), str(x).lower()))
-                    if p.name.lower() == "xr_3da.exe" and len(p.relative_to(app).parts) <= 3 and p.is_file()), None)
+                    if p.name.lower() in XRAY_EXES and len(p.relative_to(app).parts) <= 3 and p.is_file()), None)
         if exe is None:
             return False
         root = exe.parent.parent if exe.parent.name.lower() == "bin" else exe.parent
