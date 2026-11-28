@@ -4,7 +4,7 @@
 компрессоры) достаётся из setup.exe, а архивы распаковывает маленькая программа на C#, которую Windows
 собирает встроенным csc.exe (ни SDK, ни админ не нужны).
 
-Пароль архивов Portabilizer сам НЕ ищет: его (и список архивов) он берёт из файла repack.cfg.ps1 рядом
+Пароль архивов Portabilizer сам НЕ ищет: его (и список архивов) он берёт из файла archives.cfg рядом
 с установщиком. Без этого файла пробует без пароля и со всеми .bin рядом.
 
 Модуль без интерфейса и без зависимостей от основной программы: запуск процессов и поиск утилит передаются
@@ -18,7 +18,8 @@ import subprocess
 import time
 from pathlib import Path
 
-CFG_FILE = "repack.cfg.ps1"
+CFG_FILE = "archives.cfg"
+LEGACY_CFG_FILES = ("repack.cfg.ps1",)       # прежнее имя, которое делал набор скриптов
 ENGINE_FILES = ("ISDone.dll", "unarc.dll")        # без них распаковывать нечем
 UNPACKER_EXE = "pzp_isdone_unpacker.exe"
 QUICK_FAIL_SECONDS = 90                            # отказ быстрее: чаще всего не та конфигурация или пароль
@@ -32,10 +33,10 @@ _GLOBAL_PAIRS = ((b"Global\\", b"GlobalX"),
 
 
 def parse_repack_cfg(text: str) -> dict:
-    """Разбор repack.cfg.ps1: $PasswordHex = '...', $Archives = @('a','b'), необязательно $CfgName = '...'.
+    """Разбор archives.cfg (и старого repack.cfg.ps1): PasswordHex = '...', $Archives = @('a','b'), необязательно $CfgName = '...'.
     password_hex: строка hex, "-" (без пароля) или None (не задан / записан неверно, тогда bad_password=True)."""
     res = {"password_hex": None, "archives": None, "cfg_name": None, "bad_password": False}
-    m = re.search(r"\$PasswordHex\s*=\s*'([^']*)'", text)
+    m = re.search(r"\$?PasswordHex\s*=\s*'([^']*)'", text)
     if m:
         v = m.group(1).replace(" ", "")
         if v in ("", "-"):
@@ -44,10 +45,10 @@ def parse_repack_cfg(text: str) -> dict:
             res["password_hex"] = v.upper()
         else:
             res["bad_password"] = True
-    m = re.search(r"\$Archives\s*=\s*@\((.*?)\)", text, re.S)
+    m = re.search(r"\$?Archives\s*=\s*@\((.*?)\)", text, re.S)
     if m:
         res["archives"] = re.findall(r"'([^']+)'", m.group(1)) or None
-    m = re.search(r"\$CfgName\s*=\s*'([^']+)'", text)
+    m = re.search(r"\$?CfgName\s*=\s*'([^']+)'", text)
     if m:
         res["cfg_name"] = m.group(1)
     return res
@@ -61,7 +62,7 @@ def has_external_archives(setup, bins) -> bool:
 
 
 def read_cfg_text(path) -> str:
-    """Текст repack.cfg.ps1. PowerShell 5.1 записывает файлы через > и Out-File в UTF-16, Блокнот в UTF-8:
+    """Текст archives.cfg. PowerShell 5.1 записывает файлы через > и Out-File в UTF-16, Блокнот в UTF-8:
     без разбора кодировки пароль в UTF-16 файле молча терялся бы."""
     raw = Path(path).read_bytes()
     if raw[:2] in (b"\xff\xfe", b"\xfe\xff"):
@@ -72,15 +73,18 @@ def read_cfg_text(path) -> str:
 
 
 def find_repack_cfg(folder):
-    """repack.cfg.ps1 рядом с установщиком или в его подпапке bin (так его кладёт набор скриптов)."""
-    for p in (Path(folder) / CFG_FILE, Path(folder) / "bin" / CFG_FILE):
-        if p.is_file():
-            return p
+    """archives.cfg (или прежний repack.cfg.ps1) рядом с установщиком или в его подпапке bin.
+    Рядом с установщиком важнее bin, новое имя важнее старого."""
+    for base in (Path(folder), Path(folder) / "bin"):
+        for name in (CFG_FILE,) + LEGACY_CFG_FILES:
+            p = base / name
+            if p.is_file():
+                return p
     return None
 
 
 def cfg_candidates(bin_dir, preferred=None) -> list:
-    """Какие arc*.ini пробовать и в каком порядке: указанный в repack.cfg.ps1, затем arc,1.ini, затем
+    """Какие arc*.ini пробовать и в каком порядке: указанный в archives.cfg, затем arc,1.ini, затем
     arc.ini (innoextract оставляет первый файл с таким именем под этим именем, остальные переименовывает),
     затем остальные arc*.ini. Если innounp назвал дубли arc,1.ini / arc,2.ini, голый arc.ini (копия
     последнего запуска) пропускается."""
@@ -249,7 +253,7 @@ def extract_isdone(setup, out, log, run_fn, find_tool, run_last=lambda: "") -> b
         log(f"Настройки репака: {cfg_file.name}")
         cfg = parse_repack_cfg(read_cfg_text(cfg_file))
         if cfg["bad_password"]:
-            log("В repack.cfg.ps1 PasswordHex записан неверно (нужны пары hex-символов, например 03050304).")
+            log(f"В {cfg_file.name} PasswordHex записан неверно (нужны пары hex-символов, например 03050304).")
             return False
     else:
         log(f"Файла {CFG_FILE} рядом с установщиком нет: пробую без пароля и со всеми .bin "

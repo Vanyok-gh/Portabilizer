@@ -19,7 +19,7 @@ def check(cond, msg):
         fails.append(msg)
 
 
-# --- repack.cfg.ps1
+# --- archives.cfg / repack.cfg.ps1
 r = D.parse_repack_cfg("$PasswordHex = '03050304'\n$Archives = @('data.bin','data1.bin','data2.bin')\n")
 check(r["password_hex"] == "03050304" and r["archives"] == ["data.bin", "data1.bin", "data2.bin"],
       "cfg: пароль и список архивов")
@@ -47,6 +47,13 @@ d2 = Path(tempfile.mkdtemp())
 check(D.find_repack_cfg(d2) == d2 / "bin" / D.CFG_FILE, "find_repack_cfg: найден и в подпапке bin")
 (d2 / D.CFG_FILE).write_text("$PasswordHex = '-'", encoding="ascii")
 check(D.find_repack_cfg(d2) == d2 / D.CFG_FILE, "find_repack_cfg: рядом с установщиком важнее bin")
+d3 = Path(tempfile.mkdtemp())
+(d3 / "repack.cfg.ps1").write_text("$PasswordHex = '-'", encoding="ascii")
+check(D.find_repack_cfg(d3) == d3 / "repack.cfg.ps1", "find_repack_cfg: старое имя repack.cfg.ps1 читается")
+(d3 / "archives.cfg").write_text("PasswordHex = '-'", encoding="ascii")
+check(D.find_repack_cfg(d3) == d3 / "archives.cfg", "find_repack_cfg: новое имя важнее старого")
+r = D.parse_repack_cfg("PasswordHex = '0A0B'\nArchives = @('data.bin')\n")
+check(r["password_hex"] == "0A0B" and r["archives"] == ["data.bin"], "cfg: знак $ в archives.cfg не обязателен")
 
 # --- архивы репака или части установщика
 check(D.has_external_archives("C:/x/setup_game.exe", ["C:/x/data.bin", "C:/x/data1.bin"]), "bin: data*.bin - архивы репака")
@@ -55,7 +62,7 @@ check(not D.has_external_archives("C:/x/setup_game.exe", ["C:/x/setup_game-1.bin
 check(D.has_external_archives("C:/x/setup.exe", ["C:/x/setup-1.bin", "C:/x/data.bin"]), "bin: смесь - репак")
 check(not D.has_external_archives("C:/x/setup.exe", []), "bin: пусто - не репак")
 
-# --- кодировки repack.cfg.ps1
+# --- кодировки archives.cfg
 txt = "$PasswordHex = '0A0B'\r\n$Archives = @('data.bin')\r\n"
 cf = Path(tempfile.mkdtemp()) / "c.ps1"
 for enc, name in (("utf-8", "utf-8"), ("utf-8-sig", "utf-8 с меткой"), ("utf-16", "utf-16 с меткой"),
