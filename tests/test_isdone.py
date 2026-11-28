@@ -71,6 +71,35 @@ for enc, name in (("utf-8", "utf-8"), ("utf-8-sig", "utf-8 с меткой"), ("
     r = D.parse_repack_cfg(D.read_cfg_text(cf))
     check(r["password_hex"] == "0A0B" and r["archives"] == ["data.bin"], "кодировка cfg: " + name)
 
+# --- запоминание удачной конфигурации
+base = "$PasswordHex = '0A0B'\r\n$Archives = @('data.bin')\r\n"
+r1 = D.set_cfg_name(base, "arc,2.ini")
+check(r1 == base + "$CfgName = 'arc,2.ini'\r\n", "CfgName: добавляется в конец с $ и CRLF")
+check(D.parse_repack_cfg(r1)["cfg_name"] == "arc,2.ini" and D.parse_repack_cfg(r1)["password_hex"] == "0A0B",
+      "CfgName: файл читается обратно, пароль цел")
+r2 = D.set_cfg_name(r1, "arc,1.ini")
+check(r2.count("CfgName") == 1 and D.parse_repack_cfg(r2)["cfg_name"] == "arc,1.ini", "CfgName: прежняя строка заменяется")
+check(D.set_cfg_name("PasswordHex = '0A0B'\n", "arc.ini") == "PasswordHex = '0A0B'\nCfgName = 'arc.ini'\n",
+      "CfgName: у файла без $ строка тоже без $, окончания LF")
+check(D.set_cfg_name("PasswordHex = '0A0B'", "arc.ini") == "PasswordHex = '0A0B'\nCfgName = 'arc.ini'\n",
+      "CfgName: нет перевода строки в конце - добавляется")
+check(D.set_cfg_name("", "arc.ini").strip() == "$CfgName = 'arc.ini'", "CfgName: пустой файл")
+
+mt = Path(tempfile.mkdtemp())
+msgs = []
+for enc, name in (("utf-8", "utf-8"), ("utf-8-sig", "utf-8 с меткой"), ("utf-16", "utf-16"), ("cp1251", "ansi")):
+    f = mt / ("c_" + name + ".cfg")
+    f.write_bytes(base.encode(enc))
+    check(D.remember_cfg_name(f, "arc,2.ini", msgs.append), "remember: записано, " + name)
+    r = D.parse_repack_cfg(D.read_cfg_text(f))
+    check(r["cfg_name"] == "arc,2.ini" and r["password_hex"] == "0A0B" and r["archives"] == ["data.bin"],
+          "remember: читается обратно, " + name)
+    if enc == "utf-16":
+        check(f.read_bytes()[:2] in (b"\xff\xfe", b"\xfe\xff"), "remember: кодировка UTF-16 сохранена")
+    check(not D.remember_cfg_name(f, "arc,2.ini", msgs.append), "remember: то же имя - файл не трогаем, " + name)
+check(bool(msgs) and "CfgName" in msgs[0], "remember: пишет в журнал")
+check(not D.remember_cfg_name(mt / "нет" / "x.cfg", "arc.ini", msgs.append), "remember: нет файла - ничего не падает")
+
 # --- какие arc*.ini пробовать
 b = Path(tempfile.mkdtemp())
 check(D.cfg_candidates(b) == [], "arc: ничего нет")
@@ -159,6 +188,11 @@ src = D.UNPACKER_SOURCE
 check("class UnpackerForm" in src and "ISArcExtract" in src and "MakeThunk" in src, "C#: исходник на месте")
 check("\r" not in src and src.isascii(), "C#: только ASCII и LF")
 check(src.count("{") == src.count("}"), "C#: скобки сбалансированы")
+
+check("WatchDialogs" in src and "BM_CLICK" in src and "#32770" in src, "C#: наблюдатель за окнами ошибок на месте")
+check(D.dialog_texts("a\nISDone dialog [ISDone.dll]: Unpack error -8\nb") == ["ISDone dialog [ISDone.dll]: Unpack error -8"],
+      "dialog_texts: находит строку окна")
+check(D.dialog_texts("ничего") == [], "dialog_texts: нет окон - пусто")
 
 # --- Windows-часть
 msgs = []

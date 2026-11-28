@@ -82,6 +82,43 @@ def install_plan(is_inno: bool, is_windows: bool, has_external: bool, has_cfg: b
     return {"isdone_first": first, "silent": not first, "isdone_fallback": can and not first}
 
 
+def set_cfg_name(text: str, name: str) -> str:
+    """Записывает в текст файла настроек строку CfgName = '<arc*.ini>' (заменяет прежнюю или добавляет в конец).
+    Знак $ ставится так же, как у строки PasswordHex в этом файле (у файла от набора скриптов он есть)."""
+    dollar = "$" if re.search(r"\$PasswordHex", text) or not re.search(r"(?m)^\s*PasswordHex", text) else ""
+    line = f"{dollar}CfgName = '{name}'"
+    if re.search(r"(?m)^\s*\$?CfgName\s*=", text):
+        return re.sub(r"(?m)^([ \t]*)\$?CfgName[ \t]*=[^\r\n]*", lambda m: m.group(1) + line, text, count=1)
+    eol = "\r\n" if "\r\n" in text else "\n"
+    return text + ("" if text.endswith(("\n", "\r")) or not text else eol) + line + eol
+
+
+def remember_cfg_name(path, name: str, log) -> bool:
+    """После удачной распаковки записывает в файл настроек, какая конфигурация arc*.ini подошла: в следующий раз
+    она пробуется первой, и неудачных попыток (с окнами ошибок ISDone) не будет. Кодировка файла сохраняется."""
+    try:
+        path = Path(path)
+        raw = path.read_bytes()
+        text = read_cfg_text(path)
+        new = set_cfg_name(text, name)
+        if new == text:
+            return False
+        if raw[:2] in (b"\xff\xfe", b"\xfe\xff"):
+            data = new.encode("utf-16")
+        elif len(raw) >= 4 and raw[1:2] == b"\x00" and raw[3:4] == b"\x00":
+            data = new.encode("utf-16-le")
+        elif raw[:3] == b"\xef\xbb\xbf":
+            data = new.encode("utf-8-sig")
+        else:
+            data = new.encode("utf-8")
+        path.write_bytes(data)
+    except OSError as e:
+        log(f"Не удалось записать конфигурацию в {Path(path).name}: {e}")
+        return False
+    log(f"Подошла конфигурация {name}: записана в {Path(path).name} (CfgName), в следующий раз она пробуется первой.")
+    return True
+
+
 def find_repack_cfg(folder):
     """archives.cfg (или прежний repack.cfg.ps1) рядом с установщиком или в его подпапке bin.
     Рядом с установщиком важнее bin, новое имя важнее старого."""
@@ -249,6 +286,11 @@ def build_unpacker(work: Path, bin_dir: Path, log, run_fn):
     return str(exe)
 
 
+def dialog_texts(tail: str) -> list:
+    """Тексты окон ошибок ISDone, которые распаковщик прочитал и закрыл (строки 'ISDone dialog [заголовок]: текст')."""
+    return [ln.strip() for ln in tail.splitlines() if ln.strip().startswith("ISDone dialog")]
+
+
 def extract_isdone(setup, out, log, run_fn, find_tool, run_last=lambda: "") -> bool:
     """Распаковывает архивы репака рядом с setup в папку out. run_last() возвращает хвост вывода
     последнего запуска (в основной программе это run.last)."""
@@ -332,8 +374,16 @@ def extract_isdone(setup, out, log, run_fn, find_tool, run_last=lambda: "") -> b
             took = time.monotonic() - t0
             kill_leftovers()
             if ok:
+                if cfg_file and name != cfg["cfg_name"]:
+                    remember_cfg_name(cfg_file, name, log)
                 break
-            last = run_last().lower()
+            tail = run_last()
+            for d in dialog_texts(tail):
+                log("Сообщение движка: " + d[len("ISDone dialog"):].strip())
+            last = tail.lower()
+            if "unsupported" in last and n + 1 < len(cands):
+                log("Движок сообщил о неподдерживаемом методе сжатия: пробую следующую конфигурацию.")
+                continue
             if "wrong password" in last or "-13" in last:
                 log(f"Пароль не подошёл. Проверьте PasswordHex в {CFG_FILE}.")
                 break
@@ -370,6 +420,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 class UnpackerForm : Form
@@ -452,6 +503,59 @@ class UnpackerForm : Form
         return mem;
     }
 
+    // ---- watcher for ISDone error dialogs: read the text, log it, press the first button ----
+    delegate bool EnumProc(IntPtr h, IntPtr l);
+    [DllImport("user32.dll")] static extern bool EnumWindows(EnumProc p, IntPtr l);
+    [DllImport("user32.dll")] static extern bool EnumChildWindows(IntPtr h, EnumProc p, IntPtr l);
+    [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr h, out uint pid);
+    [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr h);
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetClassName(IntPtr h, StringBuilder s, int n);
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowText(IntPtr h, StringBuilder s, int n);
+    [DllImport("user32.dll")] static extern bool PostMessage(IntPtr h, uint msg, IntPtr w, IntPtr l);
+
+    static string ClassOf(IntPtr h) { StringBuilder b = new StringBuilder(64); GetClassName(h, b, 64); return b.ToString(); }
+    static string TextOf(IntPtr h) { StringBuilder b = new StringBuilder(2048); GetWindowText(h, b, 2048); return b.ToString(); }
+
+    static volatile bool watching = true;
+    static string lastDialog = "";
+
+    static void HandleDialog(IntPtr dlg)
+    {
+        string title = TextOf(dlg);
+        StringBuilder body = new StringBuilder();
+        IntPtr button = IntPtr.Zero;
+        EnumChildWindows(dlg, delegate(IntPtr c, IntPtr l)
+        {
+            string cls = ClassOf(c);
+            if (cls == "Static") { string t = TextOf(c); if (t.Length > 0) { if (body.Length > 0) body.Append(' '); body.Append(t); } }
+            else if (cls == "Button" && button == IntPtr.Zero) button = c;
+            return true;
+        }, IntPtr.Zero);
+        lastDialog = title + ": " + body;
+        Console.WriteLine("\nISDone dialog [" + title + "]: " + body.ToString().Replace("\r", " ").Replace("\n", " "));
+        if (button != IntPtr.Zero) PostMessage(button, 0x00F5, IntPtr.Zero, IntPtr.Zero);   // BM_CLICK
+        else PostMessage(dlg, 0x0010, IntPtr.Zero, IntPtr.Zero);                               // WM_CLOSE
+    }
+
+    static void WatchDialogs()
+    {
+        uint me = (uint)System.Diagnostics.Process.GetCurrentProcess().Id;
+        while (watching)
+        {
+            try
+            {
+                EnumWindows(delegate(IntPtr h, IntPtr l)
+                {
+                    uint pid; GetWindowThreadProcessId(h, out pid);
+                    if (pid == me && IsWindowVisible(h) && ClassOf(h) == "#32770") HandleDialog(h);
+                    return true;
+                }, IntPtr.Zero);
+            }
+            catch { }
+            Thread.Sleep(300);
+        }
+    }
+
     static string[] A;
     static int exitCode = 0;
     static ProgressCb cb;
@@ -485,6 +589,10 @@ class UnpackerForm : Form
         if (!string.Equals(Path.Combine(binDir, cfgName), arcIni, StringComparison.OrdinalIgnoreCase))
             File.Copy(Path.Combine(binDir, cfgName), arcIni, true);
         Console.WriteLine("Config: " + cfgName);
+
+        Thread watcher = new Thread(WatchDialogs);
+        watcher.IsBackground = true;
+        watcher.Start();
 
         cb = new ProgressCb(OnProgress);
         IntPtr thunk = MakeThunk(Marshal.GetFunctionPointerForDelegate(cb));
@@ -521,6 +629,7 @@ class UnpackerForm : Form
         }
         finally
         {
+            watching = false;
             ISDoneStop();
             Free(rRec);
             GC.KeepAlive(cb);
