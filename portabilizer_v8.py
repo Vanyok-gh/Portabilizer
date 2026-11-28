@@ -129,6 +129,7 @@ from pzp_iso import IsoError, build_iso
 from pzp_msi import missing_source_files
 import pzp_disc
 import pzp_isc
+import pzp_isdone
 import pzp_multi
 import pzp_relic
 import pzp_sxs
@@ -1388,6 +1389,31 @@ def silent_install(exe: Path, kind: str, app: Path, log, job=None) -> bool:
     if not ok:
         log("Установщик завершился с ошибкой. Проверьте, что .bin файлы лежат рядом с setup.exe.")
     return ok and any(app.iterdir())
+
+
+def isdone_extract(exe: Path, app: Path, log, job=None) -> bool:
+    """Репак Inno с внешними .bin без админа: движок ISDone из установщика (см. pzp_isdone)."""
+    if job:
+        job.stage = "Распаковка (ISDone)"
+
+    def run_job(cmd, lg, ok_codes=(0,)):
+        return run(cmd, lg, ok_codes=ok_codes, job=job)
+
+    app.mkdir(parents=True, exist_ok=True)
+    ok = pzp_isdone.extract_isdone(exe, app, log, run_job, find_tool, run_last=lambda: run.last)
+    return ok and any(app.iterdir())
+
+
+def clear_dir(folder: Path):
+    """Пустая папка (после неудачной попытки), сама папка остаётся."""
+    for item in folder.iterdir():
+        if item.is_dir() and not item.is_symlink():
+            shutil.rmtree(item, ignore_errors=True)
+        else:
+            try:
+                item.unlink()
+            except OSError:
+                pass
 
 
 def check_bin_parts(setup: Path, bins) -> list:
@@ -3249,7 +3275,24 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
                     do_install = False
 
         if do_install:
-            if silent_install(exe, kind, app, log, job):
+            can_isdone = (kind == "inno" and os.name == "nt"
+                          and pzp_isdone.has_external_archives(exe, bins))
+            # repack.cfg.ps1 рядом с установщиком - признак репака на ISDone: сразу берём его движок,
+            # а не тихую установку, которая без админа всё равно не пройдёт
+            isdone_first = can_isdone and pzp_isdone.find_repack_cfg(exe.parent) is not None
+            installed = False
+            if isdone_first:
+                log("Рядом лежит repack.cfg.ps1: репак распаковывается движком ISDone, без установщика.")
+                installed = isdone_extract(exe, app, log, job)
+                if not installed:
+                    clear_dir(app)
+            if not installed:
+                installed = silent_install(exe, kind, app, log, job)
+            if not installed and can_isdone and not isdone_first:
+                log("Установщик не сработал. Для репака на ISDone пробую его движок напрямую.")
+                clear_dir(app)
+                installed = isdone_extract(exe, app, log, job)
+            if installed:
                 main = resolve_manual(app, manual_exe, log) or find_main_exe(app, log, info.get('chooser'))
             else:
                 main = None
