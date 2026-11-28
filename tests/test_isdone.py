@@ -66,6 +66,11 @@ check(D.cfg_candidates(b, "arc,2.ini") == ["arc,2.ini", "arc,1.ini"], "arc: ук
 b2 = Path(tempfile.mkdtemp())
 (b2 / "arc.ini").write_text("x")
 check(D.cfg_candidates(b2) == ["arc.ini"], "arc: единственный arc.ini берётся")
+b3 = Path(tempfile.mkdtemp())
+for n in ("arc.ini", "arc$1.ini", "other.txt"):
+    (b3 / n).write_text("x")
+check(D.cfg_candidates(b3) == ["arc.ini", "arc$1.ini"], "arc: после innoextract первым идёт первый файл, потом переименованные")
+check(D.cfg_candidates(Path(tempfile.mkdtemp()) / "нет") == [], "arc: нет папки - пусто")
 
 # --- Global\ -> GlobalX
 data = b"MZ..Global\\abc..\x00" + "Global\\wide".encode("utf-16-le") + b"..Global\\x"
