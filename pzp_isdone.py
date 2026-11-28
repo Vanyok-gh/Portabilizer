@@ -60,6 +60,17 @@ def has_external_archives(setup, bins) -> bool:
     return any(not re.fullmatch(stem + r"-\d+\.bin", Path(b).name, re.I) for b in bins)
 
 
+def read_cfg_text(path) -> str:
+    """Текст repack.cfg.ps1. PowerShell 5.1 записывает файлы через > и Out-File в UTF-16, Блокнот в UTF-8:
+    без разбора кодировки пароль в UTF-16 файле молча терялся бы."""
+    raw = Path(path).read_bytes()
+    if raw[:2] in (b"\xff\xfe", b"\xfe\xff"):
+        return raw.decode("utf-16", errors="ignore")
+    if len(raw) >= 4 and raw[1:2] == b"\x00" and raw[3:4] == b"\x00":     # UTF-16 LE без метки
+        return raw.decode("utf-16-le", errors="ignore")
+    return raw.decode("utf-8-sig", errors="ignore")
+
+
 def find_repack_cfg(folder):
     """repack.cfg.ps1 рядом с установщиком или в его подпапке bin (так его кладёт набор скриптов)."""
     for p in (Path(folder) / CFG_FILE, Path(folder) / "bin" / CFG_FILE):
@@ -236,7 +247,7 @@ def extract_isdone(setup, out, log, run_fn, find_tool, run_last=lambda: "") -> b
     cfg = {"password_hex": None, "archives": None, "cfg_name": None, "bad_password": False}
     if cfg_file:
         log(f"Настройки репака: {cfg_file.name}")
-        cfg = parse_repack_cfg(cfg_file.read_text(encoding="utf-8-sig", errors="ignore"))
+        cfg = parse_repack_cfg(read_cfg_text(cfg_file))
         if cfg["bad_password"]:
             log("В repack.cfg.ps1 PasswordHex записан неверно (нужны пары hex-символов, например 03050304).")
             return False

@@ -55,6 +55,15 @@ check(not D.has_external_archives("C:/x/setup_game.exe", ["C:/x/setup_game-1.bin
 check(D.has_external_archives("C:/x/setup.exe", ["C:/x/setup-1.bin", "C:/x/data.bin"]), "bin: смесь - репак")
 check(not D.has_external_archives("C:/x/setup.exe", []), "bin: пусто - не репак")
 
+# --- кодировки repack.cfg.ps1
+txt = "$PasswordHex = '0A0B'\r\n$Archives = @('data.bin')\r\n"
+cf = Path(tempfile.mkdtemp()) / "c.ps1"
+for enc, name in (("utf-8", "utf-8"), ("utf-8-sig", "utf-8 с меткой"), ("utf-16", "utf-16 с меткой"),
+                  ("utf-16-le", "utf-16 без метки"), ("cp1251", "ansi")):
+    cf.write_bytes(txt.encode(enc))
+    r = D.parse_repack_cfg(D.read_cfg_text(cf))
+    check(r["password_hex"] == "0A0B" and r["archives"] == ["data.bin"], "кодировка cfg: " + name)
+
 # --- какие arc*.ini пробовать
 b = Path(tempfile.mkdtemp())
 check(D.cfg_candidates(b) == [], "arc: ничего нет")
