@@ -82,6 +82,43 @@ def install_plan(is_inno: bool, is_windows: bool, has_external: bool, has_cfg: b
     return {"isdone_first": first, "silent": not first, "isdone_fallback": can and not first}
 
 
+def set_cfg_name(text: str, name: str) -> str:
+    """Записывает в текст файла настроек строку CfgName = '<arc*.ini>' (заменяет прежнюю или добавляет в конец).
+    Знак $ ставится так же, как у строки PasswordHex в этом файле (у файла от набора скриптов он есть)."""
+    dollar = "$" if re.search(r"\$PasswordHex", text) or not re.search(r"(?m)^\s*PasswordHex", text) else ""
+    line = f"{dollar}CfgName = '{name}'"
+    if re.search(r"(?m)^\s*\$?CfgName\s*=", text):
+        return re.sub(r"(?m)^([ \t]*)\$?CfgName[ \t]*=[^\r\n]*", lambda m: m.group(1) + line, text, count=1)
+    eol = "\r\n" if "\r\n" in text else "\n"
+    return text + ("" if text.endswith(("\n", "\r")) or not text else eol) + line + eol
+
+
+def remember_cfg_name(path, name: str, log) -> bool:
+    """После удачной распаковки записывает в файл настроек, какая конфигурация arc*.ini подошла: в следующий раз
+    она пробуется первой, и неудачных попыток (с окнами ошибок ISDone) не будет. Кодировка файла сохраняется."""
+    try:
+        path = Path(path)
+        raw = path.read_bytes()
+        text = read_cfg_text(path)
+        new = set_cfg_name(text, name)
+        if new == text:
+            return False
+        if raw[:2] in (b"\xff\xfe", b"\xfe\xff"):
+            data = new.encode("utf-16")
+        elif len(raw) >= 4 and raw[1:2] == b"\x00" and raw[3:4] == b"\x00":
+            data = new.encode("utf-16-le")
+        elif raw[:3] == b"\xef\xbb\xbf":
+            data = new.encode("utf-8-sig")
+        else:
+            data = new.encode("utf-8")
+        path.write_bytes(data)
+    except OSError as e:
+        log(f"Не удалось записать конфигурацию в {Path(path).name}: {e}")
+        return False
+    log(f"Подошла конфигурация {name}: записана в {Path(path).name} (CfgName), в следующий раз она пробуется первой.")
+    return True
+
+
 def find_repack_cfg(folder):
     """archives.cfg (или прежний repack.cfg.ps1) рядом с установщиком или в его подпапке bin.
     Рядом с установщиком важнее bin, новое имя важнее старого."""
@@ -332,6 +369,8 @@ def extract_isdone(setup, out, log, run_fn, find_tool, run_last=lambda: "") -> b
             took = time.monotonic() - t0
             kill_leftovers()
             if ok:
+                if cfg_file and name != cfg["cfg_name"]:
+                    remember_cfg_name(cfg_file, name, log)
                 break
             last = run_last().lower()
             if "wrong password" in last or "-13" in last:
