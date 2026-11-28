@@ -3337,20 +3337,21 @@ def _portabilize(exe_path, out_root, log, mode, manual_exe, target_override, job
                     do_install = False
 
         if do_install:
-            can_isdone = (kind == "inno" and os.name == "nt"
-                          and pzp_isdone.has_external_archives(exe, bins))
-            # archives.cfg рядом с установщиком - признак репака на ISDone: сразу берём его движок,
-            # а не тихую установку, которая без админа всё равно не пройдёт
-            isdone_first = can_isdone and pzp_isdone.find_repack_cfg(exe.parent) is not None
+            plan = pzp_isdone.install_plan(kind == "inno", os.name == "nt",
+                                           pzp_isdone.has_external_archives(exe, bins),
+                                           pzp_isdone.find_repack_cfg(exe.parent) is not None)
             installed = False
-            if isdone_first:
+            if plan["isdone_first"]:
                 log("Рядом лежит archives.cfg: репак распаковывается движком ISDone, без установщика.")
                 installed = isdone_extract(exe, app, log, job)
                 if not installed:
                     clear_dir(app)
-            if not installed:
+                    log("Распаковка движком ISDone не удалась. Установщик репака без прав администратора не "
+                        "запустится, поэтому тихую установку не пробую (иначе пошли бы запросы UAC). Причину "
+                        "ищите выше в журнале: пароль в archives.cfg, список архивов, конфигурация arc*.ini, место на диске.")
+            if plan["silent"]:
                 installed = silent_install(exe, kind, app, log, job)
-            if not installed and can_isdone and not isdone_first:
+            if not installed and plan["isdone_fallback"]:
                 log("Установщик не сработал. Для репака на ISDone пробую его движок напрямую.")
                 clear_dir(app)
                 installed = isdone_extract(exe, app, log, job)

@@ -72,6 +72,16 @@ def read_cfg_text(path) -> str:
     return raw.decode("utf-8-sig", errors="ignore")
 
 
+def install_plan(is_inno: bool, is_windows: bool, has_external: bool, has_cfg: bool) -> dict:
+    """Что пробовать для установщика Inno. Движок ISDone годится, если установщик Inno на Windows и рядом
+    лежат архивы репака. Файл настроек рядом - признак репака на ISDone: тогда берём движок сразу, а тихую
+    установку не пробуем вообще (без админа она не пройдёт и только вызывает запросы UAC, даже если
+    распаковка не удалась по другой причине). Без файла сначала тихая установка, движок как запасной путь."""
+    can = bool(is_inno and is_windows and has_external)
+    first = can and has_cfg
+    return {"isdone_first": first, "silent": not first, "isdone_fallback": can and not first}
+
+
 def find_repack_cfg(folder):
     """archives.cfg (или прежний repack.cfg.ps1) рядом с установщиком или в его подпапке bin.
     Рядом с установщиком важнее bin, новое имя важнее старого."""
