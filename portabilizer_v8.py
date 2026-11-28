@@ -2551,7 +2551,7 @@ def create_desktop_shortcut(bat: Path, log) -> bool:
     return True
 
 
-XRAY_EXES = ("xr_3da.exe", "xrengine.exe")      # движок X-Ray: Тень Чернобыля / Чистое Небо, Зов Припяти
+XRAY_EXES = ("xr_3da.exe", "xrengine.exe")      # движок X-Ray (разные версии движка)
 
 
 def work_dir(base: Path, exe_rel: Path) -> Path:
@@ -2626,8 +2626,8 @@ def system_installers(app: Path, limit=6):
 
 
 # Файл путей движка X-Ray: у игр из установщиков, где его создаёт скрипт установки, он отсутствует в распакованном
-# виде. Этот набор проверен на одной игре (Тень Чернобыля; архивы gamedata.db*, сохранения и логи в App\\_appdata_);
-# для xrEngine.exe (Чистое Небо, Зов Припяти) он тот же, но там не проверен.
+# виде. Этот набор проверен на одной игре с XR_3DA.exe (архивы gamedata.db*, сохранения и логи в App\\_appdata_);
+# для xrEngine.exe он тот же, но там не проверен.
 FSGAME_LTX = (
     "$app_data_root$ = true| false| $fs_root$| _appdata_\\\n"
     "$game_data$     = false| true| $fs_root$| gamedata\\\n"
@@ -2670,6 +2670,56 @@ def ensure_fsgame(app: Path, log) -> bool:
     log("В установленной игре не нашлось fsgame.ltx (его обычно создаёт скрипт установщика), поэтому создан "
         "стандартный: сохранения и логи лягут в App\\_appdata_. Если игра пожалуется на пути, замените его "
         "файлом с установленной копии.")
+    return True
+
+
+def xray_root(app: Path):
+    """Корень игры на движке X-Ray (папка выше bin, где лежит fsgame.ltx) или None, если такой игры нет."""
+    exe = next((p for p in sorted(app.rglob("*"), key=lambda x: (len(x.relative_to(app).parts), str(x).lower()))
+                if p.name.lower() in XRAY_EXES and len(p.relative_to(app).parts) <= 3 and p.is_file()), None)
+    if exe is None:
+        return None
+    return exe.parent.parent if exe.parent.name.lower() == "bin" else exe.parent
+
+
+_APPDATA_LINE = re.compile(r"^(\s*\$app_data_root\$\s*=\s*)([^|\r\n]*)\|\s*([^|\r\n]*)\|\s*([^|\r\n]*)")
+_ABS_PATH = re.compile(r"^(?:[A-Za-z]:[\\/]|\\\\)")
+
+
+def fix_fsgame_paths(app: Path, log) -> bool:
+    """Установщик может прописать в fsgame.ltx путь данных игры (сохранения, настройки user.ltx, логи) на папку
+    своего компьютера, например C:\\Users\\<имя>\\... На другом ПК такой папки нет, и игра ничего не сохраняет.
+    Такой абсолютный путь заменяется на App\\_appdata_ рядом с игрой, оригинал остаётся как fsgame.ltx.orig."""
+    try:
+        root = xray_root(app)
+        if root is None:
+            return False
+        f = next((q for q in root.iterdir() if q.name.lower() == "fsgame.ltx" and q.is_file()), None)
+        if f is None:
+            return False
+        lines = f.read_bytes().decode("latin-1").splitlines(keepends=True)
+        changed, old_path = False, ""
+        for n, line in enumerate(lines):
+            if line.lstrip().startswith(";"):
+                continue
+            m = _APPDATA_LINE.match(line)
+            if m and _ABS_PATH.match(m.group(4).strip()):
+                eol = line[len(line.rstrip("\r\n")):]
+                old_path = m.group(4).strip()
+                lines[n] = f"$app_data_root$ = {m.group(2).strip()}| {m.group(3).strip()}| $fs_root$| _appdata_\\" + eol
+                changed = True
+                break
+        if not changed:
+            return False
+        orig = f.with_name(f.name + ".orig")
+        if not orig.exists():
+            shutil.copy2(f, orig)
+        f.write_bytes("".join(lines).encode("latin-1"))
+    except OSError as e:
+        log(f"fsgame.ltx не исправлен: {e}")
+        return False
+    log(f"В fsgame.ltx путь данных игры (сохранения, настройки, логи) был прописан на чужой компьютер ({old_path}): "
+        "заменён на App\\_appdata_ рядом с игрой. Оригинал сохранён как fsgame.ltx.orig.")
     return True
 
 
@@ -2818,6 +2868,8 @@ def finish(target: Path, app: Path, main: Path, log, info=None, direct_unreal=Tr
         notes.append("exe требует админа: Launch.bat идёт через RunAsInvoker")
     if ensure_fsgame(app, log):
         notes.append("создан fsgame.ltx (путь сохранений: App\\_appdata_)")
+    if fix_fsgame_paths(app, log):
+        notes.append("fsgame.ltx: данные игры теперь в App\\_appdata_")
     dotnet_check(main, target, log)
     sysinst = system_installers(app)
     if sysinst:
